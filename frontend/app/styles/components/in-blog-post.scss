@@ -1,0 +1,27 @@
+ul {
+  padding-left: 20px;
+}
+
+.in-blog-post {
+  h1 {
+    color: #332532;
+  }
+  img {
+    margin-bottom: 20px;
+  }
+  h4 {
+    margin-bottom: 20px;
+  }
+  @include media-breakpoint-only(xs) {
+    h1 {
+      font-size: 20px;
+      line-height: 1.5;
+    }
+  }
+}
+
+pre ::selection {
+  // background: rgba(57, 242, 198, 0.2);
+  // color: #FFF;
+  background: rgba(13, 55, 45, 0.78);
+}

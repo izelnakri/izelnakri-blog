@@ -1,0 +1,206 @@
+<div class="card card-block">
+  <h1>Application-wide search with Ecto & PostgreSQL</h1>
+  <ul class="list-inline text-muted d-flex justify-content-end hidden-sm-down">
+    <li class="list-inline-item mr-auto"><i class="fa fa-terminal fa-fw"></i>Izel Nakri</li>
+    <li class="list-inline-item"><i class="fa fa-tags fa-fw"></i>Elixir</li>
+    <li class="list-inline-item"><i class="fa fa-clock-o fa-fw"></i>05/02, 2017</li>
+  </ul>
+  <ul class="list-inline text-muted hidden-sm-up">
+    <li class="list-inline-item"><i class="fa fa-tags fa-fw"></i>Elixir</li>
+    <li class="list-inline-item"><i class="fa fa-clock-o fa-fw"></i>05/02, 2017</li>
+  </ul>
+
+
+  <p>Few months ago I rewrote the search functionality for a web application using only Ecto & PostgreSQL. As it turns out postgres text search is very good. In fact it is so good that I can't really notice if its worse than the search results from the former version that used elasticsearch.</p>
+
+  <h4>1. Database setup:</h4>
+  <pre><code class="language-sql"># We are going the search across multiple tables and columns:
+CREATE TABLE companies (
+  id SERIAL PRIMARY KEY,
+  legal_name character varying(255),
+  local_name character varying(255),
+  name character varying(255) NOT NULL,
+  city character varying(255),
+  inserted_at timestamp without time zone NOT NULL,
+  updated_at timestamp without time zone NOT NULL
+);
+
+CREATE TABLE people (
+  id SERIAL PRIMARY KEY,
+  full_name character varying(255) NOT NULL,
+  slug character varying(255) NOT NULL,
+  inserted_at timestamp without time zone NOT NULL,
+  updated_at timestamp without time zone NOT NULL
+);
+
+CREATE UNIQUE INDEX people_slug_index ON people USING btree (slug);
+
+-- Postgres extension for similarity/ranking search:
+CREATE EXTENSION pg_trgm;
+
+-- Add following GIN indexes to speed up the search:
+CREATE INDEX companies_legal_name_trgm_index ON companies USING gin (legal_name gin_trgm_ops);
+
+CREATE INDEX companies_local_name_trgm_index ON companies USING gin (local_name gin_trgm_ops);
+
+CREATE INDEX companies_name_trgm_index ON companies USING gin (name gin_trgm_ops);
+
+CREATE INDEX people_full_name_trgm_index ON people USING gin (full_name gin_trgm_ops);</code></pre>
+  <h4>2. Insert Records:</h4>
+
+  <pre><code class="language-sql">INSERT INTO companies (legal_name, local_name, name, city, inserted_at, updated_at) VALUES
+  ('International Immobiliare S.p.a.', 'Immobiliare', 'International Immobiliare', 'Vatican City', now(), now()),
+  ('Genco Pura Olive Oil Company & Co.', 'GENCO', 'Genco Olive Oil', 'New York', now(), now()),
+  ('Tropigala Las Vegas Inc.', 'Tropigala', 'Tropigala', 'Las Vegas', now(), now()),
+  ('Luna Restaurant LLC.', 'Luna Restaurant', 'Luna Restaurant', 'New York', now(), now()),
+  ('Abbandando Grosseria LLC.', 'Abbandando Grosseria', 'Abbandando Grosseria', 'New York', now(), now()),
+  ('Habana Capri', 'Habana Capri', 'Havana Capri Hotel', 'Havana', now(), now());
+
+INSERT INTO people (full_name, slug, inserted_at, updated_at) VALUES
+  ('Vito Andolini Corleone', 'vito-corleone', now(), now()),
+  ('Michael Corleone', 'michael-corleone', now(), now()),
+  ('Tom Hagen', 'tom-hagen', now(), now()),
+  ('Peter Clemenza', 'peter-clemenza', now(), now()),
+  ('Hyman Roth', 'hyman-roth', now(), now()),
+  ('Moe Greene', 'moe-greene', now(), now()),
+  ('Don Fanucci', 'don-fanucci', now(), now()),
+  ('Signor Abbandando', 'signor-abbandando', now(), now());</code></pre>
+
+  <h4>3. Devise the queries:</h4>
+  <pre><code class="language-sql"># Person search:
+SELECT person,
+similarity(person.full_name, 'search term') AS rank
+FROM "people" person
+WHERE (similarity(person.full_name, 'search term') > 0.1::float)
+ORDER BY rank DESC
+LIMIT 5;
+
+# Company search: rank column represents the highest rank across 3 name columns:
+SELECT company,
+GREATEST(similarity(company.legal_name, 'search term'),
+  similarity(company.local_name, 'search term'),
+  similarity(company.name, 'search term')
+) AS rank
+FROM "companies" company
+WHERE (similarity(company.legal_name, 'search term') > 0.1::float) OR
+  (similarity(company.local_name, 'search term') > 0.1::float) OR
+  (similarity(company.name, 'search term') > 0.1::float)
+ORDER BY rank DESC
+LIMIT 5;</code></pre>
+
+  <h4>4. Advanced queries in Ecto:</h4>
+  <pre><code class="language-elixir"># in web/models/company.ex:
+defmodule Application.Company do
+  use Application.Web, :model
+
+  alias Application.Repo
+
+  schema "companies" do
+    field :city, :string
+    field :legal_name, :string
+    field :local_name, :string
+    field :name, :string
+
+    timestamps()
+  end
+
+  def search(search_term) do
+    from(
+      company in __MODULE__,
+      # BONUS: YOU CAN EVEN DO JOINS HERE!!
+      select: %{
+        company: company,
+        rank: fragment("GREATEST(similarity(?, ?), similarity(?, ?), similarity(?, ?)) AS rank",
+          company.local_name, ^search_term, company.legal_name, ^search_term, company.name,
+          ^search_term
+        ),
+      },
+      where: fragment("similarity(?, ?)", company.legal_name, ^search_term) > 0.05 or
+        fragment("similarity(?, ?)", company.name, ^search_term) > 0.05 or
+        fragment("similarity(?, ?)", company.local_name, ^search_term) > 0.05,
+      order_by: fragment("rank DESC"),
+      limit: 5
+    ) |> Repo.all
+  end
+end
+
+# in web/models/person.ex
+defmodule Application.Person do
+  use Application.Web, :model
+
+  alias Application.Repo
+
+  schema "people" do
+    field :full_name, :string
+    field :slug, :string
+
+    timestamps()
+  end
+
+  def search(search_term) do
+    from(
+      person in __MODULE__,
+      select: %{
+        person: person,
+        rank: fragment("similarity(?, ?) AS rank", person.full_name, ^search_term)
+      },
+      where: fragment("similarity(?, ?)", person.full_name, ^search_term) > 0.05,
+      order_by: fragment("rank DESC"),
+      limit: 5
+    ) |> Repo.all
+  end
+end</code></pre>
+
+  <h4>5. Parallel queries and JSON serialization with Elixir:</h4>
+  <pre><code class="language-elixir"># in web/controllers/search_controller.ex:
+defmodule Application.SearchController do
+  use Application.Web, :controller
+
+  alias Application.Company
+  alias Application.Person
+
+  def search(conn, %{"query" => query}) do
+    people_search = Task.async(fn -> Person.search(query) end)
+    companies_search = Task.async(fn -> Company.search(query) end)
+
+    results = Task.await(people_search) ++ Task.await(companies_search)
+
+    sorted_results = Enum.sort(results, fn(current_result, other_result) ->
+      Map.get(current_result, :rank) > Map.get(other_result, :rank)
+    end) |> Enum.map(fn(result) -> search_serializer(result) end)
+
+    json conn, %{results: sorted_results}
+  end
+
+  defp search_serializer(%{:company => company}) do
+    %{company: serialize(company)}
+  end
+
+  defp search_serializer(%{:person => person}) do
+    %{person: serialize(person)}
+  end
+
+  defp serialize(nil), do: nil
+
+  defp serialize(model) do
+    relationships = model.__struct__.__schema__(:associations)
+    Map.drop(model, [:__meta__, :__struct__] ++ relationships)
+  end
+end</code></pre>
+
+  <p>
+    One of the coolest things about this implementation is that you can send as much data as you want to the client, you can use SQL JOINS inside the search query and embed relationships in your JSON. <strong>For single-page applications this means as soon as a user clicks on any of the search results, the page can appear near instantly.</strong>
+  </p>
+
+  <strong>Additionally, I don't have to do the steps below anymore:</strong>
+  <ul>
+    <li>Install an additional library to my Elixir project.</li>
+    <li>Install an external software to my operating system, PostgreSQL is good enough.</li>
+    <li>Install another language to my operating system to make my external dependency work. (eg. Elasticsearch requires Java!)</li>
+    <li>Cache/index and <strong>reindex</strong> data for my search engine</li>
+    <li>Upgrade and maintain my external software for various reasons including security</li>
+    <li>Make one or more requests to my search engine service during a single search request, waste resources for serializing and/or deserializing data in a certain format like JSON during those requests.</li>
+  </ul>
+
+  <p class="text-center">If you are interested in Elixir and live in Amsterdam, you should join our <a href="https://www.meetup.com/Amsterdam-Elixir">Amsterdam Elixir Meetup group</a>.</p>
+</div>
