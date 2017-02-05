@@ -22,7 +22,7 @@ module.exports = function(environment) {
       // when it is created
     },
     fastboot: {
-      hostWhitelist: ['izelnakri.com', /^localhost:\d+$/]
+      hostWhitelist: ['izelnakri.com', /^localhost:\d+$/, '127.0.0.1:5005']
     }
   };
 
