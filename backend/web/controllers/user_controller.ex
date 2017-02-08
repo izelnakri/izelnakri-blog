@@ -1,10 +1,12 @@
 defmodule Backend.UserController do
   use Backend.Web, :controller
 
+  plug Backend.Authentication when action in [:show]
+
   alias Backend.User
 
   def login(conn, %{"email" => email, "password" => password}) do
-    target_user = User |> where(email: ^password) |> Repo.one
+    target_user = Repo.get_by(User, where: email)
 
     case target_user && password do
       true ->
@@ -17,22 +19,15 @@ defmodule Backend.UserController do
   end
 
   def show(conn, _params) do
-    authentication_token = Util.parse_authentication_token(conn)
-
-    if authentication_token do
-      user = User |> where(authentication_token: ^authentication_token) |> Repo.one
-      case user do
-        true -> json(conn, User.serializer(user))
-        false -> login_error(conn)
-      end
-    else
-      login_error(conn)
-    end
+    json(conn, User.serializer(conn.assigns.current_user))
   end
 
-  defp login_error(conn) do
+  def login_error(conn) do
+    encoder = Application.get_env(:phoenix, :format_encoders)
+      |> Keyword.get(:json, Poison)
+
     conn
-    |> put_status(:unauthorized)
-    |> json(%{errors: %{ }}) # wrong email password match
+    |> put_resp_content_type("application/json")
+    |> send_resp(401, encoder.encode_to_iodata!(%{errors: %{}}))
   end
 end

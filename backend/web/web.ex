@@ -29,9 +29,10 @@ defmodule Backend.Web do
 
   def controller do
     quote do
+      # import Backend.Authentication
+
       use Phoenix.Controller
 
-      alias Backend.Repo
       alias Backend.Utils
 
       import Ecto
@@ -73,6 +74,8 @@ defmodule Backend.Web do
       import Ecto
       import Ecto.Query
       import Backend.Gettext
+
+      import Backend.Authentication
     end
   end
 

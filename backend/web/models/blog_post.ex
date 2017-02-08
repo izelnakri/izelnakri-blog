@@ -14,7 +14,7 @@ defmodule Backend.BlogPost do
     timestamps()
   end
 
-  def query(params) do
+  def query(_params \\ %{}) do
     from(
       blog_post in __MODULE__,
       left_join: comments in assoc(blog_post, :comments),
