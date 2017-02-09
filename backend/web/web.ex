@@ -70,7 +70,6 @@ defmodule Backend.Web do
     quote do
       use Phoenix.Channel
 
-      alias Backend.Repo
       import Ecto
       import Ecto.Query
       import Backend.Gettext

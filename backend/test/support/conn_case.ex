@@ -20,7 +20,6 @@ defmodule Backend.ConnCase do
       # Import conveniences for testing with connections
       use Phoenix.ConnTest
 
-      alias Backend.Repo
       import Ecto
       import Ecto.Changeset
       import Ecto.Query
@@ -33,10 +32,10 @@ defmodule Backend.ConnCase do
   end
 
   setup tags do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Backend.Repo)
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Repo)
 
     unless tags[:async] do
-      Ecto.Adapters.SQL.Sandbox.mode(Backend.Repo, {:shared, self()})
+      Ecto.Adapters.SQL.Sandbox.mode(Repo, {:shared, self()})
     end
 
     {:ok, conn: Phoenix.ConnTest.build_conn()}
