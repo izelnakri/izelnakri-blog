@@ -33,3 +33,4 @@
 # secrets file as long as you replace its contents by environment
 # variables.
 /backend/config/prod.secret.exs
+/backend/priv/repo/seeds.exs

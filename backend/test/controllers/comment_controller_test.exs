@@ -1,11 +1,11 @@
 defmodule Backend.CommentControllerTest do
   use Backend.ConnCase, async: true
 
-  alias Backend.Comment
-
-  setup %{conn: conn} do
-    {:ok, conn: put_req_header(conn, "accept", "application/json")}
-  end
+  # alias Backend.Comment
+  #
+  # setup %{conn: conn} do
+  #   {:ok, conn: put_req_header(conn, "accept", "application/json")}
+  # end
 
   # test "/comments?filter=latest returns last comments", %{conn: conn} do
   #

@@ -1,7 +1,8 @@
+# require IEx
 defmodule Backend.BlogPostController do
   use Backend.Web, :controller
 
-  plug Backend.Authentication when action in [:create, :update, :delete]
+  plug Backend.AdminAuthentication when action in [:create, :update, :delete]
 
   alias Backend.BlogPost
 
@@ -22,7 +23,9 @@ defmodule Backend.BlogPostController do
   end
 
   def create(conn, %{"blog_post" => blog_post_params}) do
-    changeset = BlogPost.changeset(%BlogPost{}, blog_post_params)
+    blog_post = %BlogPost{user_id: conn.assigns.current_user.id} |> Repo.preload(:user)
+
+    changeset = BlogPost.changeset(blog_post, blog_post_params)
 
     case Repo.insert(changeset) do
       {:ok, blog_post} ->
@@ -37,7 +40,10 @@ defmodule Backend.BlogPostController do
   end
 
   def update(conn, %{"id" => id, "blog_post" => blog_post_params}) do
-    blog_post = Repo.get!(BlogPost, id)
+    blog_post = BlogPost.query()
+    |> where([post], post.id == ^id)
+    |> Repo.one
+
     changeset = BlogPost.changeset(blog_post, blog_post_params)
 
     case Repo.update(changeset) do

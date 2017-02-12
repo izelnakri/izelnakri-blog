@@ -7,13 +7,13 @@ config :backend, Backend.Endpoint,
   server: false
 
 # Print only warnings and errors during test
-config :logger, level: :warn
+config :logger, level: :info
 
 # Configure your database
 config :backend, Repo,
   adapter: Ecto.Adapters.Postgres,
   username: "postgres",
   password: "postgres",
-  database: "backend_test",
+  database: "izelnakri_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox

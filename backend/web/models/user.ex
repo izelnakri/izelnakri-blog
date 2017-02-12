@@ -1,12 +1,12 @@
-require IEx
 defmodule Backend.User do
   use Backend.Web, :model
 
   schema "users" do
+    field :confirmed_at, :utc_datetime
     field :email, :string
     field :is_admin, :boolean, default: false
     field :password, :string, virtual: true
-    field :password_digest, :string
+    field :password_digest, :string # cannot be null
     field :authentication_token, :string
 
     has_many :blog_posts, Backend.BlogPost
@@ -19,18 +19,20 @@ defmodule Backend.User do
     serialize(user) |> Map.drop([:password_digest])
   end
 
-  def registration_changeset(struct, params \\ %{}) do
-    struct
-    |> password_changeset(params)
-    |> cast(params, [:email])
-    |> validate_required([:email])
-    |> validate_format(:email, ~r/@/)
-    |> unique_constraint(:email)
+  def confirm(user) do
+    user
+    |> change(%{confirmed_at: DateTime.utc_now()})
+    |> Repo.update!
   end
 
-  @doc """
-  Builds a changeset based on the `struct` and `params`.
-  """
+  def changeset(struct, params \\ %{}) do
+    struct
+    |> cast(params, [:email])
+    |> unique_constraint(:email)
+    |> validate_required([:email])
+    |> validate_format(:email, ~r/@/)
+  end
+
   def password_changeset(struct, params \\ %{}) do
     struct
     |> cast(params, [:password])
@@ -40,28 +42,33 @@ defmodule Backend.User do
     |> generate_authentication_token()
   end
 
-  def admin_changeset(struct, params \\ %{}) do
+  def registration_changeset(struct, params \\ %{}) do
+    struct
+    |> changeset(params)
+    |> password_changeset(params)
+  end
+
+  def admin_registration_changeset(struct, params \\ %{}) do
     struct
     |> registration_changeset(params)
-    |> cast(params, [:is_admin])
+    |> change(%{is_admin: true, confirmed_at: DateTime.utc_now()})
   end
 
   def generate_authentication_token(user = %Backend.User{}) do
-    params = %{authentication_token: Backend.Utils.random_string(64)}
-    user |> cast(params, [:authentication_token]) |> Repo.update!
+    user
+    |> change(%{authentication_token: Backend.Utils.random_string(64)})
+    |> Repo.update!
   end
 
   def generate_authentication_token(changeset) do
     changeset
-    |> put_change(:authentication_token, Backend.Utils.random_string(64))
+    |> change(%{authentication_token: Backend.Utils.random_string(64)})
   end
 
   defp generate_password_digest(changeset = %{changes: %{password: password}}) do
     changeset
-    |> put_change(:password_digest, Comeonin.Bcrypt.hashpwsalt(password))
-    |> put_change(:password, nil)
+    |> change(%{password_digest: Comeonin.Bcrypt.hashpwsalt(password), password: nil})
   end
 
   defp generate_password_digest(changeset), do: changeset
-
 end

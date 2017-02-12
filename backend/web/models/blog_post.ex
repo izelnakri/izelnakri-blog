@@ -8,7 +8,8 @@ defmodule Backend.BlogPost do
 
     field :tag, :string # will go in future
 
-    belongs_to :user, Backend.User
+    belongs_to :user, Backend.User, on_replace: :update
+
     has_many :comments, Backend.Comment
 
     timestamps()
@@ -25,18 +26,18 @@ defmodule Backend.BlogPost do
 
   def serializer(blog_post) do
     serialize(blog_post) |> Map.merge(%{
-      comments: Enum.map(blog_post.comments, fn(comment) -> serialize(comment) end),
+      # comments: Enum.map(blog_post.comments, fn(comment) -> serialize(comment) end),
       user: serialize(blog_post.user)
     })
   end
-
 
   @doc """
   Builds a changeset based on the `struct` and `params`.
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:title, :content])
-    |> validate_required([:title, :content])
+    |> cast(params, [:title, :content, :slug, :tag])
+    |> validate_required([:title, :content, :slug, :tag, :user_id])
+    |> assoc_constraint(:user)
   end
 end

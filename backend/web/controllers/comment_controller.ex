@@ -1,7 +1,7 @@
 defmodule Backend.CommentController do
   use Backend.Web, :controller
 
-  plug Backend.Authentication when action in [:create, :update, :delete]
+  plug Backend.UserAuthentication when action in [:update, :delete]
 
   alias Backend.Comment
 

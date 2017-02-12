@@ -1,4 +1,4 @@
-defmodule Backend.Authentication do
+defmodule Backend.UserAuthentication do
   import Plug.Conn
 
   alias Backend.User
