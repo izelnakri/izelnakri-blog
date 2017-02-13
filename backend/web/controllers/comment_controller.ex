@@ -12,6 +12,7 @@ defmodule Backend.CommentController do
   # end
 
   def create(conn, %{"comment" => comment_params}) do
+    # refactor this:
     changeset = Comment.changeset(%Comment{}, comment_params)
 
     case Repo.insert(changeset) do

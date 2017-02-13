@@ -37,7 +37,8 @@ defmodule Backend.BlogPost do
   def changeset(struct, params \\ %{}) do
     struct
     |> cast(params, [:title, :content, :slug, :tag])
-    |> validate_required([:title, :content, :slug, :tag, :user_id])
+    |> validate_required([:title, :content, :slug, :tag])
+    |> cast_assoc(:user, required: true)
     |> assoc_constraint(:user)
   end
 end

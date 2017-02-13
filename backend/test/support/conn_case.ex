@@ -25,7 +25,12 @@ defmodule Backend.ConnCase do
       import Ecto.Query
 
       import Backend.Router.Helpers
+      import Backend.ModelHelpers
 
+      defp set_conn_with_token(conn, token) do
+        put_req_header(conn, "authorization", "Bearer #{token}")
+      end
+      
       # The default endpoint for testing
       @endpoint Backend.Endpoint
     end

@@ -44,7 +44,7 @@ defmodule Backend.BlogPostController do
     |> where([post], post.id == ^id)
     |> Repo.one
 
-    changeset = BlogPost.changeset(blog_post, blog_post_params)
+    changeset = BlogPost.changeset(blog_post, blog_post_params |> Map.drop([:user, :user_id]))
 
     case Repo.update(changeset) do
       {:ok, blog_post} ->

@@ -3,16 +3,13 @@ defmodule Backend.Repo.Migrations.CreateUser do
 
   def change do
     create table(:users) do
-      add :email, :string, null: false
       add :is_admin, :boolean, default: false, null: false
-      add :confirmed_at, :utc_datetime
       add :password_digest, :string
-      add :authentication_token, :string
+      add :authentication_token, :string, null: false
 
       timestamps()
     end
 
-    create unique_index(:users, [:email])
     create unique_index(:users, [:authentication_token])
   end
 end
