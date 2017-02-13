@@ -31,7 +31,7 @@ defmodule Backend.User do
 
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [])
+    |> cast(params, [:authentication_token])
     |> validate_required([:authentication_token])
   end
 

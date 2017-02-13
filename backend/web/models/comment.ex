@@ -31,10 +31,11 @@ defmodule Backend.Comment do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:content])
+    |> cast(params, [:content, :blog_post_id])
     |> validate_required([:content])
     |> cast_assoc(:email)
     |> cast_assoc(:blog_post, required: true)
+    # |> put_assoc(:blog_post, params["blog_post"], required: true)
     |> assoc_constraint(:blog_post)
   end
 end

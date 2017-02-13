@@ -13,8 +13,16 @@ defmodule Backend.CommentController do
 
   def create(conn, %{"comment" => comment_params}) do
     # refactor this:
-    changeset = Comment.changeset(%Comment{}, comment_params)
+    # %Comment{} =
+    IO.puts("comment_params is:")
+    comment_params |> inspect |> IO.puts
+    comment_struct = %Comment{blog_post_id: comment_params["blog_post"]["id"]}
+      |> Repo.preload(:blog_post)
 
+    changeset = Comment.changeset(comment_struct, comment_params)
+
+    IO.puts("changeset is:")
+    changeset |> inspect |> IO.puts
     case Repo.insert(changeset) do
       {:ok, comment} ->
         conn

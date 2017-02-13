@@ -6,8 +6,6 @@ defmodule Backend.UserTest do
 
   @valid_attrs %{email: "contact@izelnakri.com", password: "123456"}
 
-
-  # user must have emails
   test "can create a user" do
     user = User.register(@valid_attrs)
 

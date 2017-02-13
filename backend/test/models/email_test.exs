@@ -20,7 +20,7 @@ defmodule Backend.EmailTest do
     assert changeset.valid?
   end
 
-  test "Email.changeset() with invalid attributes" do
+  test "Email.changeset() with invalid email address" do
     changeset = Email.changeset(%Email{}, %{"address" => "contactizelnakri.com"})
 
     refute changeset.valid?

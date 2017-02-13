@@ -3,7 +3,7 @@ defmodule Backend.CommentTest do
 
   alias Backend.Comment
 
-  @valid_attrs %{content: "some content"}
+  @valid_attrs %{content: "some content", blog_post_id: nil}
   @invalid_attrs %{content: ""}
 
   test "changeset with valid attributes" do
@@ -14,7 +14,8 @@ defmodule Backend.CommentTest do
   end
 
   test "changeset without blog post" do
-    changeset = Comment.changeset(%Comment{}, @valid_attrs)
+    comment_struct = %Comment{blog_post_id: nil} |> Repo.preload(:blog_post)
+    changeset = Comment.changeset(comment_struct, @valid_attrs)
 
     refute changeset.valid?
   end
