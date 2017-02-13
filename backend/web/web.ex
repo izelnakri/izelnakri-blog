@@ -24,6 +24,10 @@ defmodule Backend.Web do
       import Ecto.Changeset
       import Ecto.Query
       import Backend.BaseSerializer
+
+      def count do
+        from(record in __MODULE__, select: count(record.id)) |> Repo.one
+      end
     end
   end
 
