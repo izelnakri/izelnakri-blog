@@ -76,7 +76,7 @@ defmodule Backend.User do
       |> Repo.transaction()
 
     case result do
-      {:ok, _map} -> Repo.get!(__MODULE__, user.id) |> Repo.preload(:emails)
+      {:ok, map} -> query() |> where(id: ^map.user.id) |> Repo.one()
       changeset -> changeset |> elem(2)
     end
   end

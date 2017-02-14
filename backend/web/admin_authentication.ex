@@ -1,5 +1,6 @@
 defmodule Backend.AdminAuthentication do
   import Plug.Conn
+  import Backend.Utils
 
   alias Backend.User
 
@@ -8,28 +9,13 @@ defmodule Backend.AdminAuthentication do
   def call(conn, _opts) do
     authentication_token = parse_authentication_token(conn)
 
-    if !authentication_token do
-      login_error(conn)
+    if !authentication_token || !conn.assigns.current_user do
+      not_authorized(conn)
     else
-      case Repo.get_by(User, authentication_token: authentication_token, is_admin: true) do
-        nil -> login_error(conn)
-        user -> assign(conn, :current_user, user)
+      case conn.assigns.current_user.is_admin do
+        true -> assign(conn, :current_user, conn.assigns.current_user)
+        _ -> not_authorized(conn)
       end
     end
-  end
-
-  def parse_authentication_token(conn) do
-    if List.keyfind(conn.req_headers, "authorization", 0) do
-      List.keyfind(conn.req_headers, "authorization", 0) |> elem(1) |> String.slice(7..-1)
-    end
-  end
-
-  def login_error(conn) do
-    encoder = Application.get_env(:phoenix, :format_encoders) |> Keyword.get(:json, Poison)
-
-    conn
-    |> put_resp_content_type("application/json")
-    |> send_resp(401, encoder.encode_to_iodata!(%{errors: %{}}))
-    |> halt
   end
 end

@@ -30,9 +30,8 @@ defmodule Backend.ModelHelpers do
     |> User.serializer()
   end
 
-  def insert_blog_post do
-    user = insert_admin_user()
-    blog_post_changeset = %BlogPost{user_id: user.id} |> Repo.preload(:user) # emails here maybe
+  def insert_blog_post(params \\ [user: insert_admin_user()]) do
+    blog_post_changeset = %BlogPost{user_id: params[:user].id} |> Repo.preload(:user) # emails here maybe
 
     blog_post = BlogPost.changeset(blog_post_changeset, @valid_blog_post_attrs) |> Repo.insert!
     BlogPost.query()
@@ -41,9 +40,16 @@ defmodule Backend.ModelHelpers do
     |> BlogPost.serializer()
   end
 
-  def insert_comment do
-    blog_post = insert_blog_post()
-    email_id = blog_post.user.emails |> List.first() |> Map.get(:id)
+  def insert_comment(params \\ [user: nil]) do
+    blog_post = case params[:user] do
+      nil -> insert_blog_post()
+      user -> insert_blog_post(user: user)
+    end
+
+    email_id = case params[:user] do
+      nil -> nil
+      user -> user.emails |> List.first() |> Map.get(:id)
+    end
 
     comment_changeset = %Comment{blog_post_id: blog_post.id, email_id: email_id}
       |> Repo.preload([:blog_post, :email])
@@ -58,28 +64,35 @@ defmodule Backend.ModelHelpers do
   def get_blog_post(id) do
     BlogPost.query()
     |> where(id: ^id)
-    |> Repo.one
+    |> Repo.one()
     |> BlogPost.serializer()
   end
 
   def get_user(id) do
     User.query()
     |> where(id: ^id)
-    |> Repo.one
+    |> Repo.one()
+    |> User.serializer()
+  end
+
+  def get_admin_user do
+    User.query()
+    |> where(is_admin: true)
+    |> Repo.one()
     |> User.serializer()
   end
 
   def get_email(id) do
     Email.query()
     |> where(id: ^id)
-    |> Repo.one
+    |> Repo.one()
     |> Email.serializer()
   end
 
   def get_comment(id) do
     Comment.query()
     |> where(id: ^id)
-    |> Repo.one
+    |> Repo.one()
     |> Comment.serializer()
   end
 end

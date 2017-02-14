@@ -45,6 +45,7 @@ defmodule Backend.Web do
 
       import Backend.Router.Helpers
       import Backend.Gettext
+      import Backend.Utils
 
     end
   end

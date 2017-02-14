@@ -58,8 +58,6 @@ defmodule Backend.CommentControllerTest do
     user = insert_normal_user()
 
     admin_user = get_user(blog_post.user_id)
-    # IO.puts("admin_user is:")
-    # admin_user |> inspect |> IO.puts
 
     comment_params = @valid_comment_params |> Map.merge(%{
       blog_post_id: blog_post.id, email_id: user.emails |> List.first() |> Map.get(:id)
@@ -72,8 +70,6 @@ defmodule Backend.CommentControllerTest do
     assert persisted_id
 
     comment = get_comment(persisted_id)
-    # IO.puts("comment is:")
-    # comment |> inspect |> IO.puts
 
     assert comment |> Map.take([:content]) == @valid_comment_params
     assert comment.email_id == admin_user.emails |> List.first() |> Map.get(:id)
@@ -133,7 +129,7 @@ defmodule Backend.CommentControllerTest do
   end
 
   test "PUT /comments/:id normal user can edit his comment", %{conn: conn} do
-    comment = insert_comment()
+    comment = insert_comment(user: insert_normal_user())
     user = get_email(comment.email_id) |> Map.get(:user)
 
     comment_params = comment |> Map.merge(@edit_comment_params)
@@ -144,50 +140,135 @@ defmodule Backend.CommentControllerTest do
     assert json_response(conn, 200)
 
     persisted_comment = get_comment(comment.id)
-    comment_meta_data = Map.drop(comment, [:content, :updated_at])
+    comment_meta_data = Map.drop(comment, [:content, :updated_at, :confirmed_at])
 
     assert comment != persisted_comment
-    assert Map.drop(persisted_comment, [:content, :updated_at]) == comment_meta_data
+    assert Map.drop(persisted_comment, [:content, :updated_at, :confirmed_at]) == comment_meta_data
     assert persisted_comment.content == @edit_comment_params |> Map.get(:content)
 
     assert Comment.count() == 1
   end
 
-  # test "PUT /comments/:id normal user cannot edit somebody elses comment", %{conn: conn} do
-  #   comment = insert_comment()
-  #   user = insert_normal_user
-  #
-  #   comment
-  #
-  # end
+  test "PUT /comments/:id normal user cannot edit somebody elses comment", %{conn: conn} do
+    comment = insert_comment(user: insert_admin_user())
+    user = insert_normal_user
 
-  # test "PUT /comments/:id admin user can edit and publish somebody elses comment", %{conn: conn} do
-  #
-  # end
-  #
-  # test "PUT /comments/:id admin can make a comment published", %{conn: conn} do
-  #
-  # end
-  #
-  # test "PUT /comments/:id admin cannot update a comment when content is invalid", %{conn: conn} do
-  #
-  # end
-  #
-  # test "DELETE /comments/:id guest cannot delete a comment", %{conn: conn} do
-  #
-  # end
-  #
-  # test "DELETE /comments/:id normal user can delete his own comment", %{conn: conn} do
-  #
-  # end
-  #
-  # test "DELETE /comments/:id normal user cannot delete somebody elses comment", %{conn: conn} do
-  #
-  # end
-  #
-  # test "DELETE /comments/:id admin can delete somebody elses comment", %{conn: conn} do
-  #
-  # end
+    comment_params = comment |> Map.merge(@edit_comment_params)
+
+    conn_with_token = set_conn_with_token(conn, user.authentication_token)
+    conn = put(conn_with_token, "/comments/#{comment.id}", comment: comment_params)
+
+    assert json_response(conn, 401)["errors"]
+
+    assert comment == get_comment(comment.id)
+  end
+
+  test "PUT /comments/:id admin user can edit and confirm some users comment", %{conn: conn} do
+    comment = insert_comment(user: insert_normal_user())
+    user = insert_admin_user()
+
+    comment_params = comment |> Map.merge(@edit_comment_params)
+
+    conn_with_token = set_conn_with_token(conn, user.authentication_token)
+    conn = put(conn_with_token, "/comments/#{comment.id}", comment: comment_params)
+
+    assert json_response(conn, 200)
+
+    persisted_comment = get_comment(comment.id)
+    comment_meta_data = Map.drop(comment, [:content, :updated_at, :confirmed_at])
+
+    assert comment != persisted_comment
+    assert Map.drop(persisted_comment, [:content, :updated_at, :confirmed_at]) == comment_meta_data
+    assert persisted_comment.content == @edit_comment_params |> Map.get(:content)
+    assert persisted_comment.confirmed_at != nil
+
+    assert Comment.count() == 1
+  end
+
+  test "PUT /comments/:id admin can edit and confirm guest comment", %{conn: conn} do
+    comment = insert_comment()
+    user = get_admin_user()
+
+    comment_params = comment |> Map.merge(@edit_comment_params)
+
+    conn_with_token = set_conn_with_token(conn, user.authentication_token)
+    conn = put(conn_with_token, "/comments/#{comment.id}", comment: comment_params)
+
+    assert json_response(conn, 200)
+
+    persisted_comment = get_comment(comment.id)
+    comment_meta_data = Map.drop(comment, [:content, :updated_at, :confirmed_at])
+
+    assert comment != persisted_comment
+    assert Map.drop(persisted_comment, [:content, :updated_at, :confirmed_at]) == comment_meta_data
+    assert persisted_comment.content == @edit_comment_params |> Map.get(:content)
+    assert persisted_comment.confirmed_at != nil
+
+    assert Comment.count() == 1
+  end
+
+  test "PUT /comments/:id admin cannot update a comment when content is invalid", %{conn: conn} do
+    comment = insert_comment()
+    user = get_admin_user()
+
+    comment_params = comment |> Map.merge(@edit_comment_params) |> Map.put(:content, "")
+
+    conn_with_token = set_conn_with_token(conn, user.authentication_token)
+    conn = put(conn_with_token, "/comments/#{comment.id}", comment: comment_params)
+
+    response = json_response(conn, 422)
+    assert response["errors"]
+
+    assert comment == get_comment(comment.id)
+    assert response["errors"]["content"] |> List.first() == "can't be blank"
+    assert Comment.count() == 1
+  end
+
+  test "DELETE /comments/:id guest cannot delete a comment", %{conn: conn} do
+    comment = insert_comment()
+
+    conn = delete(conn, "/comments/#{comment.id}")
+
+    assert json_response(conn, 401)["errors"]
+    assert get_comment(comment.id) == comment
+    assert Comment.count() == 1
+  end
+
+  test "DELETE /comments/:id normal user can delete his own comment", %{conn: conn} do
+    comment = insert_comment(%{user: insert_normal_user()})
+    user = get_email(comment.email_id) |> Map.get(:user)
+
+    conn_with_token = set_conn_with_token(conn, user.authentication_token)
+    conn = delete(conn_with_token, "/comments/#{comment.id}")
+
+    assert response(conn, 204)
+    assert get_comment(comment.id) == nil
+    assert Comment.count() == 0
+  end
+
+  test "DELETE /comments/:id normal user cannot delete somebody elses comment", %{conn: conn} do
+    comment = insert_comment(%{user: insert_admin_user()})
+    user = insert_normal_user()
+
+    conn_with_token = set_conn_with_token(conn, user.authentication_token)
+    conn = delete(conn_with_token, "/comments/#{comment.id}")
+
+    assert json_response(conn, 401)["errors"]
+    assert get_comment(comment.id) == comment
+    assert Comment.count() == 1
+  end
+
+  test "DELETE /comments/:id admin can delete somebody elses comment", %{conn: conn} do
+    comment = insert_comment(%{user: insert_normal_user()})
+    user = insert_admin_user()
+
+    conn_with_token = set_conn_with_token(conn, user.authentication_token)
+    conn = delete(conn_with_token, "/comments/#{comment.id}")
+
+    assert response(conn, 204)
+    assert get_comment(comment.id) == nil
+    assert Comment.count() == 0
+  end
 end
 
 

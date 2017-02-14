@@ -41,4 +41,10 @@ defmodule Backend.Comment do
     |> foreign_key_constraint(:blog_post_id)
     |> foreign_key_constraint(:email_id)
   end
+
+  def user_changeset(struct, params \\ %{}) do
+    struct
+    |> changeset(params)
+    |> change(confirmed_at: DateTime.utc_now())
+  end
 end

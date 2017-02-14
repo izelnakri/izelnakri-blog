@@ -43,23 +43,39 @@ defmodule Backend.CommentController do
 
   def update(conn, %{"id" => id, "comment" => comment_params}) do
     comment = Repo.get!(Comment, id)
-    changeset = Comment.changeset(comment, comment_params)
 
-    case Repo.update(changeset) do
-      {:ok, comment} ->
-        json(conn, BaseSerializer.serialize(comment))
-      {:error, changeset} ->
-        conn
-        |> put_status(:unprocessable_entity)
-        |> render(Backend.ChangesetView, "error.json", changeset: changeset)
+    if user_is_comment_owner_or_admin(comment, conn.assigns.current_user) do
+      changeset = Comment.user_changeset(comment, comment_params)
+
+      case Repo.update(changeset) do
+        {:ok, comment} ->
+          json(conn, BaseSerializer.serialize(comment))
+        {:error, changeset} ->
+          conn
+          |> put_status(:unprocessable_entity)
+          |> render(Backend.ChangesetView, "error.json", changeset: changeset)
+      end
+    else
+      not_authorized(conn)
     end
   end
 
   def delete(conn, %{"id" => id}) do
     comment = Repo.get!(Comment, id)
 
-    Repo.delete!(comment)
+    if user_is_comment_owner_or_admin(comment, conn.assigns.current_user) do
+      Repo.delete!(comment)
 
-    send_resp(conn, :no_content, "")
+      send_resp(conn, :no_content, "")
+    else
+      not_authorized(conn)
+    end
+  end
+
+  defp user_is_comment_owner_or_admin(comment, user) do
+    current_user_is_comment_owner = user.emails
+      |> Enum.find(fn(email) -> email.id == comment.email_id end)
+
+    current_user_is_comment_owner || user.is_admin
   end
 end

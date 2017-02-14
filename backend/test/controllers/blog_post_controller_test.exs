@@ -231,10 +231,8 @@ defmodule Backend.BlogPostControllerTest do
     conn_with_token = set_conn_with_token(conn, user.authentication_token)
     conn = delete(conn_with_token, "/blog-posts/#{blog_post.id}")
 
-    persisted_blog_post = get_blog_post(blog_post.id)
-
     assert json_response(conn, 401)["errors"]
-    assert persisted_blog_post == blog_post
+    assert get_blog_post(blog_post.id) == blog_post
     assert BlogPost.count() == 1
   end
 
@@ -243,10 +241,8 @@ defmodule Backend.BlogPostControllerTest do
 
     conn = delete(conn, "/blog-posts/#{blog_post.id}")
 
-    persisted_blog_post = get_blog_post(blog_post.id)
-
     assert json_response(conn, 401)["errors"]
-    assert persisted_blog_post == blog_post
+    assert get_blog_post(blog_post.id) == blog_post
     assert BlogPost.count() == 1
   end
 
