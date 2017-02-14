@@ -8,6 +8,8 @@ defmodule Backend.BlogPostControllerTest do
     slug: "testing-in-elixir"
   }
 
+  @edit_blog_post_attrs %{title: "new title", content: "new content", tag: "Ruby"}
+
   setup %{conn: conn} do
     {:ok, conn: put_req_header(conn, "accept", "application/json")}
   end
@@ -44,7 +46,7 @@ defmodule Backend.BlogPostControllerTest do
     blog_post_attrs = blog_post |> Map.drop([:inserted_at, :id, :user_id, :user])
 
     assert blog_post_attrs == @valid_blog_post_attrs
-    assert blog_post.user == user
+    assert blog_post.user_id == user.id
 
     assert BlogPost.count() == 1
   end
@@ -94,9 +96,7 @@ defmodule Backend.BlogPostControllerTest do
   test "PUT /blog-posts/:id can edit as admin blog post", %{conn: conn} do
     blog_post = insert_blog_post()
 
-    blog_post_params = blog_post |> Map.merge(%{
-      title: "new title", content: "new content", tag: "Ruby"
-    })
+    blog_post_params = blog_post |> Map.merge(@edit_blog_post_attrs)
 
     conn_with_token = set_conn_with_token(conn, blog_post.user.authentication_token)
     conn = put(conn_with_token, "/blog-posts/#{blog_post.id}", blog_post: blog_post_params)
@@ -113,9 +113,7 @@ defmodule Backend.BlogPostControllerTest do
     user = insert_normal_user()
     blog_post = insert_blog_post()
 
-    blog_post_params = blog_post |> Map.merge(%{
-      title: "new title", content: "new content", tag: "Ruby"
-    })
+    blog_post_params = blog_post |> Map.merge(@edit_blog_post_attrs)
 
     conn_with_token = set_conn_with_token(conn, user.authentication_token)
     conn = put(conn_with_token, "/blog-posts/#{blog_post.id}", blog_post: blog_post_params)
@@ -130,9 +128,7 @@ defmodule Backend.BlogPostControllerTest do
   test "PUT /blog-posts/:id guest cannot edit a blog post", %{conn: conn} do
     blog_post = insert_blog_post()
 
-    blog_post_params = blog_post |> Map.merge(%{
-      title: "new title", content: "new content", tag: "Ruby"
-    })
+    blog_post_params = blog_post |> Map.merge(@edit_blog_post_attrs)
 
     conn = put(conn, "/blog-posts/#{blog_post.id}", blog_post: blog_post_params)
 

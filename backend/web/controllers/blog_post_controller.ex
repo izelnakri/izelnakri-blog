@@ -31,7 +31,7 @@ defmodule Backend.BlogPostController do
       {:ok, blog_post} ->
         conn
         |> put_status(:created)
-        |> json(BlogPost.serializer(blog_post))
+        |> json(BaseSerializer.serialize(blog_post))
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
@@ -48,7 +48,7 @@ defmodule Backend.BlogPostController do
 
     case Repo.update(changeset) do
       {:ok, blog_post} ->
-        json conn, BlogPost.serializer(blog_post)
+        json conn, BaseSerializer.serialize(blog_post)
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)

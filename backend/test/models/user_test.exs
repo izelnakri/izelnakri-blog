@@ -45,6 +45,13 @@ defmodule Backend.UserTest do
     assert changeset.valid? == false
   end
 
+  test "User.login() works" do
+    User.register(@valid_attrs)
+    assert User.login(@valid_attrs)
+    refute User.login(%{email: @valid_attrs.email, password: "wrongpassword"})
+    refute User.login(%{email: "wrongemail@hotmail.com", password: @valid_attrs.password})
+  end
+
   test "user can change their authentication_token" do
     user = User.register(@valid_attrs)
     old_authentication_token = user.authentication_token

@@ -1,5 +1,5 @@
 defmodule Backend.CommentTest do
-  use Backend.ModelCase
+  use Backend.ModelCase, async: true
 
   alias Backend.Comment
 

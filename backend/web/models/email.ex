@@ -1,6 +1,8 @@
 defmodule Backend.Email do
   use Backend.Web, :model
 
+  alias Backend.User
+
   schema "emails" do
     field :address, :string
     field :confirmed_at, :utc_datetime
@@ -20,11 +22,16 @@ defmodule Backend.Email do
     )
   end
 
+  def serializer(nil), do: nil
+  def serializer(email) do
+    serialize(email) |> Map.merge(%{user: serialize(email.user)})
+  end
+
   def with_user_changeset(struct, params \\ %{}) do
     struct
     |> changeset(params)
-    |> assoc_constraint(:user)
-    |> cast_assoc(:user, required: true)
+    |> validate_required([:user_id])
+    |> foreign_key_constraint(:user_id)
   end
 
   def changeset(struct, params \\ %{}) do

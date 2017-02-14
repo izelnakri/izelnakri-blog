@@ -38,6 +38,7 @@ defmodule Backend.Web do
       use Phoenix.Controller
 
       alias Backend.Utils
+      alias Backend.BaseSerializer
 
       import Ecto
       import Ecto.Query

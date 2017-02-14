@@ -17,7 +17,7 @@ defmodule Backend.User do
     timestamps()
   end
 
-  def query(_query) do
+  def query(_query \\ %{}) do
     from(
       user in __MODULE__,
       join: emails in assoc(user, :emails),
@@ -26,12 +26,14 @@ defmodule Backend.User do
   end
 
   def serializer(user) do
-    serialize(user) |> Map.drop([:password_digest])
+    user |> Map.delete(:password_digest) |> serialize() |> Map.merge(%{
+      emails: Enum.map(user.emails, &serialize(&1)),
+    })
   end
 
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:authentication_token])
+    |> cast(params, [])
     |> validate_required([:authentication_token])
   end
 
@@ -54,8 +56,16 @@ defmodule Backend.User do
       |> Repo.transaction()
 
     case result do
-      {:ok, map} -> map |> Map.get(:user) |> Repo.preload(:emails)
+      {:ok, map} -> query() |> where(id: ^map.user.id) |> Repo.one()
       changeset -> changeset |> elem(2)
+    end
+  end
+
+  def login(%{email: email, password: password}) do
+    email = Email.query() |> where(address: ^email) |> Repo.one()
+    case email do
+      nil -> false
+      email -> Comeonin.Bcrypt.checkpw(password, email.user.password_digest)
     end
   end
 

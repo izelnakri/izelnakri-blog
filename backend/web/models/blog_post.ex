@@ -1,6 +1,8 @@
 defmodule Backend.BlogPost do
   use Backend.Web, :model
 
+  alias Backend.User
+
   schema "blog_posts" do
     field :title, :string
     field :content, :string
@@ -20,14 +22,18 @@ defmodule Backend.BlogPost do
       blog_post in __MODULE__,
       left_join: comments in assoc(blog_post, :comments),
       join: user in assoc(blog_post, :user),
-      preload: [comments: comments, user: user]
+      join: emails in assoc(user, :emails),
+      preload: [
+        comments: comments,
+        user: {user, emails: emails}
+      ]
     )
   end
 
   def serializer(blog_post) do
     serialize(blog_post) |> Map.merge(%{
       # comments: Enum.map(blog_post.comments, fn(comment) -> serialize(comment) end),
-      user: serialize(blog_post.user)
+      user: User.serializer(blog_post.user)
     })
   end
 
@@ -37,8 +43,7 @@ defmodule Backend.BlogPost do
   def changeset(struct, params \\ %{}) do
     struct
     |> cast(params, [:title, :content, :slug, :tag])
-    |> validate_required([:title, :content, :slug, :tag])
-    |> cast_assoc(:user, required: true)
-    |> assoc_constraint(:user)
+    |> validate_required([:title, :content, :slug, :tag, :user_id])
+    |> foreign_key_constraint(:user_id)
   end
 end

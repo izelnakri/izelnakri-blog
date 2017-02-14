@@ -1,6 +1,8 @@
 defmodule Backend.Comment do
   use Backend.Web, :model
 
+  alias Backend.Email
+
   schema "comments" do
     field :content, :string
     field :confirmed_at, :utc_datetime
@@ -15,15 +17,18 @@ defmodule Backend.Comment do
     from(
       comment in __MODULE__,
       left_join: email in assoc(comment, :email),
+      left_join: user in assoc(email, :user),
       join: blog_post in assoc(comment, :blog_post),
-      preload: [blog_post: blog_post, email: email]
+      preload: [
+        blog_post: blog_post,
+        email: {email, [user: user]}
+      ]
     )
   end
 
+  def serializer(nil), do: nil
   def serializer(comment) do
-    serialize(comment) |> Map.merge(%{
-      email: comment.email
-    })
+    serialize(comment)
   end
 
   @doc """
@@ -31,11 +36,9 @@ defmodule Backend.Comment do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:content, :blog_post_id])
-    |> validate_required([:content])
-    |> cast_assoc(:email)
-    |> cast_assoc(:blog_post, required: true)
-    # |> put_assoc(:blog_post, params["blog_post"], required: true)
-    |> assoc_constraint(:blog_post)
+    |> cast(params, [:content])
+    |> validate_required([:content, :blog_post_id])
+    |> foreign_key_constraint(:blog_post_id)
+    |> foreign_key_constraint(:email_id)
   end
 end

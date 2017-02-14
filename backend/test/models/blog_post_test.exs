@@ -1,5 +1,5 @@
 defmodule Backend.BlogPostTest do
-  use Backend.ModelCase
+  use Backend.ModelCase, async: true
 
   alias Backend.BlogPost
 

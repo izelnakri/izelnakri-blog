@@ -4,7 +4,6 @@ defmodule Backend.CommentController do
   plug Backend.UserAuthentication when action in [:update, :delete]
 
   alias Backend.Comment
-
   # def index(conn, %{"filter" => "latest"}) do
   #   comments = Comment.query() |> Repo.all
   #
@@ -12,26 +11,33 @@ defmodule Backend.CommentController do
   # end
 
   def create(conn, %{"comment" => comment_params}) do
-    # refactor this:
-    # %Comment{} =
-    IO.puts("comment_params is:")
-    comment_params |> inspect |> IO.puts
-    comment_struct = %Comment{blog_post_id: comment_params["blog_post"]["id"]}
-      |> Repo.preload(:blog_post)
+    current_user = Map.get(conn.assigns, :current_user)
+
+    email_id = case current_user do
+      nil -> comment_params["email_id"]
+      current_user -> current_user.emails |> List.first() |> Map.get(:id)
+    end
+
+    confirmed_at = case current_user do
+      nil -> nil
+      current_user -> DateTime.utc_now()
+    end
+
+    comment_struct = %Comment{
+      blog_post_id: comment_params["blog_post_id"], email_id: email_id, confirmed_at: confirmed_at
+    } |> Repo.preload([:blog_post, :email])
 
     changeset = Comment.changeset(comment_struct, comment_params)
 
-    IO.puts("changeset is:")
-    changeset |> inspect |> IO.puts
     case Repo.insert(changeset) do
       {:ok, comment} ->
         conn
         |> put_status(:created)
-        |> json(Comment.serializer(comment))
+        |> json(BaseSerializer.serialize(comment))
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
-        |> render(Backend.ChangesetView, "error.json", changeset: changeset) # check this
+        |> render(Backend.ChangesetView, "error.json", changeset: changeset)
     end
   end
 
@@ -41,11 +47,11 @@ defmodule Backend.CommentController do
 
     case Repo.update(changeset) do
       {:ok, comment} ->
-        json conn, Comment.serializer(comment)
+        json(conn, BaseSerializer.serialize(comment))
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
-        |> render(Backend.ChangesetView, "error.json", changeset: changeset) # check this
+        |> render(Backend.ChangesetView, "error.json", changeset: changeset)
     end
   end
 
