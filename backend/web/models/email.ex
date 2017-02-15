@@ -1,8 +1,6 @@
 defmodule Backend.Email do
   use Backend.Web, :model
 
-  alias Backend.User
-
   schema "emails" do
     field :address, :string
     field :confirmed_at, :utc_datetime

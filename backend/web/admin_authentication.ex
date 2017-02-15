@@ -2,8 +2,6 @@ defmodule Backend.AdminAuthentication do
   import Plug.Conn
   import Backend.Utils
 
-  alias Backend.User
-
   def init(options), do: options
 
   def call(conn, _opts) do

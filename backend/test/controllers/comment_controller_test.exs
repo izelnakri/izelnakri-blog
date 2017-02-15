@@ -151,7 +151,7 @@ defmodule Backend.CommentControllerTest do
 
   test "PUT /comments/:id normal user cannot edit somebody elses comment", %{conn: conn} do
     comment = insert_comment(user: insert_admin_user())
-    user = insert_normal_user
+    user = insert_normal_user()
 
     comment_params = comment |> Map.merge(@edit_comment_params)
 

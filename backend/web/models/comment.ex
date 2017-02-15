@@ -1,8 +1,6 @@
 defmodule Backend.Comment do
   use Backend.Web, :model
 
-  alias Backend.Email
-
   schema "comments" do
     field :content, :string
     field :confirmed_at, :utc_datetime

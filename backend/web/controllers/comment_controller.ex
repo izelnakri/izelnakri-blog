@@ -20,7 +20,7 @@ defmodule Backend.CommentController do
 
     confirmed_at = case current_user do
       nil -> nil
-      current_user -> DateTime.utc_now()
+      _ -> DateTime.utc_now()
     end
 
     comment_struct = %Comment{

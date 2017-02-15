@@ -4,7 +4,6 @@ defmodule Backend.ModelHelpers do
   alias Backend.Email
   alias Backend.User
 
-  alias Backend.BaseSerializer
   import Ecto.Query
 
   @admin_user_attrs %{email: "contact@izelnakri.com", password: "123456"}
