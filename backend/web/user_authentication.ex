@@ -7,13 +7,14 @@ defmodule Backend.UserAuthentication do
   def call(conn, _opts) do
     authentication_token = parse_authentication_token(conn)
 
-    if !authentication_token do
-      not_authorized(conn)
-    else
-      case conn.assigns.current_user do
-        nil -> not_authorized(conn)
-        user -> assign(conn, :current_user, user)
-      end
+    case authentication_token do
+      nil -> not_authorized(conn)
+      "" -> not_authorized(conn)
+      authentication_token ->
+        case Map.has_key?(conn.assigns, :current_user) do
+          true -> conn
+          false -> not_authorized(conn)
+        end
     end
   end
 end

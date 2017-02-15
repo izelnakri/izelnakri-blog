@@ -6,7 +6,9 @@ defmodule Backend.UserTest do
 
   @valid_attrs %{email: "contact@izelnakri.com", password: "123456"}
 
-  test "can create a user" do
+  # test user serializer and authentication_serializer
+
+  test "User.register/2 works" do
     user = User.register(@valid_attrs)
 
     persisted_emails = Email.query() |> where(address: ^@valid_attrs.email) |> Repo.all
@@ -21,35 +23,36 @@ defmodule Backend.UserTest do
     assert user.authentication_token |> String.length == 64
   end
 
-  test "cannot create a user without password" do
+  test "cannot register a user without password" do
     params = @valid_attrs |> Map.put(:password, "")
     changeset = User.register(params)
     assert changeset.valid? == false
   end
 
-  test "cannot create a user with invalid password" do
+  test "cannot register a user with invalid password" do
     params = @valid_attrs |> Map.put(:password, "12345")
     changeset = User.register(params)
     assert changeset.valid? == false
   end
 
-  test "cannot create a user without email" do
+  test "cannot register a user without email" do
     params = @valid_attrs |> Map.put(:email, "")
     changeset = User.register(params)
     assert changeset.valid? == false
   end
 
-  test "cannot create a user with invalid email" do
+  test "cannot register a user with invalid email" do
     params = @valid_attrs |> Map.put(:email, "contactizelnakri.com")
     changeset = User.register(params)
     assert changeset.valid? == false
   end
 
   test "User.login() works" do
-    User.register(@valid_attrs)
-    assert User.login(@valid_attrs)
-    refute User.login(%{email: @valid_attrs.email, password: "wrongpassword"})
-    refute User.login(%{email: "wrongemail@hotmail.com", password: @valid_attrs.password})
+    user = User.register(@valid_attrs)
+
+    assert User.login(@valid_attrs) == user
+    assert User.login(%{email: @valid_attrs.email, password: "wrongpassword"}) == nil
+    assert User.login(%{email: "wrongemail@hotmail.com", password: @valid_attrs.password}) == nil
   end
 
   test "user can change their authentication_token" do
@@ -71,7 +74,7 @@ defmodule Backend.UserTest do
     assert user.authentication_token != changed_user.authentication_token
   end
 
-  test "user can become admin" do
+  test "User.make_admin() works" do
     user = User.register(@valid_attrs)
     admin_user = user |> User.make_admin()
 
@@ -83,7 +86,7 @@ defmodule Backend.UserTest do
     assert user.inserted_at == persisted_user.inserted_at
   end
 
-  test "user emails become confirmed when user becomes admin" do
+  test "User.make_admin() makes users emails confirmed" do
     user = User.register(@valid_attrs)
     email_struct = %Email{user_id: user.id} |> Repo.preload(:user)
     Email.with_user_changeset(email_struct, %{"address" => "izelnakri@hotmail.com"}) |> Repo.insert!

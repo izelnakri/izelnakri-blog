@@ -18,8 +18,8 @@ defmodule Backend.ModelHelpers do
     content: "This is a great blog post!"
   }
 
-  def insert_admin_user do
-    User.register(@admin_user_attrs)
+  def insert_admin_user(params \\ @admin_user_attrs) do
+    User.register(params)
     |> User.make_admin()
     |> User.serializer()
   end
@@ -65,6 +65,13 @@ defmodule Backend.ModelHelpers do
     |> where(id: ^id)
     |> Repo.one()
     |> BlogPost.serializer()
+  end
+
+  def get_authenticated_user(id) do
+    User.query()
+    |> where(id: ^id)
+    |> Repo.one()
+    |> User.authentication_serializer()
   end
 
   def get_user(id) do

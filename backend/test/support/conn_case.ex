@@ -30,7 +30,22 @@ defmodule Backend.ConnCase do
       defp set_conn_with_token(conn, token) do
         put_req_header(conn, "authorization", "Bearer #{token}")
       end
-      
+
+      # good for converting DateTimes to ISO + turning :atoms to "string" map keys
+      def convert_to_string_map(value) do
+        value |> Poison.encode |> elem(1) |> Poison.decode |> elem(1)
+      end
+
+      defp ignore_timestamps(list) when is_list(list) do
+        list |> Enum.map(fn (member) ->
+          Map.drop(member, ["inserted_at", "updated_at"])
+        end)
+      end
+
+      defp ignore_timestamps(map) when is_map(map) do
+        map |> Map.drop(["inserted_at", "updated_at"])
+      end
+
       # The default endpoint for testing
       @endpoint Backend.Endpoint
     end

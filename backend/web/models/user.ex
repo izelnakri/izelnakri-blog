@@ -25,7 +25,13 @@ defmodule Backend.User do
     )
   end
 
-  def serializer(user) do
+  def authentication_serializer(user) do
+    user |> Map.delete(:password_digest) |> serialize() |> Map.merge(%{
+      emails: Enum.map(user.emails, &serialize(&1)),
+    })
+  end
+
+  def serializer(user) do # remove email addresses here
     user |> Map.delete(:password_digest) |> serialize() |> Map.merge(%{
       emails: Enum.map(user.emails, &serialize(&1)),
     })
@@ -61,12 +67,11 @@ defmodule Backend.User do
     end
   end
 
+  def login(%{email: email, password: password}) when is_nil(email) or is_nil(password), do: nil
+  def login(%{email: email, password: password}) when email == "" or password == "", do: nil
   def login(%{email: email, password: password}) do
-    email = Email.query() |> where(address: ^email) |> Repo.one()
-    case email do
-      nil -> false
-      email -> Comeonin.Bcrypt.checkpw(password, email.user.password_digest)
-    end
+    user = query() |> where([user, email], email.address == ^email) |> Repo.one()
+    if user && Comeonin.Bcrypt.checkpw(password, user.password_digest), do: user
   end
 
   def make_admin(user) do
