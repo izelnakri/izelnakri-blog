@@ -7,11 +7,7 @@ export default Route.extend({
     if (window && window.localStorage) {
       this.get('session').set('authenticationToken', localStorage.getItem('inb_token'));
 
-      return this.get('session').fetchCurrentUser().then(() => {
-        return;
-      }).catch(() => {
-        return;
-      });
+      return this.get('session').fetchCurrentUser().then(() => {}).catch(() => {});
     }
   },
   actions: {
