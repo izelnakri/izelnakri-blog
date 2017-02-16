@@ -4,11 +4,19 @@
 
   </ul>
 
-  <!--
+
   <ul class="nav navbar-nav hidden-md-down">
-    <li class="nav-item">
-        <a class="nav-link" href="#">CONTACT</a>
-    </li>
+    <!-- <li class="nav-item">
+      <a class="nav-link" href="#">CONTACT</a>
+    </li> -->
+
+    {{#if currentUser}}
+      <li class="nav-item">
+        {{link-to "ADMIN" "admin" class="nav-link"}}
+      </li>
+      <li class="nav-item">
+        {{link-to "LOGOUT" "logout" class="nav-link"}}        
+      </li>
+    {{/if}}
   </ul>
-  -->
 </div>

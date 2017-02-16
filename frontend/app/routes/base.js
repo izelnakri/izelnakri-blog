@@ -23,10 +23,5 @@ export default Route.extend(ScrollResetMixin, {
     //     this.set('state.loading', false);
     //   });
     // },
-    logout() {
-      this.get('session').logout().then(() => {
-        this.transitionTo('public');
-      }); // maybe a flashMessage
-    }
   }
 });

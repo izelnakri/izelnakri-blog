@@ -1,0 +1,27 @@
+{{#inputs/input-wrapper labelRef=labelRef model=model attribute=attribute label=label hint=hint inputGroup=inputGroup}}
+  {{#if addonLeft}}
+    <div class="input-group-btn">
+      <button class="btn btn-secondary" type="button" tabindex="-1" {{action "addonClick"}}>
+        {{#if addonIsIcon}}
+          {{in-icon addonLeft}}
+        {{else}}
+          {{addonLeft}}
+        {{/if}}
+      </button>
+    </div>
+  {{/if}}
+
+  <input id={{labelRef}} type={{type}} name={{attribute}} class="form-control {{inputClass}}" value={{value}} require={{required}} placeholder={{placeholder}} autofocus={{autofocus}} />
+
+  {{#if addonRight}}
+    <div class="input-group-btn">
+      <button class="btn btn-secondary" type="button" tabindex="-1" {{action "addonClick"}}>
+        {{#if addonIsIcon}}
+          {{in-icon addonRight}}
+        {{else}}
+          {{addonRight}}
+        {{/if}}
+      </button>
+    </div>
+  {{/if}}
+{{/inputs/input-wrapper}}

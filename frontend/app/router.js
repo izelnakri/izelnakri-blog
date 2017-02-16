@@ -15,6 +15,9 @@ Router.map(function() {
   this.route('admin', function() {
     this.route('index', { path: '/'});
   });
+
+  this.route('login');
+  this.route('logout');
 });
 
 export default Router;

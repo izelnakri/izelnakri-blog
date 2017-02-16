@@ -6,6 +6,12 @@ module.exports = function(environment) {
     environment: environment,
     rootURL: '/',
     locationType: 'auto',
+    i18n: { defaultLocale: 'en' },
+    'ember-devtools': {
+      global: true,
+      enabled: environment === 'development'
+    },
+    flashMessageDefaults: { timeout: 5000 },
     EmberENV: {
       FEATURES: {
         // Here you can enable experimental features on an ember canary build
@@ -27,6 +33,9 @@ module.exports = function(environment) {
   };
 
   if (environment === 'development') {
+    // useMirage(ENV);
+    useDevServer(ENV);
+
     // ENV.APP.LOG_RESOLVER = true;
     // ENV.APP.LOG_ACTIVE_GENERATION = true;
     // ENV.APP.LOG_TRANSITIONS = true;
@@ -35,6 +44,8 @@ module.exports = function(environment) {
   }
 
   if (environment === 'test') {
+    useMirage(ENV);
+
     // Testem prefers this...
     ENV.locationType = 'none';
 
@@ -46,8 +57,19 @@ module.exports = function(environment) {
   }
 
   if (environment === 'production') {
-
+    ENV.apiHost = 'https://izelnakri.com/api';
   }
 
   return ENV;
 };
+
+
+function useDevServer(ENV) {
+  ENV.apiHost = 'http://localhost:4000';
+  ENV['ember-cli-mirage'] = { enabled: false };
+}
+
+function useMirage(ENV) {
+  ENV.apiHost = '';
+  ENV['ember-cli-mirage'] = { enabled: true };
+}
