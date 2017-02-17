@@ -1,5 +1,17 @@
-<h1>This is dashboard</h1>
+<h1>Last Blog Posts</h1>
+<div class="row">
+  <div class="col-8">
+    {{#each model.blogPosts as |blogPost|}}
+      {{#link-to "admin.posts.post" blogPost.slug class="card card-block"}}
+        <h5 class="card-title">{{blogPost.title}}</h5>
+      {{/link-to}}
+    {{/each}}
+  </div>
 
+  <div class="col-4">
+
+  </div>
+</div>
 <h1>User email is:</h1>
 <p>
   {{model.currentUser.email.address}}

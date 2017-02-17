@@ -4,8 +4,10 @@ import DS from 'ember-data';
 
 const { inject, computed } = Ember;
 const { dasherize, pluralize } = Ember.String;
+const { RESTAdapter, InvalidError, errorsHashToArray } = DS;
 
-export default DS.RESTAdapter.extend({
+
+export default RESTAdapter.extend({
   host: config.apiHost,
   session: inject.service(),
   pathForType: function(type) {
@@ -16,5 +18,14 @@ export default DS.RESTAdapter.extend({
       return { 'Authorization': `Bearer ${this.get('session.authenticationToken')}` };
     }
   }),
-  coalesceFindRequests: true
+  coalesceFindRequests: true,
+  handleResponse(status, headers, payload) {
+    if (this.isInvalid(status, headers, payload)) {
+      let errors = errorsHashToArray(payload.errors);
+
+      return new InvalidError(errors);
+    } else {
+      return this._super(...arguments);
+    }
+  }
 });

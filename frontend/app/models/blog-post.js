@@ -4,7 +4,7 @@ const { Model, attr, belongsTo } = DS;
 
 export default Model.extend({
   title: attr('string'),
-  content: attr('string'),
+  markdownContent: attr('string'),
   slug: attr('string'),
   tag: attr('string'),
 

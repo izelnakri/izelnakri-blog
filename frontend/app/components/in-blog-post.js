@@ -1,7 +1,12 @@
 import Ember from 'ember';
 
-export default Ember.Component.extend({
+const { Component, computed } = Ember;
+
+export default Component.extend({
   classNames: ['in-blog-post'],
+  content: computed('model', function() {
+    return marked(this.get('model'));
+  }),
   didInsertElement() {
     Prism.highlightAll();
   }

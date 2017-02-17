@@ -5,8 +5,12 @@ defmodule Backend.BlogPost do
 
   schema "blog_posts" do
     field :title, :string
-    field :content, :string
+    field :markdown_content, :string
     field :slug, :string
+
+    # meta_title
+    # meta_description
+    # image
 
     field :tag, :string # will go in future
 
@@ -42,8 +46,8 @@ defmodule Backend.BlogPost do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:title, :content, :slug, :tag])
-    |> validate_required([:title, :content, :slug, :tag, :user_id])
+    |> cast(params, [:title, :markdown_content, :slug, :tag])
+    |> validate_required([:title, :markdown_content, :slug, :tag, :user_id])
     |> foreign_key_constraint(:user_id)
   end
 end

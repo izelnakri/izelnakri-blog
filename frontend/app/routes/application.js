@@ -22,7 +22,7 @@ export default Route.extend({
           return previousTransition.retry();
         }
 
-        this.transitionToRoute('admin');
+        this.transitionTo('admin');
       });
     },
     logout() {

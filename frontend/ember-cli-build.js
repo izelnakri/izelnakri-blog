@@ -8,6 +8,7 @@ module.exports = function(defaults) {
   });
 
   app.import('bower_components/moment/moment.js', { type: 'vendor' });
+  app.import('bower_components/marked/lib/marked.js', { type: 'vendor' });
 
   if (!process.env.EMBER_CLI_FASTBOOT) {
     app.import('bower_components/raven-js/dist/raven.min.js', { type: 'vendor' });

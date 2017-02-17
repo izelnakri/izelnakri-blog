@@ -1,0 +1,22 @@
+{{#in-form model=model.blogPost as |form|}}
+  <div class="row">
+    <div class="col-9">
+      <div class="row">
+        <div class="col-9">
+          {{form.input attribute="title"}}
+        </div>
+        <div class="col-3">
+          {{form.input attribute="tag"}}
+        </div>
+      </div>
+      {{form.input label=false attribute="slug" addonLeft=(concat model.domain "/")}}
+      {{form.posteditor attribute="contentMarkdown"}}
+    </div>
+
+    <div class="col-3">
+      <div class="card card-block">
+        {{#in-button type="submit" block=true}}Publish{{/in-button}}
+      </div>
+    </div>
+  </div>
+{{/in-form}}

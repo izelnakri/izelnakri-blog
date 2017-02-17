@@ -14,6 +14,10 @@ Router.map(function() {
 
   this.route('admin', function() {
     this.route('index', { path: '/'});
+    this.route('posts', function() {
+      this.route('new');
+      this.route('post', { path: '/:slug' });
+    });
   });
 
   this.route('login');

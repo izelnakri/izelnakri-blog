@@ -1,5 +1,10 @@
+
 {{#if label}}
-  <label for={{labelRef}}>{{label}}</label>
+  {{#if errorMessage}}
+    <label for={{labelRef}} class="text-danger">{{label}} {{errorMessage}}:</label>
+  {{else}}
+    <label for={{labelRef}}>{{label}}:</label>
+  {{/if}}
 {{/if}}
 
 {{#if inputGroup}}
@@ -9,13 +14,6 @@
 {{else}}
   {{yield}}
 {{/if}}
-
-{{#if errorMessage}}
-  <p class="text-danger">
-    {{errorMessage}}
-  </p>
-{{/if}}
-
 
 {{#if hint}}
   <p class="text-muted">

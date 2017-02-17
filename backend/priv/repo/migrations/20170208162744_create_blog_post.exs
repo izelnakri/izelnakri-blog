@@ -4,10 +4,10 @@ defmodule Backend.Repo.Migrations.CreateBlogPost do
   def change do
     create table(:blog_posts) do
       add :title, :string, null: false
-      add :content, :text, null: false
+      add :markdown_content, :text, null: false
       add :slug, :string, null: false
       add :tag, :string, null: false
-      
+
       add :user_id, references(:users, on_delete: :nothing), null: false
 
       timestamps()

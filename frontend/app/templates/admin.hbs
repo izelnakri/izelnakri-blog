@@ -1,1 +1,13 @@
-{{outlet}}
+<div class="row">
+  <div class="col-2">
+    <ul class="list-group">
+      {{link-to "Dashboard" "admin.index" class="list-group-item list-group-item-action justify-content-center"}}
+      {{link-to "New Post" "admin.posts.new" class="list-group-item list-group-item-action justify-content-center"}}
+      {{link-to "Content" "admin.posts.index" class="list-group-item list-group-item-action justify-content-center"}}
+    </ul>
+  </div>
+
+  <div class="col-10">
+    {{outlet}}
+  </div>
+</div>

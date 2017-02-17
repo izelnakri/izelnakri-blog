@@ -81,7 +81,7 @@ export default Service.extend({
         body: JSON.stringify({ email: email, password: password })
       }).then((response) => {
         if (response.status === 401) {
-          this.get('flashMessages').danger('Sorry, wrong email and password combination');
+          this.get('flashMessages').danger('Wrong email and password combination');
           return reject();
         } else if (response.status === 200) {
           return response.json();
@@ -90,10 +90,12 @@ export default Service.extend({
         this.get('flashMessages').danger('Unexpected error occured, please try again!');
         return reject();
       }).then((json) => {
-        this.setCurrentUser(json);
-        this.get('flashMessages').success('Login is successful, welcome back!');
+        if (json) {
+          this.setCurrentUser(json);
+          this.get('flashMessages').success('Login is successful, welcome back!');
 
-        return resolve(this.get('currentUser'));
+          return resolve(this.get('currentUser'));
+        }
       });
     });
   }
