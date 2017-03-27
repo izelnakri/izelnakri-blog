@@ -3,8 +3,6 @@ defmodule Backend.BlogPostControllerTest do
 
   alias Backend.BlogPost
 
-  import Backend.Utils
-
   @valid_blog_post_attrs %{
     title: "Testing in Elixir", slug: "testing-in-elixir",
     markdown_content: "It is awesome. Hello World!", meta_title: "Testing in Elixir",
@@ -47,7 +45,9 @@ defmodule Backend.BlogPostControllerTest do
 
     blog_post = get_blog_post(persisted_id) |> Map.drop([:updated_at])
 
-    blog_post_attrs = blog_post |> serialize() |> Map.drop([:inserted_at, :id])
+    blog_post_attrs = blog_post |> Map.drop([
+      :inserted_at, :id, :first_version_id, :current_version_id, :user
+    ])
 
     assert blog_post_attrs |> Map.delete(:user_id) == @valid_blog_post_attrs
     assert blog_post.user_id == user.id
@@ -100,15 +100,20 @@ defmodule Backend.BlogPostControllerTest do
   test "PUT /blog-posts/:id can edit as admin blog post", %{conn: conn} do
     blog_post = insert_blog_post()
 
-    blog_post_params = blog_post |> Map.merge(@edit_blog_post_attrs)
+    blog_post_params = blog_post
+      |> Map.merge(@edit_blog_post_attrs)
+      |> Map.delete(:current_version_id)
 
     conn_with_token = set_conn_with_token(conn, blog_post.user.authentication_token)
     conn = put(conn_with_token, "/blog-posts/#{blog_post.id}", blog_post: blog_post_params)
 
-    persisted_blog_post = get_blog_post(blog_post.id)
+    persisted_blog_post = get_blog_post(blog_post.id) |> Map.delete(:current_version_id)
 
     assert json_response(conn, 200)
-    assert persisted_blog_post |> Map.drop([:updated_at]) == blog_post_params |> Map.drop([:updated_at])
+    assert persisted_blog_post |> Map.drop([:updated_at]) == blog_post_params |> Map.drop([
+      :updated_at
+    ])
+
     assert persisted_blog_post.updated_at != blog_post_params.updated_at
     assert BlogPost.count() == 1
   end

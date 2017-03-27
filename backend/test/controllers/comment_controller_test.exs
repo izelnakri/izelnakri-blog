@@ -35,7 +35,7 @@ defmodule Backend.CommentControllerTest do
     user = insert_normal_user()
 
     comment_params = @valid_comment_params |> Map.merge(%{
-      blog_post_id: blog_post.id, email_id: user.primaryEmail.id
+      blog_post_id: blog_post.id, email_id: user.primary_email_id
     })
 
     conn = post(conn, "/comments", comment: comment_params)
@@ -46,7 +46,7 @@ defmodule Backend.CommentControllerTest do
     comment = get_comment(persisted_id)
 
     assert comment |> Map.take([:content]) == @valid_comment_params
-    assert comment.email_id == user.primary_email.id
+    assert comment.email_id == user.primary_email_id
     assert comment.confirmed_at == nil
     assert comment.blog_post_id == blog_post.id
 
@@ -60,7 +60,7 @@ defmodule Backend.CommentControllerTest do
     admin_user = get_user(blog_post.user_id)
 
     comment_params = @valid_comment_params |> Map.merge(%{
-      blog_post_id: blog_post.id, email_id: user.primaryEmail.id
+      blog_post_id: blog_post.id, email_id: user.primary_email_id
     })
 
     conn_with_token = set_conn_with_token(conn, admin_user.authentication_token)
@@ -72,7 +72,7 @@ defmodule Backend.CommentControllerTest do
     comment = get_comment(persisted_id)
 
     assert comment |> Map.take([:content]) == @valid_comment_params
-    assert comment.email_id == admin_user.primary_email.id
+    assert comment.email_id == admin_user.primary_email_id
     assert comment.confirmed_at != nil
     assert comment.blog_post_id == blog_post.id
 
@@ -83,7 +83,7 @@ defmodule Backend.CommentControllerTest do
     user = insert_normal_user()
 
     comment_params = @valid_comment_params |> Map.merge(%{
-      blog_post_id: nil, email_id: user.primaryEmail.id
+      blog_post_id: nil, email_id: user.primary_email_id
     })
 
     conn_with_token = set_conn_with_token(conn, user.authentication_token)
@@ -100,7 +100,7 @@ defmodule Backend.CommentControllerTest do
     blog_post = insert_blog_post()
 
     comment_params = %{
-      blog_post_id: nil, email_id: blog_post.user.primaryEmail.id
+      blog_post_id: nil, email_id: blog_post.user.primary_email_id
     }
 
     conn_with_token = set_conn_with_token(conn, blog_post.user.authentication_token)
@@ -129,8 +129,8 @@ defmodule Backend.CommentControllerTest do
   end
 
   test "PUT /comments/:id normal user can edit his comment", %{conn: conn} do
-    comment = insert_comment(user: insert_normal_user())
-    user = get_email(comment.email_id) |> Map.get(:user)
+    user = insert_normal_user()
+    comment = insert_comment(user: user)
 
     comment_params = comment |> Map.merge(@edit_comment_params)
 

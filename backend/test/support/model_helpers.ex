@@ -53,8 +53,6 @@ defmodule Backend.ModelHelpers do
       nil -> nil
       user -> user.primary_email_id
     end
-    IO.puts("email_id is:")
-    IO.inspect(email_id)
 
     comment_changeset = %Comment{blog_post_id: blog_post.id, email_id: email_id}
       |> Repo.preload([:blog_post, :email])

@@ -28,9 +28,7 @@ defmodule Backend.Comment do
 
   def serializer(nil), do: nil
   def serializer(comment) do
-    serialize(comment) |> Map.merge(%{
-      email: serialize(comment.email)
-    })
+    serialize(comment)
   end
 
   @doc """
