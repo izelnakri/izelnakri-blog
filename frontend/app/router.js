@@ -8,16 +8,18 @@ const Router = Ember.Router.extend({
 
 Router.map(function() {
   this.route('public', { path: '/' }, function() {
-    this.route('index', { path: '/'});
-    this.route('blog-post', { path: '/:slug'});
+    this.route('index', { path: '/' });
+    this.route('blog-post', { path: '/:slug' });
   });
 
   this.route('admin', function() {
-    this.route('index', { path: '/'});
+    this.route('index', { path: '/' });
+    this.route('content');
     this.route('posts', function() {
       this.route('new');
       this.route('post', { path: '/:slug' });
     });
+    this.route('settings');
   });
 
   this.route('login');

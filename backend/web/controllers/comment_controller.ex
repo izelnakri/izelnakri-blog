@@ -15,7 +15,7 @@ defmodule Backend.CommentController do
 
     email_id = case current_user do
       nil -> comment_params["email_id"]
-      current_user -> current_user.emails |> List.first() |> Map.get(:id)
+      current_user -> current_user.primary_email.id
     end
 
     confirmed_at = case current_user do
@@ -29,11 +29,11 @@ defmodule Backend.CommentController do
 
     changeset = Comment.changeset(comment_struct, comment_params)
 
-    case Repo.insert(changeset) do
-      {:ok, comment} ->
+    case PaperTrail.insert(changeset, origin: "blog_post") do
+      {:ok, %{model: comment}} ->
         conn
         |> put_status(:created)
-        |> json(BaseSerializer.serialize(comment))
+        |> json(Comment.serializer(comment))
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
@@ -47,9 +47,9 @@ defmodule Backend.CommentController do
     if user_is_comment_owner_or_admin(comment, conn.assigns.current_user) do
       changeset = Comment.user_changeset(comment, comment_params)
 
-      case Repo.update(changeset) do
-        {:ok, comment} ->
-          json(conn, BaseSerializer.serialize(comment))
+      case PaperTrail.update(changeset, origin: "admin_panel") do
+        {:ok, %{model: comment}} ->
+          json(conn, Comment.serializer(comment))
         {:error, changeset} ->
           conn
           |> put_status(:unprocessable_entity)
@@ -64,7 +64,8 @@ defmodule Backend.CommentController do
     comment = Repo.get!(Comment, id)
 
     if user_is_comment_owner_or_admin(comment, conn.assigns.current_user) do
-      Repo.delete!(comment)
+      # get the origin from whether user or admin
+      PaperTrail.delete!(comment, origin: "unknown")
 
       send_resp(conn, :no_content, "")
     else
@@ -73,7 +74,7 @@ defmodule Backend.CommentController do
   end
 
   defp user_is_comment_owner_or_admin(comment, user) do
-    current_user_is_comment_owner = user.emails
+    current_user_is_comment_owner = user.person.emails
       |> Enum.find(fn(email) -> email.id == comment.email_id end)
 
     current_user_is_comment_owner || user.is_admin

@@ -20,15 +20,17 @@ defmodule Backend.BlogPostController do
   end
 
   def create(conn, %{"blog_post" => blog_post_params}) do
-    blog_post = %BlogPost{user_id: conn.assigns.current_user.id} |> Repo.preload(:user)
+    current_user = conn.assigns.current_user
+    blog_post = %BlogPost{user_id: current_user.id} |> Repo.preload(:user)
 
     changeset = BlogPost.changeset(blog_post, blog_post_params)
 
-    case Repo.insert(changeset) do
-      {:ok, blog_post} ->
+    case PaperTrail.insert(changeset, origin: "user", user: current_user) do
+      {:ok, %{model: model}} ->
+        blog_post = BlogPost.query() |> where(id: ^model.id) |> Repo.one()
         conn
         |> put_status(:created)
-        |> json(%{blog_post: BaseSerializer.serialize(blog_post)})
+        |> json(%{blog_post: BlogPost.serializer(blog_post)})
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
@@ -43,9 +45,10 @@ defmodule Backend.BlogPostController do
 
     changeset = BlogPost.changeset(blog_post, blog_post_params |> Map.drop([:user, :user_id]))
 
-    case Repo.update(changeset) do
-      {:ok, blog_post} ->
-        json conn, %{blog_post: BaseSerializer.serialize(blog_post)}
+    case PaperTrail.update(changeset, origin: "user", user: conn.assigns.current_user) do
+      {:ok, %{model: model}} ->
+        blog_post = BlogPost.query() |> where(id: ^model.id) |> Repo.one()
+        json conn, %{blog_post: BlogPost.serializer(blog_post)}
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
@@ -56,7 +59,7 @@ defmodule Backend.BlogPostController do
   def delete(conn, %{"id" => id}) do
     blog_post = Repo.get!(BlogPost, id)
 
-    Repo.delete!(blog_post)
+    PaperTrail.delete!(blog_post, origin: "user", user: conn.assigns.current_user)
 
     send_resp(conn, :no_content, "")
   end

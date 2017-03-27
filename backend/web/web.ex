@@ -23,10 +23,18 @@ defmodule Backend.Web do
       import Ecto
       import Ecto.Changeset
       import Ecto.Query
-      import Backend.BaseSerializer
+      import Backend.Utils
 
       def count do
         from(record in __MODULE__, select: count(record.id)) |> Repo.one
+      end
+
+      def first do
+        from(record in __MODULE__, limit: 1, order_by: [asc: :inserted_at]) |> Repo.one
+      end
+
+      def last do
+        from(record in __MODULE__, limit: 1, order_by: [desc: :inserted_at]) |> Repo.one
       end
     end
   end
@@ -34,19 +42,14 @@ defmodule Backend.Web do
   def controller do
     quote do
       # import Backend.Authentication
-
       use Phoenix.Controller
-
-      alias Backend.Utils
-      alias Backend.BaseSerializer
 
       import Ecto
       import Ecto.Query
 
       import Backend.Router.Helpers
       import Backend.Gettext
-      import Backend.Utils
-
+      import Backend.Web.ConnUtils
     end
   end
 

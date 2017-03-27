@@ -5,7 +5,9 @@
     "-Promise",
     "Raven",
     "marked",
-    "Prism"
+    "Prism",
+    "moment",
+    "$"
   ],
   "browser": true,
   "boss": true,

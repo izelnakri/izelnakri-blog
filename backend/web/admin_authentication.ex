@@ -1,6 +1,6 @@
 defmodule Backend.AdminAuthentication do
   import Plug.Conn
-  import Backend.Utils
+  import Backend.Web.ConnUtils
 
   def init(options), do: options
 

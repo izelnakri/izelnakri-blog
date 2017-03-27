@@ -17,6 +17,9 @@ config :backend, Backend.Endpoint,
   pubsub: [name: Backend.PubSub,
            adapter: Phoenix.PubSub.PG2]
 
+config :paper_trail, repo: Repo, originator: [name: :user, model: Backend.User], strict_mode: true
+
+
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",

@@ -1,6 +1,7 @@
 defmodule Backend.RecognizeUserFromToken do
   import Plug.Conn
   import Ecto.Query
+  import Backend.Web.ConnUtils
 
   alias Backend.User
 
@@ -13,17 +14,10 @@ defmodule Backend.RecognizeUserFromToken do
       conn
     else
       user = User.query() |> where(authentication_token: ^authentication_token) |> Repo.one
-
       case user do
         nil -> conn
         user -> assign(conn, :current_user, user)
       end
-    end
-  end
-
-  def parse_authentication_token(conn) do
-    if List.keyfind(conn.req_headers, "authorization", 0) do
-      List.keyfind(conn.req_headers, "authorization", 0) |> elem(1) |> String.slice(7..-1)
     end
   end
 end

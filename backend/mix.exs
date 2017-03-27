@@ -32,6 +32,7 @@ defmodule Backend.Mixfile do
   defp deps do
     [
       {:cors_plug, "~> 1.1.4"},
+      {:paper_trail, "~> 0.7.3"},
       {:phoenix, "~> 1.2.1"},
       {:phoenix_pubsub, "~> 1.0"},
       {:phoenix_ecto, "~> 3.2.1"},

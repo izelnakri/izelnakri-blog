@@ -7,25 +7,28 @@ export default Ember.Component.extend({
   submitHandler: true,
   submit(event) {
     event.preventDefault();
+
+    const model = this.get('model');
+
+    if (this.get('beforeSubmit')) {
+      this.get('beforeSubmit')(model);
+    }
+
     if (this.get('submitHandler')) {
-      const model = this.get('model');
       this.set('isLoading', true);
 
-      return model.save().then((model) => {
-        // translator
-        this.get('flashMessages').success('Saved successfully');
+      model.save().then((model) => {
+        this.get('flashMessages').success(this.get('i18n').t('components.in-form.success'));
         return this.get('onSuccess') ? this.get('onSuccess')(model) : undefined;
       }).catch((error) => {
-        // translator
-        this.get('flashMessages').danger('An error occured when sending the form');
+        this.get('flashMessages').danger(this.get('i18n').t('components.in-form.failure'));
+        Raven.captureMessage(error);
         return this.get('onError') ? this.get('onError')(model) : undefined;
-        // move error to Raven
-      }).finally((a, b) => {
+      }).finally(() => {
         this.set('isLoading', false);
-        return this.get('onSubmit') ? this.get('onSubmit')(model) : undefined;
       });
     }
 
-    return this.get('onSubmit')();
+    return this.get('afterSubmit') ? this.get('afterSubmit')(model) : undefined;
   }
 });

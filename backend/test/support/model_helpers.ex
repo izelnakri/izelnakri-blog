@@ -6,13 +6,15 @@ defmodule Backend.ModelHelpers do
 
   import Ecto.Query
 
-  @admin_user_attrs %{email: "contact@izelnakri.com", password: "123456"}
-  @normal_user_attrs %{email: "normaluser@gmail.com", password: "123456"}
+  @admin_user_attrs %{email: "contact@izelnakri.com", password: "123456", full_name: "Izel Nakri"}
+  @normal_user_attrs %{email: "normaluser@gmail.com", password: "123456", full_name: "Other Nakri"}
 
   @valid_blog_post_attrs %{
-    title: "Testing in Elixir", slug: "testing-in-elixir", content: "It is awesome. Hello World!",
-    tag: "Elixir"
-  }
+    title: "Testing in Elixir", slug: "testing-in-elixir",
+    markdown_content: "It is awesome. Hello World!", meta_title: "Testing in Elixir",
+    meta_description: "It is awesome. Click to read more", image_url: nil,
+    published_at: nil
+  } # add tags: ["Elixir"]
 
   @valid_comment_attrs %{
     content: "This is a great blog post!"
@@ -20,19 +22,21 @@ defmodule Backend.ModelHelpers do
 
   def insert_admin_user(params \\ @admin_user_attrs) do
     User.register(params)
-    |> User.make_admin()
-    |> User.serializer()
+    |> User.make_admin(origin: "test")
+    |> User.authentication_serializer()
   end
 
   def insert_normal_user(params \\ @normal_user_attrs) do
     User.register(params)
-    |> User.serializer()
+    |> User.authentication_serializer()
   end
 
   def insert_blog_post(params \\ [user: insert_admin_user()]) do
     blog_post_changeset = %BlogPost{user_id: params[:user].id} |> Repo.preload(:user) # emails here maybe
 
-    blog_post = BlogPost.changeset(blog_post_changeset, @valid_blog_post_attrs) |> Repo.insert!
+    blog_post = BlogPost.changeset(blog_post_changeset, @valid_blog_post_attrs)
+      |> PaperTrail.insert!(origin: "test")
+
     BlogPost.query()
     |> where(id: ^blog_post.id)
     |> Repo.one()
@@ -47,8 +51,10 @@ defmodule Backend.ModelHelpers do
 
     email_id = case params[:user] do
       nil -> nil
-      user -> user.emails |> List.first() |> Map.get(:id)
+      user -> user.primary_email_id
     end
+    IO.puts("email_id is:")
+    IO.inspect(email_id)
 
     comment_changeset = %Comment{blog_post_id: blog_post.id, email_id: email_id}
       |> Repo.preload([:blog_post, :email])

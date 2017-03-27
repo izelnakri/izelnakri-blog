@@ -8,6 +8,8 @@ defmodule Backend.Comment do
     belongs_to :email, Backend.Email
     belongs_to :blog_post, Backend.BlogPost
 
+    has_one :person, through: [:email, :person]
+
     timestamps()
   end
 
@@ -26,7 +28,9 @@ defmodule Backend.Comment do
 
   def serializer(nil), do: nil
   def serializer(comment) do
-    serialize(comment)
+    serialize(comment) |> Map.merge(%{
+      email: serialize(comment.email)
+    })
   end
 
   @doc """

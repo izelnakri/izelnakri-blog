@@ -43,12 +43,18 @@ const InButton = Component.extend(TooltipMixin, {
     }
   }),
   click(event) {
+    this._super(...arguments);
+    event.preventDefault();
+
     if (this.get('bubbles') === false) {
       event.stopPropagation();
     }
 
-    this._super(...arguments);
     this.sendAction('onClick');
+
+    if (this.get('type') === 'submit') {
+      this.get('form').submit(event);
+    }
   }
 });
 

@@ -1,21 +1,68 @@
-{{#in-form model=model.blogPost as |form|}}
-  <div class="row">
-    <div class="col-9">
-      <div class="row">
-        <div class="col-9">
-          {{form.input attribute="title"}}
+{{#in-form model=model.blogPost onSuccess=(route-action "visitBlogPost" model.blogPost.slug) as |form|}}
+  <div class="row no-gutters">
+    <div class="col-9 in-panel">
+      <div class="col-12">
+        <div class="row">
+          <div class="col-9">
+            {{form.input attribute="title"}}
+          </div>
+          <div class="col-3">
+            {{form.input attribute="tag"}}
+          </div>
         </div>
-        <div class="col-3">
-          {{form.input attribute="tag"}}
+        <div class="row no-gutters">
+          <div class="col-11">
+            {{form.input label=false attribute="slug" addonLeft=(concat model.domain "/")}}
+          </div>
+          <div class="col-1">
+            {{#if model.blogPost.insertedAt}}
+              {{#link-to "public.blog-post" model.blogPost.slug}}
+                {{in-button type="button" icon="globe" block=true style="secondary"}}
+              {{/link-to}}
+            {{else}}
+              {{in-button type="button" icon="globe" block=true style="secondary"}}
+            {{/if}}
+          </div>
         </div>
+        {{form.posteditor attribute="markdownContent"}}
+
+        {{form.input attribute="metaTitle"}}
+        {{form.textarea attribute="metaDescription"}}
+
+        {{form.input attribute="imageUrl" addonRight="upload" addonIsIcon=true addonClick=(route-action "uploadBlogPostImage")}}
       </div>
-      {{form.input label=false attribute="slug" addonLeft=(concat model.domain "/")}}
-      {{form.posteditor attribute="contentMarkdown"}}
     </div>
 
     <div class="col-3">
       <div class="card card-block">
-        {{#in-button type="submit" block=true}}Publish{{/in-button}}
+        {{#if model.blogPost.publishedAt}}
+          {{#form.button "success" type="submit" block=true size="lg"}}Update{{/form.button}}
+          {{#form.button "warning" block=true size="lg" onClick=(route-action "unpublish" model.blogPost)}}Unpublish{{/form.button}}
+          {{#in-button "danger" block=true size="lg"}}Delete{{/in-button}}
+        {{else}}
+          {{#form.button "success" type="submit" block=true size="lg" onClick=(route-action "setPublishedAt" model.blogPost)}}Publish{{/form.button}}
+          {{#form.button "success" type="submit" block=true size="lg"}}Save{{/form.button}}
+        {{/if}}
+        <h5 class="mt-3">Author:</h5>
+        <span>
+          {{model.blogPost.user.fullName}}
+        </span>
+        {{#if model.blogPost.publishedAt}}
+          <h5 class="mt-3">Published at:</h5>
+          <span>
+            {{datetime model.blogPost.publishedAt}}
+          </span>
+        {{/if}}
+        {{#if model.blogPost.insertedAt}}
+          <h5 class="mt-3">Created at:</h5>
+          <span>
+            {{datetime model.blogPost.insertedAt}}
+          </span>
+          <h5 class="mt-3">Last updated at:</h5>
+          <span>
+            {{datetime model.blogPost.updatedAt}}
+          </span>
+        {{/if}}
       </div>
     </div>
   </div>

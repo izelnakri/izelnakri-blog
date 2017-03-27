@@ -1,7 +1,7 @@
 defmodule Backend.UserControllerTest do
   use Backend.ConnCase, async: true
 
-  @normal_user_attrs %{email: "normaluser@gmail.com", password: "123456"}
+  @normal_user_attrs %{email: "normaluser@gmail.com", password: "123456", full_name: "Ali Haydar"}
 
   test "POST /login succesfully logs a person in", %{conn: conn} do
     user = insert_normal_user(@normal_user_attrs)

@@ -4,9 +4,11 @@ defmodule Backend.BlogPostTest do
   alias Backend.BlogPost
 
   @valid_attrs %{
-    title: "Elixit is awesome", content: "This is the post content", tag: "Elixir",
-    slug: "elixir-is-awesome"
-  }
+    title: "Testing in Elixir", slug: "testing-in-elixir",
+    markdown_content: "It is awesome. Hello World!", meta_title: "Testing in Elixir",
+    meta_description: "It is awesome. Click to read more", image_url: nil,
+    published_at: nil
+  } #  tags: "Elixir"
 
   test "changeset with valid attributes" do
     user = insert_normal_user()
@@ -36,7 +38,7 @@ defmodule Backend.BlogPostTest do
     user = insert_normal_user()
     blog_post_struct = %BlogPost{user_id: user.id} |> Repo.preload(:user)
 
-    params = @valid_attrs |> Map.merge(%{content: ""})
+    params = @valid_attrs |> Map.merge(%{markdown_content: ""})
     changeset = BlogPost.changeset(blog_post_struct, params)
 
     refute changeset.valid?
@@ -52,13 +54,13 @@ defmodule Backend.BlogPostTest do
     refute changeset.valid?
   end
 
-  test "changeset without tag" do
-    user = insert_normal_user()
-    blog_post_struct = %BlogPost{user_id: user.id} |> Repo.preload(:user)
-
-    params = @valid_attrs |> Map.merge(%{tag: ""})
-    changeset = BlogPost.changeset(blog_post_struct, params)
-
-    refute changeset.valid?
-  end
+  # test "changeset without tag" do
+  #   user = insert_normal_user()
+  #   blog_post_struct = %BlogPost{user_id: user.id} |> Repo.preload(:user)
+  #
+  #   params = @valid_attrs |> Map.merge(%{tag: ""})
+  #   changeset = BlogPost.changeset(blog_post_struct, params)
+  #
+  #   refute changeset.valid?
+  # end
 end

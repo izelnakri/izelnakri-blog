@@ -1,9 +1,9 @@
 <div class="col-12 col-sm-6 offset-sm-3 card card-block">
-  {{#in-form model=model submitHandler=false onSubmit=(route-action "login" model) as |form|}}
+  {{#in-form model=model submitHandler=false beforeSubmit=(route-action "login" model) as |form|}}
     {{form.input attribute="email.address" type="email" addonLeft="envelope" addonIsIcon=true autofocus="true"}}
 
-    {{form.inputpassword attribute="password" placeholder="123456"}}
+    {{form.inputpassword attribute="password"}}
     <hr />
-    {{#in-button "primary" size="lg" block=true type="submit"}}Submit{{/in-button}}
+    {{#form.button "primary" size="lg" block=true type="submit"}}Submit{{/form.button}}
   {{/in-form}}
 </div>

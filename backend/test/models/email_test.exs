@@ -17,23 +17,25 @@ defmodule Backend.EmailTest do
     refute changeset.valid?
   end
 
-  test "Email.with_user_changeset without user" do
-    changeset = Email.with_user_changeset(%Email{}, @valid_attributes)
+  test "Email.with_person_changeset without user" do
+    changeset = Email.with_person_changeset(%Email{}, @valid_attributes)
 
     refute changeset.valid?
   end
 
-  test "Email.with_user_changeset with valid attributes" do
+  test "Email.with_person_changeset with valid attributes" do
     user = insert_normal_user()
-    email_struct = %Email{user_id: user.id} |> Repo.preload(:user)
-    changeset = Email.with_user_changeset(email_struct, Map.put(@valid_attributes, "user_id", user.id))
+    email_struct = %Email{person_id: user.person.id} |> Repo.preload(:person)
+    changeset = Email.with_person_changeset(
+      email_struct, Map.put(@valid_attributes, "person_id", user.person.id)
+    )
 
     assert changeset.valid?
   end
 
   test "can confirm an email" do
-    email = Email.changeset(%Email{}, @valid_attributes) |> Repo.insert!
-    confirmed_email = email |> Email.confirm()
+    email = Email.changeset(%Email{}, @valid_attributes) |> PaperTrail.insert!(origin: "test")
+    confirmed_email = email |> Email.confirm(origin: "test")
 
     assert email.id == confirmed_email.id
     assert email.confirmed_at == nil

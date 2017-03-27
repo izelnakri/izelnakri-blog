@@ -1,0 +1,12 @@
+<div class="in-panel">
+  <div class="card">
+    <div class="card-header">
+      Last Blog Posts
+    </div>
+    {{#each model.blogPosts as |blogPost|}}
+      {{#link-to "admin.posts.post" blogPost.slug class="card card-block"}}
+        <h5 class="card-title">{{blogPost.title}}</h5>
+      {{/link-to}}
+    {{/each}}
+  </div>
+</div>
