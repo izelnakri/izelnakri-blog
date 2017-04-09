@@ -50,6 +50,7 @@ defmodule Backend.Comment do
   def creation_with_user_changeset(struct, params \\ %{}) do
     struct
     |> creation_changeset(params)
+    |> validate_required([:email_id])
     |> confirm
   end
 

@@ -23,8 +23,8 @@ defmodule Backend.Tag do
   # Test this method hardcode
   # for optimal use have tags with blog_posts and tag_names_fetched
   # return value?
-  def insert_tags_from_params(blog_post, nil, existing_tags), do: nil
-  def insert_tags_from_params(blog_post, tag_params_array, nil), do: raise("Existing tags required")
+  def insert_tags_from_params(_blog_post, nil, existing_tags), do: nil
+  def insert_tags_from_params(_blog_post, _tag_params_array, nil), do: raise("Existing tags required")
   def insert_tags_from_params(blog_post, tag_params_array, existing_tags) do
     existing_tag_names = existing_tags |> Enum.map(fn(tag) -> tag.name end)
     params_tag_names = tag_params_array |> Enum.map(fn(tag) -> tag["name"] end)
@@ -48,7 +48,7 @@ defmodule Backend.Tag do
 
   # Test this method hardcode
   # return value?
-  def delete_tags_diff_from_params(blog_post, tag_params_array, nil), do: raise("Existing tags required")
+  def delete_tags_diff_from_params(_blog_post, _tag_params_array, nil), do: raise("Existing tags required")
   def delete_tags_diff_from_params(blog_post, tag_params_array, existing_tags) do
     params_tag_names = tag_params_array |> Enum.map(fn(tag) -> tag["name"] end)
     existing_blog_post_tag_names = blog_post.tags |> Enum.map(fn(tag) -> tag.name end)

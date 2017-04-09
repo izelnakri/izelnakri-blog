@@ -29,7 +29,8 @@ defmodule Backend.CommentTest do
 
   test "Comment.creation_with_user_changeset with valid attributes assign confirmed_at" do
     blog_post = insert_blog_post()
-    comment_struct = %Comment{blog_post_id: blog_post.id} |> Repo.preload(:blog_post)
+    comment_struct = %Comment{blog_post_id: blog_post.id, email_id: blog_post.user.primary_email_id}
+      |> Repo.preload([:blog_post, :email])
     changeset = Comment.creation_with_user_changeset(comment_struct, @valid_attrs)
     assert changeset.valid?
     assert changeset.changes.confirmed_at != nil
@@ -37,7 +38,8 @@ defmodule Backend.CommentTest do
 
   test "Comment.creation_with_user_changeset with invalid attributes" do
     blog_post = insert_blog_post()
-    comment_struct = %Comment{blog_post_id: blog_post.id} |> Repo.preload(:blog_post)
+    comment_struct = %Comment{blog_post_id: blog_post.id, email_id: blog_post.user.primary_email_id}
+      |> Repo.preload([:blog_post, :email])
     changeset = Comment.creation_with_user_changeset(comment_struct, @invalid_attrs)
     refute changeset.valid?
   end
