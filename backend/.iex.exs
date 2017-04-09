@@ -1,2 +1,2 @@
 import Ecto.Query
-alias Backend.{BlogPost, Comment, User} # Tag in future
+alias Backend.{BlogPost, Comment, User, Tag, BlogPostTag}

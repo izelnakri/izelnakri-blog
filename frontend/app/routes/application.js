@@ -12,7 +12,7 @@ export default Route.extend({
   },
   actions: {
     login(model) {
-      const email = model.get('email.address');
+      const email = model.get('primaryEmail.address');
 
       this.get('session').loginWithPassword(email, model.get('password')).then(() => {
         const previousTransition = this.get('session.previousInvalidatedRoute');

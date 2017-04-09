@@ -1,16 +1,27 @@
 import Ember from 'ember';
 import DS from 'ember-data';
 
-const { Model, attr, hasMany } = DS;
+const { Model, attr, belongsTo, hasMany } = DS;
 const { computed } = Ember;
 
 export default Model.extend({
   authenticationToken: attr('string'),
   password: attr('string'),
-  fullName: attr('string'),
+  locale: attr('string'),
 
-  emails: hasMany(),
-  email: computed('emails.@each', function() {
-    return this.get('emails.firstObject');
-  })
+  lastLoginAt: attr('string'),
+  lastLoginUserAgent: attr('string'),
+  lastLoginIp: attr('string'),
+  lastLoginType: attr('string'),
+
+  isAdmin: attr('boolean'),
+
+  insertedAt: attr('date'),
+  updatedAt: attr('date'),
+
+  person: belongsTo(),
+  primaryEmail: belongsTo('email'),
+
+  blogPosts: hasMany(),
+  emails: computed.alias('person.emails')
 });

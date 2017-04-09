@@ -1,4 +1,4 @@
-defmodule Backend.PageController do
+defmodule Backend.StaticController do
   use Backend.Web, :controller
 
   def index(conn, _params) do

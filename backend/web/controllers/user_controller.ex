@@ -1,7 +1,7 @@
 defmodule Backend.UserController do
   use Backend.Web, :controller
 
-  plug Backend.UserAuthentication when action in [:show]
+  plug Backend.Plugs.UserAuthentication when action in [:show]
 
   alias Backend.User
 

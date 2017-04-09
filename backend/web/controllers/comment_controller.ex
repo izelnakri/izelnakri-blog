@@ -1,7 +1,7 @@
 defmodule Backend.CommentController do
   use Backend.Web, :controller
 
-  plug Backend.UserAuthentication when action in [:update, :delete]
+  plug Backend.Plugs.UserAuthentication when action in [:update, :delete]
 
   alias Backend.Comment
   # def index(conn, %{"filter" => "latest"}) do
@@ -13,23 +13,7 @@ defmodule Backend.CommentController do
   def create(conn, %{"comment" => comment_params}) do
     current_user = Map.get(conn.assigns, :current_user)
 
-    email_id = case current_user do
-      nil -> comment_params["email_id"]
-      current_user -> current_user.primary_email.id
-    end
-
-    confirmed_at = case current_user do
-      nil -> nil
-      _ -> DateTime.utc_now()
-    end
-
-    comment_struct = %Comment{
-      blog_post_id: comment_params["blog_post_id"], email_id: email_id, confirmed_at: confirmed_at
-    } |> Repo.preload([:blog_post, :email])
-
-    changeset = Comment.changeset(comment_struct, comment_params)
-
-    case PaperTrail.insert(changeset, origin: "blog_post") do
+    case Comment.create(comment_params, current_user) do
       {:ok, %{model: comment}} ->
         conn
         |> put_status(:created)
@@ -42,12 +26,16 @@ defmodule Backend.CommentController do
   end
 
   def update(conn, %{"id" => id, "comment" => comment_params}) do
+    current_user = Map.get(conn.assigns, :current_user)
     comment = Repo.get!(Comment, id)
 
-    if user_is_comment_owner_or_admin(comment, conn.assigns.current_user) do
-      changeset = Comment.user_changeset(comment, comment_params)
+    if user_is_comment_owner_or_admin(comment, current_user) do
+      changeset = case current_user.is_admin do
+        true -> Comment.changeset(comment, comment_params) |> Comment.confirm
+        _ -> Comment.changeset(comment, comment_params)
+      end
 
-      case PaperTrail.update(changeset, origin: "admin_panel") do
+      case PaperTrail.update(changeset, build_metadata(current_user)) do
         {:ok, %{model: comment}} ->
           json(conn, Comment.serializer(comment))
         {:error, changeset} ->
@@ -61,17 +49,20 @@ defmodule Backend.CommentController do
   end
 
   def delete(conn, %{"id" => id}) do
+    current_user = Map.get(conn.assigns, :current_user)
     comment = Repo.get!(Comment, id)
 
-    if user_is_comment_owner_or_admin(comment, conn.assigns.current_user) do
-      # get the origin from whether user or admin
-      PaperTrail.delete!(comment, origin: "unknown")
-
+    if user_is_comment_owner_or_admin(comment, current_user) do
+      PaperTrail.delete!(comment, build_metadata(current_user))
       send_resp(conn, :no_content, "")
     else
       not_authorized(conn)
     end
   end
+
+  def build_metadata(nil), do: [origin: "public"]
+  def build_metadata(user = %{is_admin: true}), do: [origin: "admin", user: user]
+  def build_metadata(user), do: [origin: "user", user: user]
 
   defp user_is_comment_owner_or_admin(comment, user) do
     current_user_is_comment_owner = user.person.emails

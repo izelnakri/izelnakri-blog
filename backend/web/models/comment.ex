@@ -1,6 +1,8 @@
 defmodule Backend.Comment do
   use Backend.Web, :model
 
+  # alias Backend.Email
+
   schema "comments" do
     field :content, :string
     field :confirmed_at, :utc_datetime
@@ -31,9 +33,6 @@ defmodule Backend.Comment do
     serialize(comment)
   end
 
-  @doc """
-  Builds a changeset based on the `struct` and `params`.
-  """
   def changeset(struct, params \\ %{}) do
     struct
     |> cast(params, [:content])
@@ -42,9 +41,31 @@ defmodule Backend.Comment do
     |> foreign_key_constraint(:email_id)
   end
 
-  def user_changeset(struct, params \\ %{}) do
+  def creation_changeset(struct, params \\ %{}) do
     struct
+    |> cast(params, [:email_id, :blog_post_id])
     |> changeset(params)
-    |> change(confirmed_at: DateTime.utc_now())
+  end
+
+  def creation_with_user_changeset(struct, params \\ %{}) do
+    struct
+    |> creation_changeset(params)
+    |> confirm
+  end
+
+  def create(params, current_user \\ nil)
+  def create(params, nil) do
+    # TODO: if comment has email and its not persisted, create a new email
+    changeset = creation_changeset(%__MODULE__{}, params)
+    PaperTrail.insert(changeset, origin: "public")
+  end
+  def create(params, current_user) do
+    target_params = Map.put(params, "email_id", current_user.primary_email_id)
+    changeset = creation_with_user_changeset(%__MODULE__{}, target_params)
+    PaperTrail.insert(changeset, origin: "public")
+  end
+
+  def confirm(comment) do
+    comment |> change(confirmed_at: DateTime.utc_now())
   end
 end

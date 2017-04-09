@@ -1,4 +1,4 @@
-defmodule Backend.RecognizeUserFromToken do
+defmodule Backend.Plugs.RecognizeUserFromToken do
   import Plug.Conn
   import Ecto.Query
   import Backend.Web.ConnUtils

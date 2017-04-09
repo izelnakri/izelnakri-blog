@@ -1,9 +1,8 @@
 import Ember from 'ember';
-import ScrollResetMixin from 'frontend/mixins/scroll-reset';
 
 const { Route } = Ember;
 
-export default Route.extend(ScrollResetMixin, {
+export default Route.extend({
   headData: Ember.inject.service(),
   afterModel(model) {
     this.set(
@@ -14,14 +13,5 @@ export default Route.extend(ScrollResetMixin, {
         model: model
       })
     );
-  },
-  actions: {
-    // loading: function(transition) {
-    //   this.set('state.loading', true);
-    //
-    //   transition.finally(() => {
-    //     this.set('state.loading', false);
-    //   });
-    // },
   }
 });

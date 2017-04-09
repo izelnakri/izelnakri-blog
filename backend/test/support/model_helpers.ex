@@ -3,6 +3,7 @@ defmodule Backend.ModelHelpers do
   alias Backend.Comment
   alias Backend.Email
   alias Backend.User
+  alias Backend.Tag
 
   import Ecto.Query
 
@@ -10,11 +11,11 @@ defmodule Backend.ModelHelpers do
   @normal_user_attrs %{email: "normaluser@gmail.com", password: "123456", full_name: "Other Nakri"}
 
   @valid_blog_post_attrs %{
-    title: "Testing in Elixir", slug: "testing-in-elixir",
-    markdown_content: "It is awesome. Hello World!", meta_title: "Testing in Elixir",
-    meta_description: "It is awesome. Click to read more", image_url: nil,
-    published_at: nil
-  } # add tags: ["Elixir"]
+    "title" => "Testing in Elixir", "slug" => "testing-in-elixir",
+    "markdown_content" => "It is awesome. Hello World!", "meta_title" => "Testing in Elixir",
+    "meta_description" => "It is awesome. Click to read more", "image_url" => nil,
+    "published_at" => nil, "tags" => [%{"name" => "Elixir"}]
+  }
 
   @valid_comment_attrs %{
     content: "This is a great blog post!"
@@ -37,6 +38,10 @@ defmodule Backend.ModelHelpers do
     blog_post = BlogPost.changeset(blog_post_changeset, @valid_blog_post_attrs)
       |> PaperTrail.insert!(origin: "test")
 
+    existing_tags = Tag.get_existing_tags_from_params(@valid_blog_post_attrs["tags"])
+
+    Tag.insert_tags_from_params(blog_post, @valid_blog_post_attrs["tags"], existing_tags)
+
     BlogPost.query()
     |> where(id: ^blog_post.id)
     |> Repo.one()
@@ -55,9 +60,8 @@ defmodule Backend.ModelHelpers do
     end
 
     comment_changeset = %Comment{blog_post_id: blog_post.id, email_id: email_id}
-      |> Repo.preload([:blog_post, :email])
-
     comment = Comment.changeset(comment_changeset, @valid_comment_attrs) |> Repo.insert!
+
     Comment.query()
     |> where(id: ^comment.id)
     |> Repo.one()

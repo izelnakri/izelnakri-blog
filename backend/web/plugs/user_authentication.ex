@@ -1,4 +1,4 @@
-defmodule Backend.UserAuthentication do
+defmodule Backend.Plugs.UserAuthentication do
   import Plug.Conn
   import Backend.Web.ConnUtils
 

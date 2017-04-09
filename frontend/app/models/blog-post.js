@@ -1,30 +1,28 @@
 import Ember from 'ember';
 import DS from 'ember-data';
 
-const { observer } = Ember;
-const { Model, attr, belongsTo } = DS;
+const { Model, attr, belongsTo, hasMany } = DS;
 
 export default Model.extend({
   title: attr('string'),
   markdownContent: attr('string'),
   slug: attr('string'),
-  tag: attr('string'),
 
   metaTitle: attr('string'),
   metaDescription: attr('string'),
   imageUrl: attr('string'),
 
+  publishedAt: attr('date'),
   insertedAt: attr('date'),
   updatedAt: attr('date'),
-  publishedAt: attr('date'),
 
-  titleChange: observer('title', function() {
+  titleChange: Ember.observer('title', function() {
     if (this.get('isNew')) {
       this.set('slug', Ember.String.dasherize(this.get('title')).replace('&', 'and'));
       this.set('metaTitle', this.get('title'));
     }
   }),
-  contentChange: observer('markdownContent', function() {
+  contentChange: Ember.observer('markdownContent', function() {
     if (this.get('isNew')) {
       const html = $(marked(this.get('markdownContent'))),
             targetText = html.find('p').text() ? html.find('p').text() : html.text(),
@@ -34,5 +32,7 @@ export default Model.extend({
     }
   }),
 
-  user: belongsTo()
+  user: belongsTo(),
+  tags: hasMany(),
+  comments: hasMany()
 });

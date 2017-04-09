@@ -11,6 +11,8 @@ module.exports = function(defaults) {
   app.import('bower_components/marked/lib/marked.js', { type: 'vendor' });
 
   if (!process.env.EMBER_CLI_FASTBOOT) {
+    // TODO: Add selectize
+
     app.import('bower_components/raven-js/dist/raven.min.js', { type: 'vendor' });
     app.import('bower_components/raven-js/dist/plugins/ember.min.js', { type: 'vendor' });
 

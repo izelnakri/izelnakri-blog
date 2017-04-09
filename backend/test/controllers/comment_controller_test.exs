@@ -12,12 +12,11 @@ defmodule Backend.CommentControllerTest do
 
   test "POST /comments as guest works", %{conn: conn} do
     blog_post = insert_blog_post()
-
     comment_params = @valid_comment_params |> Map.merge(%{blog_post_id: blog_post.id})
 
     conn = post(conn, "/comments", comment: comment_params)
-
     persisted_id = json_response(conn, 201)["id"]
+
     assert persisted_id
 
     comment = get_comment(persisted_id) |> Map.drop([:updated_at])
@@ -26,21 +25,20 @@ defmodule Backend.CommentControllerTest do
     assert comment.email_id == nil
     assert comment.confirmed_at == nil
     assert comment.blog_post_id == blog_post.id
-
     assert Comment.count() == 1
   end
 
   test "POST /comments with an email works", %{conn: conn} do
+    # TODO: this test should be different
     blog_post = insert_blog_post()
     user = insert_normal_user()
-
     comment_params = @valid_comment_params |> Map.merge(%{
       blog_post_id: blog_post.id, email_id: user.primary_email_id
     })
 
     conn = post(conn, "/comments", comment: comment_params)
-
     persisted_id = json_response(conn, 201)["id"]
+
     assert persisted_id
 
     comment = get_comment(persisted_id)
@@ -49,39 +47,33 @@ defmodule Backend.CommentControllerTest do
     assert comment.email_id == user.primary_email_id
     assert comment.confirmed_at == nil
     assert comment.blog_post_id == blog_post.id
-
     assert Comment.count() == 1
   end
 
   test "POST /comments for logged-in user assigns the right user and confirmed_at", %{conn: conn} do
     blog_post = insert_blog_post()
     user = insert_normal_user()
-
     admin_user = get_user(blog_post.user_id)
-
     comment_params = @valid_comment_params |> Map.merge(%{
-      blog_post_id: blog_post.id, email_id: user.primary_email_id
+      blog_post_id: blog_post.id, email_id: admin_user.primary_email_id
     })
 
-    conn_with_token = set_conn_with_token(conn, admin_user.authentication_token)
+    conn_with_token = set_conn_with_token(conn, user.authentication_token)
     conn = post(conn_with_token, "/comments", comment: comment_params)
 
-    persisted_id = json_response(conn, 201)["id"]
-    assert persisted_id
+    assert json_response(conn, 201)["id"]
 
-    comment = get_comment(persisted_id)
+    comment = get_comment(json_response(conn, 201)["id"])
 
     assert comment |> Map.take([:content]) == @valid_comment_params
-    assert comment.email_id == admin_user.primary_email_id
-    assert comment.confirmed_at != nil
+    assert comment.email_id == user.primary_email_id
+    assert comment.confirmed_at
     assert comment.blog_post_id == blog_post.id
-
     assert Comment.count() == 1
   end
 
   test "POST /comments shouldnt work without blog_post", %{conn: conn} do
     user = insert_normal_user()
-
     comment_params = @valid_comment_params |> Map.merge(%{
       blog_post_id: nil, email_id: user.primary_email_id
     })
@@ -89,16 +81,12 @@ defmodule Backend.CommentControllerTest do
     conn_with_token = set_conn_with_token(conn, user.authentication_token)
     conn = post(conn_with_token, "/comments", comment: comment_params)
 
-    response = json_response(conn, 422)
-    assert response
-    assert response["errors"]["blog_post_id"] |> List.first() == "can't be blank"
-
+    assert json_response(conn, 422)["errors"]["blog_post_id"] |> List.first() == "can't be blank"
     assert Comment.count() == 0
   end
 
   test "POST /comments shouldnt work without content", %{conn: conn} do
     blog_post = insert_blog_post()
-
     comment_params = %{
       blog_post_id: nil, email_id: blog_post.user.primary_email_id
     }
@@ -106,32 +94,24 @@ defmodule Backend.CommentControllerTest do
     conn_with_token = set_conn_with_token(conn, blog_post.user.authentication_token)
     conn = post(conn_with_token, "/comments", comment: comment_params)
 
-    response = json_response(conn, 422)
-    assert response
-    assert response["errors"]["content"] |> List.first() == "can't be blank"
-
+    assert json_response(conn, 422)["errors"]["content"] |> List.first() == "can't be blank"
     assert Comment.count() == 0
   end
 
   test "PUT /comments/:id guest cannot edit a comment", %{conn: conn} do
     comment = insert_comment()
-
     comment_params = comment |> Map.merge(@edit_comment_params)
 
     conn = put(conn, "/comments/#{comment.id}", comment: comment_params)
 
-    persisted_comment = get_comment(comment.id)
-
-    assert json_response(conn, 401)["errors"]
-
-    assert comment == persisted_comment
+    assert json_response(conn, 401)
+    assert get_comment(comment.id) == comment
     assert Comment.count() == 1
   end
 
   test "PUT /comments/:id normal user can edit his comment", %{conn: conn} do
     user = insert_normal_user()
     comment = insert_comment(user: user)
-
     comment_params = comment |> Map.merge(@edit_comment_params)
 
     conn_with_token = set_conn_with_token(conn, user.authentication_token)
@@ -145,31 +125,28 @@ defmodule Backend.CommentControllerTest do
     assert comment != persisted_comment
     assert Map.drop(persisted_comment, [:content, :updated_at, :confirmed_at]) == comment_meta_data
     assert persisted_comment.content == @edit_comment_params |> Map.get(:content)
-
     assert Comment.count() == 1
   end
 
   test "PUT /comments/:id normal user cannot edit somebody elses comment", %{conn: conn} do
     comment = insert_comment(user: insert_admin_user())
     user = insert_normal_user()
-
     comment_params = comment |> Map.merge(@edit_comment_params)
 
     conn_with_token = set_conn_with_token(conn, user.authentication_token)
     conn = put(conn_with_token, "/comments/#{comment.id}", comment: comment_params)
 
-    assert json_response(conn, 401)["errors"]
-
+    assert json_response(conn, 401)
     assert comment == get_comment(comment.id)
   end
 
   test "PUT /comments/:id admin user can edit and confirm some users comment", %{conn: conn} do
-    comment = insert_comment(user: insert_normal_user())
-    user = insert_admin_user()
-
+    normal_user = insert_normal_user()
+    comment = insert_comment(user: normal_user)
+    admin_user = insert_admin_user()
     comment_params = comment |> Map.merge(@edit_comment_params)
 
-    conn_with_token = set_conn_with_token(conn, user.authentication_token)
+    conn_with_token = set_conn_with_token(conn, admin_user.authentication_token)
     conn = put(conn_with_token, "/comments/#{comment.id}", comment: comment_params)
 
     assert json_response(conn, 200)
@@ -180,15 +157,14 @@ defmodule Backend.CommentControllerTest do
     assert comment != persisted_comment
     assert Map.drop(persisted_comment, [:content, :updated_at, :confirmed_at]) == comment_meta_data
     assert persisted_comment.content == @edit_comment_params |> Map.get(:content)
-    assert persisted_comment.confirmed_at != nil
-
+    assert persisted_comment.email_id == normal_user.primary_email_id
+    assert persisted_comment.confirmed_at
     assert Comment.count() == 1
   end
 
   test "PUT /comments/:id admin can edit and confirm guest comment", %{conn: conn} do
     comment = insert_comment()
     user = get_admin_user()
-
     comment_params = comment |> Map.merge(@edit_comment_params)
 
     conn_with_token = set_conn_with_token(conn, user.authentication_token)
@@ -202,25 +178,20 @@ defmodule Backend.CommentControllerTest do
     assert comment != persisted_comment
     assert Map.drop(persisted_comment, [:content, :updated_at, :confirmed_at]) == comment_meta_data
     assert persisted_comment.content == @edit_comment_params |> Map.get(:content)
-    assert persisted_comment.confirmed_at != nil
-
+    assert persisted_comment.confirmed_at
     assert Comment.count() == 1
   end
 
   test "PUT /comments/:id admin cannot update a comment when content is invalid", %{conn: conn} do
     comment = insert_comment()
     user = get_admin_user()
-
     comment_params = comment |> Map.merge(@edit_comment_params) |> Map.put(:content, "")
 
     conn_with_token = set_conn_with_token(conn, user.authentication_token)
     conn = put(conn_with_token, "/comments/#{comment.id}", comment: comment_params)
 
-    response = json_response(conn, 422)
-    assert response["errors"]
-
+    assert json_response(conn, 422)["errors"]["content"] |> List.first() == "can't be blank"
     assert comment == get_comment(comment.id)
-    assert response["errors"]["content"] |> List.first() == "can't be blank"
     assert Comment.count() == 1
   end
 
@@ -229,7 +200,7 @@ defmodule Backend.CommentControllerTest do
 
     conn = delete(conn, "/comments/#{comment.id}")
 
-    assert json_response(conn, 401)["errors"]
+    assert json_response(conn, 401)
     assert get_comment(comment.id) == comment
     assert Comment.count() == 1
   end
@@ -253,7 +224,7 @@ defmodule Backend.CommentControllerTest do
     conn_with_token = set_conn_with_token(conn, user.authentication_token)
     conn = delete(conn_with_token, "/comments/#{comment.id}")
 
-    assert json_response(conn, 401)["errors"]
+    assert json_response(conn, 401)
     assert get_comment(comment.id) == comment
     assert Comment.count() == 1
   end
@@ -270,39 +241,6 @@ defmodule Backend.CommentControllerTest do
     assert Comment.count() == 0
   end
 end
-
-
-# test "creates and renders resource when data is valid", %{conn: conn} do
-#   conn = post conn, book_path(conn, :create), book: @valid_attrs
-#   assert json_response(conn, 201)["data"]["id"]
-#   assert Repo.get_by(Book, @valid_attrs)
-# end
-#
-# test "does not create resource and renders errors when data is invalid", %{conn: conn} do
-#   conn = post conn, book_path(conn, :create), book: @invalid_attrs
-#   assert json_response(conn, 422)["errors"] != %{}
-# end
-#
-# test "updates and renders chosen resource when data is valid", %{conn: conn} do
-#   book = Repo.insert! %Book{}
-#   conn = put conn, book_path(conn, :update, book), book: @valid_attrs
-#   assert json_response(conn, 200)["data"]["id"]
-#   assert Repo.get_by(Book, @valid_attrs)
-# end
-#
-# test "does not update chosen resource and renders errors when data is invalid", %{conn: conn} do
-#   book = Repo.insert! %Book{}
-#   conn = put conn, book_path(conn, :update, book), book: @invalid_attrs
-#   assert json_response(conn, 422)["errors"] != %{}
-# end
-#
-# test "deletes chosen resource", %{conn: conn} do
-#   book = Repo.insert! %Book{}
-#   conn = delete conn, book_path(conn, :delete, book)
-#   assert response(conn, 204)
-#   refute Repo.get(Book, book.id)
-# end
-
 
 # test "/comments?filter=latest returns last comments", %{conn: conn} do
 #

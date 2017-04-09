@@ -8,7 +8,7 @@ export default {
     },
     'blog-post': {
       'title': 'Blog post title',
-      'tag': 'Tag',
+      'tags': 'Tags',
       'slug': 'Blog post link',
       'meta_title': 'Blog post meta title',
       'meta_description': 'Blog post meta description',

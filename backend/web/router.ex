@@ -3,13 +3,13 @@ defmodule Backend.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
-    plug Backend.RecognizeUserFromToken 
+    plug Backend.Plugs.RecognizeUserFromToken
   end
 
   scope "/", Backend do
     pipe_through :api
 
-    get "/", PageController, :index
+    get "/", StaticController, :index
     get "/me", UserController, :show
     post "/login", UserController, :login
 

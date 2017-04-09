@@ -144,21 +144,9 @@ defmodule Backend.User do
     end
   end
 
-  def make_admin(user) do
-    result = Repo.transaction(fn ->
-      confirm_emails(user)
-      change(user, %{is_admin: true, is_verified: true}) |> PaperTrail.update!
-    end)
-
-    case result do
-      {:ok, user} -> query() |> where(id: ^user.id) |> Repo.one()
-      changeset -> changeset |> elem(2)
-    end
-  end
-
   def make_admin(user, options) do
     result = Repo.transaction(fn ->
-      confirm_emails(user)
+      confirm_emails(user, options)
       change(user, %{is_admin: true, is_verified: true}) |> PaperTrail.update!(options)
     end)
 
@@ -177,12 +165,12 @@ defmodule Backend.User do
     changeset
     |> change(%{password_digest: Bcrypt.hashpwsalt(password), password: nil})
   end
-  defp generate_password_digest(changeset), do: changeset # why this?
+  defp generate_password_digest(changeset), do: changeset
 
-  defp confirm_emails(user) do
+  defp confirm_emails(user, options \\ []) do
     Repo.transaction(fn ->
-      emails = Email.query() |> where(person_id: ^user.person_id) |> Repo.all
-      Enum.map(emails, fn(email) -> Email.confirm(email) end)
+      emails = Email |> where(person_id: ^user.person_id) |> Repo.all
+      Enum.map(emails, fn(email) -> Email.confirm(email, options) end)
     end) |> elem(1)
   end
 

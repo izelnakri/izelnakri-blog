@@ -1,4 +1,4 @@
-defmodule Backend.AdminAuthentication do
+defmodule Backend.Plugs.AdminAuthentication do
   import Plug.Conn
   import Backend.Web.ConnUtils
 
