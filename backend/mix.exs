@@ -38,7 +38,7 @@ defmodule Backend.Mixfile do
   defp deps do
     [
       {:bureaucrat, "~> 0.1.4"},
-      {:cors_plug, "~> 1.1.4"},
+      {:cors_plug, "~> 1.1.4", only: [:dev, :test]},
       {:cowboy, "~> 1.0"},
       {:comeonin, "~> 3.0"},
       {:gettext, "~> 0.11"},

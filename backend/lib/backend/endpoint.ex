@@ -3,12 +3,9 @@ defmodule Backend.Endpoint do
 
   socket "/socket", Backend.UserSocket
 
-  # Serve at "/" the static files from "priv/static" directory.
-  #
-  # You should set gzip to true if you are running phoenix.digest
-  # when deploying your static files in production.
-
-  plug CORSPlug
+  if Mix.env() !== "prod"
+    plug CORSPlug
+  end
 
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.
@@ -20,19 +17,7 @@ defmodule Backend.Endpoint do
 
   plug Plug.RequestId
   plug Plug.Logger
-
-  plug Plug.Parsers,
-    parsers: [:multipart, :json],
-    pass: ["*/*"],
-    json_decoder: Poison
-
-  # The session will be stored in the cookie and signed,
-  # this means its contents can be read but not tampered with.
-  # Set :encryption_salt if you would also like to encrypt it.
-  # plug Plug.Session,
-  #   store: :cookie,
-  #   key: "_backend_key",
-  #   signing_salt: "MRk/nWk2"
+  plug Plug.Parsers, parsers: [:multipart, :json], pass: ["*/*"], json_decoder: Poison
 
   plug Backend.Router
 end
