@@ -13,7 +13,7 @@ defmodule Backend.Router do
     get "/me", UserController, :show
     post "/login", UserController, :login
 
-    resources "/blog-posts", BlogPostController, only: [:create, :index, :update, :delete]
+    resources "/blog-posts", BlogPostController, only: [:create, :index, :show, :update, :delete]
     resources "/comments", CommentController, only: [:create, :index, :update, :delete]
   end
 end

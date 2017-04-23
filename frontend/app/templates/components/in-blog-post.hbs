@@ -3,7 +3,9 @@
   <ul class="list-inline text-muted d-flex justify-content-end hidden-sm-down">
     <li class="list-inline-item mr-auto"><i class="fa fa-terminal fa-fw"></i>{{model.user.person.fullName}}</li>
     <!-- tags here -->
-    <li class="list-inline-item"><i class="fa fa-tags fa-fw"></i>{{model.tag}}</li>
+    {{#each model.tags as |tag|}}
+      <li class="list-inline-item"><i class="fa fa-tags fa-fw"></i>{{tag.name}}</li>
+    {{/each}}
     <li class="list-inline-item"><i class="fa fa-clock-o fa-fw"></i>{{date model.insertedAt}}</li>
   </ul>
 

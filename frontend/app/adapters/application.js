@@ -6,7 +6,6 @@ const { inject, computed } = Ember;
 const { dasherize, pluralize } = Ember.String;
 const { RESTAdapter, InvalidError, errorsHashToArray } = DS;
 
-
 export default RESTAdapter.extend({
   host: config.apiHost,
   session: inject.service(),
@@ -15,7 +14,7 @@ export default RESTAdapter.extend({
   },
   headers: computed('session.authenticationToken', function() {
     if (this.get('session.authenticationToken')) {
-      return { 'Authorization': `Bearer ${this.get('session.authenticationToken')}` };
+      return { Authorization: `Bearer ${this.get('session.authenticationToken')}` };
     }
   }),
   coalesceFindRequests: true,

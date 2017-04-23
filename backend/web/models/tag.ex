@@ -5,6 +5,11 @@ defmodule Backend.Tag do
 
   schema "tags" do
     field :name, :string
+    # needs slug
+
+    # image, meta_title, meta_description
+
+    # created_by, updated_by
 
     has_many :blog_post_tags, Backend.BlogPostTag
 
@@ -23,6 +28,7 @@ defmodule Backend.Tag do
   # Test this method hardcode
   # for optimal use have tags with blog_posts and tag_names_fetched
   # return value?
+  # when tag already exists it shouldnt try to create one
   def insert_tags_from_params(_blog_post, nil, existing_tags), do: nil
   def insert_tags_from_params(_blog_post, _tag_params_array, nil), do: raise("Existing tags required")
   def insert_tags_from_params(blog_post, tag_params_array, existing_tags) do

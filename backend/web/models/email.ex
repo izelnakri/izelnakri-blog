@@ -66,13 +66,10 @@ defmodule Backend.Email do
   defp add_error_if_there_is_a_user_for_the_person(changeset) do
     field = changeset |> fetch_field(:person_id) |> elem(1)
 
-    case field do
-      nil -> changeset
-      person_id ->
-        case Repo.get_by(User, person_id: person_id) do
-          nil -> changeset
-          _user -> add_error(changeset, :user, "already exists")
-        end
+    if field && Repo.get_by(User, person_id: field) do
+      add_error(changeset, :user, "already exists")
+    else
+      changeset
     end
   end
 

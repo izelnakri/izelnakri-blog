@@ -3,7 +3,7 @@ export default {
   },
   'models': {
     'user': {
-      'email.address': 'Email',
+      'primary_email.address': 'Email',
       'password': 'Password'
     },
     'blog-post': {
@@ -16,6 +16,10 @@ export default {
     }
   },
   'components': {
+    'in-form': {
+      'failure': 'An error occured: {{error}}',
+      'success': 'Saved successfully'
+    }
   },
   'helpers': {
     'percentage': {

@@ -17,9 +17,7 @@ const InButton = Component.extend(TooltipMixin, {
   bubbles: true,
   type: 'button',
   circleClass: computed('circle', function() {
-    if (this.get('circle')) {
-      return `btn-circle`;
-    }
+    return this.get('circle') ? `btn-circle` : null;
   }),
   blockClass: computed('block', function() {
     return this.get('block') ? 'btn-block' : null;

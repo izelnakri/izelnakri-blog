@@ -25,14 +25,7 @@ export default Component.extend(FormComponentMixin, {
     this.updateModelValue();
   },
   updateModelValue() {
-    var value = this.$('input').val();
-
-    if (this.get('type') === 'currency') {
-      if (parseFloat(value) || value === 0) {
-        value = parseInt((parseFloat(value) * 100).toFixed());
-      } // else return
-    }
-
+    const value = this.$('input').val();
     this.get('model').set(`${this.get('attribute')}`, value);
   },
 

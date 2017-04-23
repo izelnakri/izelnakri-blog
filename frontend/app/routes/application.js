@@ -27,7 +27,7 @@ export default Route.extend({
     },
     logout() {
       if (this.get('currentUser')) {
-        this.get('flashMessages').success("You have been logged out.");
+        this.get('flashMessages').success('You have been logged out.');
         this.get('session').logout();
         this.transitionTo('public');
       }

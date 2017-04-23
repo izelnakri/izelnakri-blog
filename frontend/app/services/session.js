@@ -21,6 +21,7 @@ export default Service.extend({
       Raven.setUserContext({ user_id: currentUser.get('id') });
     }
 
+    this.set('authenticationToken', currentUser.get('authenticationToken'));
     localStorage.setItem('inb_token', currentUser.get('authenticationToken'));
     return currentUser;
   },

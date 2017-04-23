@@ -6,44 +6,26 @@ const { singularize } = Ember.String;
 
 export default Component.extend(FormComponentMixin, {
   store: inject.service(),
-  keyUp(event) {
-    const string = event.target.value
+  didInsertElement() {
+    let array = this.get('model').get(`${this.get('attribute')}`);
+    const modelName = array.content.relationship.relationshipMeta.type;
+    const itemLabel = this.get('itemLabel');
+    const self = this;
 
-    if (keyIsDelete(event)) {
-      // TODO: if key is delete
-    }
+    this.set('normalizedValues', array.map((element) => element.get(itemLabel)).join(','));
 
-    if (keyIsEnter(event)) {
-      // TODO: if key is enter
-    }
-
-    if (string.endsWith(' ')) {
-      const actualTagNames = this.get(`model.${this.get('attribute')}`).mapBy('name');
-      const parsedTagNames = string.split(' ');
-
-      return parsedTagNames.forEach((tagName) => {
-        if (!actualTagNames.includes(tagName)) {
-          const modelType = this.get(`model.${this.get('attribute')}`).content.relationship.key;
-          console.log(singularize(modelType));
-          console.log(tagName);
-          this.get(`model.${this.get('attribute')}`).pushObject(
-            this.get('store').createRecord(singularize(modelType), { name: tagName })
-          );
-        }
-      });
-    }
+    $(`#${this.get('labelRef')}`).val(this.get('normalizedValues'));
+    $(`#${this.get('labelRef')}`).selectize({
+      create: true,
+      maxItems: 5,
+      onItemAdd(value, $item) {
+        const model = self.get('store').createRecord(modelName, { [itemLabel]: value });
+        array.pushObject(model);
+      },
+      onItemRemove(value, $item) {
+        const foundObject = array.find((element) => element.get(itemLabel) === value)
+        array.removeObject(foundObject);
+      }
+    });
   },
-  tags: computed('model.@each', 'value.@each', function() {
-    const array = this.get(`model.${this.get('attribute')}`);
-
-    return array.map((tag) => tag.get('name')).join(' ');
-  })
 });
-
-function keyIsDelete(event) {
-
-}
-
-function keyIsEnter(event) {
-
-}

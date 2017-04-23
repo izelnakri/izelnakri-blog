@@ -12,7 +12,6 @@ module.exports = function(defaults) {
 
   if (!process.env.EMBER_CLI_FASTBOOT) {
     // TODO: Add selectize
-
     app.import('bower_components/raven-js/dist/raven.min.js', { type: 'vendor' });
     app.import('bower_components/raven-js/dist/plugins/ember.min.js', { type: 'vendor' });
 
@@ -21,6 +20,7 @@ module.exports = function(defaults) {
     app.import('bower_components/prism/prism.js', { type: 'vendor' });
     app.import('bower_components/prism/components/prism-sql.min.js', { type: 'vendor' });
     app.import('bower_components/prism/components/prism-elixir.min.js', { type: 'vendor' });
+    app.import('bower_components/selectize/dist/js/standalone/selectize.min.js', { type: 'vendor' });
   }
 
   return app.toTree();

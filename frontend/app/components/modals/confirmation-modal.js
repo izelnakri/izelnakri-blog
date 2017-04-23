@@ -1,7 +1,9 @@
 import Ember from 'ember';
 
-export default Ember.Component.extend({
-  modals: Ember.inject.service(),
+const { Component, inject } = Ember;
+
+export default Component.extend({
+  modals: inject.service(),
   classNameBindings: ['modalName'],
   init() {
     this._super(...arguments);

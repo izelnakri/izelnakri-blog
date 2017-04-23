@@ -10,7 +10,7 @@ defmodule Backend.Repo.Migrations.CreateBlogPost do
       add :published_at, :utc_datetime
 
       add :meta_title, :string, null: false, size: 71
-      add :meta_description, :string, null: false, size: 100
+      add :meta_description, :string, null: false, size: 160
 
       add :user_id, references(:users), null: false
       add :first_version_id, references(:versions), null: false
@@ -22,9 +22,7 @@ defmodule Backend.Repo.Migrations.CreateBlogPost do
     end
 
     create unique_index(:blog_posts, [:slug])
-    create unique_index(
-      :blog_posts, [:title, :markdown_content], name: "cannot_duplicate_blog_post"
-    )
+    create unique_index(:blog_posts, [:title], name: "cannot_duplicate_blog_post")
     create unique_index(:blog_posts, [:first_version_id])
     create unique_index(:blog_posts, [:current_version_id])
 

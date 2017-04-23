@@ -17,6 +17,10 @@ defmodule Backend.BlogPostController do
     json conn, %{blog_post: BlogPost.serializer(blog_post)}
   end
 
+  # def show(conn, %{"id" => id}) do
+  #
+  # end
+
   def create(conn, %{"blog_post" => blog_post_params}) do
     case BlogPost.create(blog_post_params, origin: "user", user: conn.assigns.current_user) do
       {:ok, model} ->
@@ -48,7 +52,7 @@ defmodule Backend.BlogPostController do
 
   def delete(conn, %{"id" => id}) do
     blog_post = BlogPost.query() |> where([post], post.id == ^id) |> Repo.one
-    
+
     BlogPost.delete!(blog_post, origin: "user", user: conn.assigns.current_user)
     send_resp(conn, :no_content, "")
   end

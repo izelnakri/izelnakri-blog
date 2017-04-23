@@ -7,7 +7,6 @@ export default Ember.Mixin.create({
   tooltipContainer: undefined,
   tooltipPlacement: 'bottom',
   tooltipAnimation: true,
-
   didInsertElement() {
     this._super(...arguments);
 

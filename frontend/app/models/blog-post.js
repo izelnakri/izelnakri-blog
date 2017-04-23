@@ -2,6 +2,7 @@ import Ember from 'ember';
 import DS from 'ember-data';
 
 const { Model, attr, belongsTo, hasMany } = DS;
+const { observer } = Ember;
 
 export default Model.extend({
   title: attr('string'),
@@ -16,13 +17,13 @@ export default Model.extend({
   insertedAt: attr('date'),
   updatedAt: attr('date'),
 
-  titleChange: Ember.observer('title', function() {
+  titleChange: observer('title', function() {
     if (this.get('isNew')) {
       this.set('slug', Ember.String.dasherize(this.get('title')).replace('&', 'and'));
       this.set('metaTitle', this.get('title'));
     }
   }),
-  contentChange: Ember.observer('markdownContent', function() {
+  contentChange: observer('markdownContent', function() {
     if (this.get('isNew')) {
       const html = $(marked(this.get('markdownContent'))),
             targetText = html.find('p').text() ? html.find('p').text() : html.text(),
@@ -33,6 +34,7 @@ export default Model.extend({
   }),
 
   user: belongsTo(),
+  
   tags: hasMany(),
   comments: hasMany()
 });

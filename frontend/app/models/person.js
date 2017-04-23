@@ -7,6 +7,7 @@ export default Model.extend({
   description: attr('string'),
 
   user: belongsTo(),
+  
   emails: hasMany(),
   // comments through emails
 })

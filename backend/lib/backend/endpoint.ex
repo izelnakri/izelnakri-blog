@@ -3,7 +3,7 @@ defmodule Backend.Endpoint do
 
   socket "/socket", Backend.UserSocket
 
-  if Mix.env() !== "prod"
+  if Mix.env() !== "prod" do
     plug CORSPlug
   end
 

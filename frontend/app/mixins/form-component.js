@@ -19,6 +19,7 @@ export default Mixin.create({
   }),
   init() {
     this._super(...arguments);
+
     if (!this.get('form')) {
       return assert('Form reference missing in one of the form components!!');
     } else if (!this.get('attribute')) {

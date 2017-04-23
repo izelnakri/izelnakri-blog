@@ -1,13 +1,17 @@
-<div class="row no-gutters">
-  <div class="col-2">
-    <ul class="list-group">
-      {{link-to "New Post" "admin.posts.new" class="list-group-item list-group-item-action justify-content-center"}}
-      {{link-to "Content" "admin.content" class="list-group-item list-group-item-action justify-content-center"}}
-      {{link-to "Settings" "admin.settings" class="list-group-item list-group-item-action justify-content-center"}}
-    </ul>
-  </div>
+{{in-header}}
 
-  <div class="col-10">
-    {{outlet}}
+<div class="container" style="padding-top: 58px">
+  <div class="row no-gutters">
+    <div class="col-2">
+      <ul class="list-group">
+        {{link-to "New Post" "admin.posts.new" class="list-group-item list-group-item-action justify-content-center"}}
+        {{link-to "Content" "admin.content" class="list-group-item list-group-item-action justify-content-center"}}
+        {{link-to "Settings" "admin.settings" class="list-group-item list-group-item-action justify-content-center"}}
+      </ul>
+    </div>
+
+    <div class="col-10">
+      {{outlet}}
+    </div>
   </div>
 </div>

@@ -13,19 +13,13 @@ const InIcon = Component.extend(TooltipMixin, {
   size: null,
   spin: false,
   iconCssClass: computed('icon', function() {
-    if (this.get('icon')) {
-      return `fa-${this.get('icon')}`;
-    }
+    return this.get('icon') ? `fa-${this.get('icon')}` : null;
   }),
   sizeClass: computed('size', function() {
-    if (this.get('size')) {
-      return `fa-${this.get('size')}`;
-    }
+    return this.get('size') ? `fa-${this.get('size')}` : null;
   }),
   spinClass: computed('spin', function() {
-    if (this.get('spin')) {
-      return 'fa-spin';
-    }
+    return this.get('spin') ? 'fa-spin' : null;
   }),
 });
 

@@ -8,17 +8,13 @@ export default Component.extend({
   tabindex: "-1",
   header: true,
   sidebar: false,
-
   dialogClassNames: computed('size', 'sidebar', function() {
-    var classNames = [];
+    let classNames = [];
 
-    switch (this.get('size')) {
-      case 'lg':
-        classNames.push('modal-lg');
-        break;
-      case 'sm':
-        classNames.push('modal-sm');
-        break;
+    if (this.get('size') === 'lg') {
+      classNames.push('modal-lg');
+    } else if (this.get('size') === 'sm') {
+      classNames.push('modal-sm');
     }
 
     if (this.get('sidebar')) {
@@ -27,7 +23,6 @@ export default Component.extend({
 
     return classNames.join(' ');
   }),
-
   didInsertElement() {
     this.$().modal();
 
