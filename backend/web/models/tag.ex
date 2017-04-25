@@ -92,7 +92,7 @@ defmodule Backend.Tag do
     end)
   end
 
-  def get_existing_tags_from_params(nil), do: [] # this should maybe raises
+  def get_existing_tags_from_params(nil), do: []
   def get_existing_tags_from_params(tag_params_array) do
     names = tag_params_array |> Enum.map(fn(tag) -> tag |> Map.get("name") end)
     where(__MODULE__, [tag], tag.name in ^names) |> Repo.all()

@@ -1,4 +1,3 @@
-// TODO: Raven log edge cases
 import Ember from 'ember';
 import config from '../config/environment';
 import fetch from 'ember-network/fetch';
@@ -7,8 +6,8 @@ const { Service, inject, RSVP } = Ember;
 
 export default Service.extend({
   store: inject.service(),
-  flashMessages: inject.service(''),
-  authenticationToken: null,
+  flashMessages: inject.service(),
+  authenticationToken: window.localStorage ? window.localStorage.getItem('inb_token') : null,
   currentUser: null,
   previousInvalidatedRoute: null,
   setCurrentUser(json) {

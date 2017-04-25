@@ -22,16 +22,13 @@ export default {
     }
   },
   'helpers': {
-    'percentage': {
-      'format': '{{percentage}}%'
-    }
   },
   'flash_messages': {
     'save': 'Saved successfully',
-    'save_error': 'Something went wrong while saving this record',
+    'save_error': 'Oops, something went wrong while saving this record',
     'blog-post': {
-      'saved': '',
-      'deleted': '',
+      'saved': 'Blog post saved successfully',
+      'deleted': 'Blog post deleted successfully',
       'unpublished': 'Blog post unpublished successfully'
     }
   },
