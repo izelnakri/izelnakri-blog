@@ -6,16 +6,11 @@
 
 # dependencies
 /frontend/node_modules
-/frontend/bower_components
 
 # misc
 /frontend/.sass-cache
-/frontend/connect.lock
 /frontend/coverage/*
-/frontend/libpeerconnection.log
 /frontend/npm-debug.log*
-/frontend/testem.log
-
 
 # App artifacts
 /backend/_build
@@ -34,3 +29,5 @@
 # variables.
 /backend/config/prod.secret.exs
 /backend/priv/repo/seeds.exs
+
+old-frontend

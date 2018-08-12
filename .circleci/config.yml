@@ -1,0 +1,98 @@
+# version: 2
+# jobs:
+#   npm-dependancies:
+#     docker:
+#       - image: node:7.10.1
+#     steps:
+#       - checkout
+#       - restore_cache:
+#           key: dependency-cache-{{ checksum "package.json" }}
+#       - run:
+#           name: install-npm-dependancies
+#           command: npm install
+#       - save_cache:
+#           key: dependency-cache-{{ checksum "package.json" }}
+#           paths:
+#             - ./node_modules
+#   build:
+#     docker:
+#       - image: node:9.3.0
+#     steps:
+#       - checkout
+#       - restore_cache:
+#           key: dependency-cache-{{ checksum "package.json" }}
+#       - run:
+#           name: install dependancies
+#           command: npm run build
+#       - store_artifacts:
+#           path: dist/
+#           destination: static-project
+#       - save_cache:
+#           key: latest-build
+#           paths:
+#             - ./dist
+#   e2e:
+#       docker:
+#         - image: node:9.3.0
+#         - image: selenium/standalone-chrome:3
+#       steps:
+#         - checkout
+#         - restore_cache:
+#             key: dependency-cache-{{ checksum "package.json" }}
+#         - run:
+#             name: run e2e tests
+#             command: node test/e2e/runner.js --config .circleci/nightwatch.conf.js
+#   unit:
+#     docker:
+#       - image: node:9.3.0
+#     steps:
+#       - checkout
+#       - restore_cache:
+#           key: dependency-cache-{{ checksum "package.json" }}
+#       - run:
+#           name: run unit tests
+#           command: npm run unit
+#   upload-docker-image:
+#     docker:
+#       - image: docker:stable
+#     steps:
+#       - checkout
+#       - setup_remote_docker
+#       - restore_cache:
+#           key: latest-build
+#       - run:
+#           name: docker login
+#           command: docker login -u $DOCKER_USER -p $DOCKER_PASS
+#       - run:
+#           name: docker build image
+#           command: docker build -t izelnakri/frontend:latest -f ./docker/Dockerfile .
+#       - run:
+#           name: docker tag image
+#           command: docker tag izelnakri/frontend:latest izelnakri/frontend:$CIRCLE_BRANCH
+#       - run:
+#           name: push docker image to registry
+#           command: docker push izelnakri/frontend
+#
+# workflows:
+#   version: 2
+#   build_and_test:
+#     jobs:
+#       - npm-dependancies
+#       - build:
+#           requires:
+#             - npm-dependancies
+#       - unit:
+#           requires:
+#             - npm-dependancies
+#       - e2e:
+#           requires:
+#             - npm-dependancies
+#       - upload-docker-image:
+#           filters:
+#             branches:
+#               only:
+#                 - master
+#                 - develop
+#           requires:
+#             - unit
+#             - build

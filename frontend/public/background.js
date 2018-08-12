@@ -13,6 +13,7 @@
       e.y += e.ya
       e.xa *= e.x > t.width || e.x < 0 ? -1 : 1
       e.ya *= e.y > t.height || e.y < 0 ? -1 : 1
+      // o.fillStyle = 'green';
       o.fillRect(e.x - .5, e.y - .5, 1, 1);
       for (var i = 0; i < A.length; i++) {
         var n = A[i]

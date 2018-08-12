@@ -1,21 +1,33 @@
-/* jshint node: true */
+/* eslint-env node */
+'use strict';
 
 module.exports = function(environment) {
-  var ENV = {
+  let ENV = {
+    'ember-resolver': {
+      features: {
+        EMBER_RESOLVER_MODULE_UNIFICATION: true
+      }
+    },
     modulePrefix: 'frontend',
-    environment: environment,
+    environment,
     rootURL: '/',
     locationType: 'auto',
-    i18n: { defaultLocale: 'en' },
+    fastboot: {
+      hostWhitelist: ['localhost:1234', 'localhost:3000', /^localhost:\d+$/]
+    },
     'ember-devtools': {
       global: true,
-      enabled: environment === 'development'
+      enabled: ['development', 'memserver', 'test'].includes(environment)
     },
-    flashMessageDefaults: { timeout: 5000 },
+    memserver: {
+      minify: ['demo', 'production'].includes(environment),
+      enabled: ['demo', 'test', 'memserver'].includes(environment)
+    },
     EmberENV: {
       FEATURES: {
         // Here you can enable experimental features on an ember canary build
         // e.g. 'with-controller': true
+        'ember-module-unification': true
       },
       EXTEND_PROTOTYPES: {
         // Prevent Ember Data from overriding Date.parse.
@@ -26,16 +38,12 @@ module.exports = function(environment) {
     APP: {
       // Here you can pass flags/options to your application instance
       // when it is created
-    },
-    fastboot: {
-      hostWhitelist: ['izelnakri.com', /^localhost:\d+$/, '127.0.0.1:5005']
     }
   };
 
-  if (environment === 'development') {
-    // useMirage(ENV);
-    useDevServer(ENV);
+  ENV.APP.API_HOST = 'http://localhost:3000';
 
+  if (environment === 'development') {
     // ENV.APP.LOG_RESOLVER = true;
     // ENV.APP.LOG_ACTIVE_GENERATION = true;
     // ENV.APP.LOG_TRANSITIONS = true;
@@ -44,8 +52,6 @@ module.exports = function(environment) {
   }
 
   if (environment === 'test') {
-    useMirage(ENV);
-
     // Testem prefers this...
     ENV.locationType = 'none';
 
@@ -53,23 +59,9 @@ module.exports = function(environment) {
     ENV.APP.LOG_ACTIVE_GENERATION = false;
     ENV.APP.LOG_VIEW_LOOKUPS = false;
 
+    ENV.APP.autoboot = false;
     ENV.APP.rootElement = '#ember-testing';
-  }
-
-  if (environment === 'production') {
-    ENV.apiHost = 'https://izelnakri.com/api';
   }
 
   return ENV;
 };
-
-
-function useDevServer(ENV) {
-  ENV.apiHost = 'http://localhost:4000';
-  ENV['ember-cli-mirage'] = { enabled: false };
-}
-
-function useMirage(ENV) {
-  ENV.apiHost = '';
-  ENV['ember-cli-mirage'] = { enabled: true };
-}

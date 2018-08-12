@@ -1,8 +1,8 @@
-import resolver from './helpers/resolver';
-import './helpers/flash-message';
+import { setApplication } from '@ember/test-helpers';
+import { start } from 'ember-qunit';
+import Application from '../src/main';
+import ENV from '../config/environment';
 
-import {
-  setResolver
-} from 'ember-qunit';
+setApplication(Application.create(ENV.APP));
 
-setResolver(resolver);
+start();
