@@ -5,7 +5,7 @@ defmodule Backend.Mixfile do
     [
       app: :backend,
       version: "0.0.1",
-      elixir: "~> 1.2",
+      elixir: "~> 1.7",
       elixirc_paths: elixirc_paths(Mix.env),
       compilers: [:phoenix, :gettext] ++ Mix.compilers,
       build_embedded: Mix.env == :prod,
@@ -37,14 +37,15 @@ defmodule Backend.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:bureaucrat, "~> 0.1.4"},
-      {:cors_plug, "~> 1.1.4", only: [:dev, :test]},
+      # {:bureaucrat, "~> 0.1.4"},
+      {:bcrypt_elixir, "~> 0.12"},
+      {:cors_plug, "~> 1.5.2", only: [:dev, :test]},
       {:cowboy, "~> 1.0"},
-      {:comeonin, "~> 3.0"},
+      {:comeonin, "~> 4.1.1"}, # NOTE: upgrade
       {:gettext, "~> 0.11"},
-      {:paper_trail, "~> 0.7.4"},
-      {:phoenix, "~> 1.2.1"},
-      {:phoenix_ecto, "~> 3.2.1"},
+      {:paper_trail, "~> 0.8.0"},
+      {:phoenix, "~> 1.3.4"},
+      {:phoenix_ecto, "~> 3.2"},
       {:phoenix_pubsub, "~> 1.0"},
       {:phoenix_html, "~> 2.6"},
       {:phoenix_live_reload, "~> 1.0", only: :dev},
@@ -63,7 +64,7 @@ defmodule Backend.Mixfile do
     [
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
-      "test": ["ecto.create --quiet", "ecto.migrate", "test"]
+      test: ["ecto.create --quiet", "ecto.migrate", "test"]
     ]
   end
 end

@@ -1,4 +1,4 @@
-FROM "gcr.io/izelnakri-210919/base"
+FROM "inakri/base"
 
 WORKDIR /code/
 
