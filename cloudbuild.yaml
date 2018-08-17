@@ -1,16 +1,17 @@
 # research further on stateful app deployment problem
 # NOTE: try parallel job execution for docker builds and compose
+
 steps:
-- name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'gcr.io/$PROJECT_ID/backend:$BRANCH_NAME', 'backend']
 - name: 'gcr.io/$PROJECT_ID/docker-compose'
   args: ['build']
 - name: 'gcr.io/$PROJECT_ID/docker-compose'
   args: ['up', '-d']
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'gcr.io/$PROJECT_ID/backend:$BRANCH_NAME', 'backend']
 - name: 'gcr.io/$PROJECT_ID/docker-compose'
-  args: ['exec', 'phoenix', './setup-database.sh']
+  args: ['exec', '-T', 'phoenix', './setup-database.sh']
 - name: 'gcr.io/$PROJECT_ID/docker-compose'
-  args: ['exec', 'phoenix', 'mix', 'test', '--trace']
+  args: ['exec', '-T', 'phoenix', 'mix', 'test', '--trace']
 - name: 'gcr.io/cloud-builders/docker'
   args: ['build', '-t', 'gcr.io/$PROJECT_ID/frontend:$BRANCH_NAME', 'frontend']
 - name: 'gcr.io/cloud-builders/docker'
