@@ -1,23 +1,22 @@
 steps:
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'gcr.io/izelnakri-210919/base', '.'] # do this manually perhaps
+  args: ['build', '-t', 'gcr.io/izelnakri-210919/frontend:$BRANCH_NAME', 'frontend']
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'gcr.io/izelnakri-210919/frontend', 'frontend']
-- name: 'gcr.io/cloud-builders/docker'
-  args: ['run', '-it', '-d', '--name', 'frontend', 'gcr.io/izelnakri-210919/frontend']
+  args: ['run', '-it', '-d', '--name', 'frontend', 'gcr.io/izelnakri-210919/frontend:$BRANCH_NAME']
 - name: 'gcr.io/cloud-builders/docker'
   args: ['exec', '-t', 'frontend', '/code/node_modules/.bin/mber', 'test']
-images: ['gcr.io/izelnakri-210919/base', 'gcr.io/izelnakri-210919/frontend']
+images: ['gcr.io/izelnakri-210919/frontend']
 
 
 
 
 
 
-
-
+# add branch tag to containers
 # TODO: build and push the container
 # NOTE: learn how to do branch filters
+# entrypoint: 'node'
+#   args: ['--version']
 # steps:
 # - name: 'gcr.io/cloud-builders/docker'
 #   args: ['build', '-t', 'gcr.io/my-project/my-image', '.']
