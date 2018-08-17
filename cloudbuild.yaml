@@ -4,7 +4,7 @@ steps:
 - name: 'gcr.io/cloud-builders/docker'
   args: ['build', '-t', 'gcr.io/izelnakri-210919/frontend', 'frontend']
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['run', '-d', 'gcr.io/izelnakri-210919/frontend', '--name', 'frontend']
+  args: ['run', '-it', '-d', '--name', 'frontend', 'gcr.io/izelnakri-210919/frontend']
 - name: 'gcr.io/cloud-builders/docker'
   args: ['exec', '-t', 'frontend', '/code/node_modules/.bin/mber', 'test']
 images: ['gcr.io/izelnakri-210919/base', 'gcr.io/izelnakri-210919/frontend']
