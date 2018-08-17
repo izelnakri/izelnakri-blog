@@ -11,7 +11,7 @@ RUN mix deps.get
 
 ADD . /code/
 
-RUN mix compile
+RUN chmod +x ./setup-database.sh && mix compile
 
 ENTRYPOINT "/bin/bash"
 

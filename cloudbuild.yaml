@@ -1,9 +1,12 @@
 # research further on stateful app deployment problem
+# NOTE: try parallel job execution for docker builds and compose
 steps:
 - name: 'gcr.io/cloud-builders/docker'
   args: ['build', '-t', 'gcr.io/$PROJECT_ID/backend:$BRANCH_NAME', 'backend']
 - name: 'gcr.io/$PROJECT_ID/docker-compose'
   args: ['up', '--build', '-d']
+- name: 'gcr.io/$PROJECT_ID/docker-compose'
+  args: ['exec', 'phoenix', './setup-database.sh']
 - name: 'gcr.io/$PROJECT_ID/docker-compose'
   args: ['exec', 'phoenix', 'mix', 'test', '--trace']
 - name: 'gcr.io/cloud-builders/docker'
@@ -14,22 +17,5 @@ steps:
   args: ['exec', '-t', 'frontend', '/code/node_modules/.bin/mber', 'test']
 images: ['gcr.io/$PROJECT_ID/frontend:$BRANCH_NAME']
 
-# check --cache-from caches, + run postgres app on container for tests
-
-# add branch tag to containers
-# TODO: build and push the container
+# NOTE: check --cache-from caches, + run postgres app on container for tests
 # NOTE: learn how to do branch filters: # you can write bash scripts with if checks to do certain things at certain times
-
-# entrypoint: 'node'
-#   args: ['--version']
-# steps:
-# - name: 'gcr.io/cloud-builders/docker'
-#   args: ['build', '-t', 'gcr.io/my-project/my-image', '.']
-#   timeout: 500s
-# - name: 'gcr.io/cloud-builders/docker'
-#   args: ['push', 'gcr.io/my-project/my-image']
-# - name: 'gcr.io/cloud-builders/kubectl'
-#   args: ['set', 'image', 'deployment/my-deployment', 'my-container=gcr.io/my-project/my-image']
-#   env:
-#   - 'CLOUDSDK_COMPUTE_ZONE=us-east4-b'
-#   - 'CLOUDSDK_CONTAINER_CLUSTER=my-cluster'
