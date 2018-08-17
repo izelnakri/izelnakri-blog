@@ -1,1 +1,21 @@
-{{yield}}
+{{#if label}}
+  {{#if errorMessage}}
+    <label for={{name}} class="text-danger {{labelClass}}" data-test-input-label="{{name}}">{{label}} {{errorMessage}}:</label>
+  {{else}}
+    {{#if displayLabel}}
+      <label for={{name}} class="{{labelClass}}" data-test-input-label="{{name}}">{{label}}:</label>
+    {{/if}}
+  {{/if}}
+{{/if}}
+
+{{#if inputGroup}}
+  <div class="input-group">
+    {{yield}}
+  </div>
+{{else}}
+  {{yield}}
+{{/if}}
+
+{{#if hint}}
+  <p class="text-muted">{{hint}}</p>
+{{/if}}

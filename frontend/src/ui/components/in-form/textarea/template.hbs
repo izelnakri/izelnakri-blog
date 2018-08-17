@@ -1,1 +1,7 @@
-{{yield}}
+{{#in-form/wrapper name=name model=model attribute=attribute class=class
+  placeholder=placeholder label=label hint=hint
+}}
+  <textarea id={{name}} type={{type}} name={{name}} data-test-input="{{name}}"
+    class="form-control {{inputClass}}" rows="{{rows}}" value={{value}} required={{required}}
+    placeholder={{placeholder}} style="{{actualStyle}}"/>
+{{/in-form/wrapper}}

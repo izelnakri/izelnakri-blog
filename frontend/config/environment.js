@@ -23,6 +23,10 @@ module.exports = function(environment) {
       minify: ['demo', 'production'].includes(environment),
       enabled: ['demo', 'test', 'memserver'].includes(environment)
     },
+    i18n: {
+      defaultLocale: 'en',
+      warnOnMissingTranslations: environment === 'production',
+    },
     EmberENV: {
       FEATURES: {
         // Here you can enable experimental features on an ember canary build

@@ -1,1 +1,19 @@
-{{yield}}
+<div class="card card-block">
+  <h1 class="in-blog-post-title" data-test-blog-post-title>{{model.title}}</h1>
+  <ul class="list-inline text-muted d-flex justify-content-end hidden-sm-down">
+    <li class="list-inline-item mr-auto" data-test-blog-post-author><i class="fa fa-terminal fa-fw"></i>{{model.user.person.fullName}}</li>
+    <!-- tags here -->
+    {{#each model.tags as |tag index|}}
+      <li class="list-inline-item" data-test-blog-post-tag="{{index}}"><i class="fa fa-tags fa-fw"></i>{{tag.name}}</li>
+    {{/each}}
+    <li class="list-inline-item" data-test-blog-post-date><i class="fa fa-clock-o fa-fw"></i>{{date model.insertedAt}}</li>
+  </ul>
+
+  <ul class="list-inline text-muted hidden-sm-up">
+    <!-- tags here -->
+    <li class="list-inline-item"><i class="fa fa-tags fa-fw"></i>{{model.tag}}</li>
+    <li class="list-inline-item"><i class="fa fa-clock-o fa-fw"></i>{{model.insertedAt}}</li>
+  </ul>
+
+  {{{content}}}
+</div>

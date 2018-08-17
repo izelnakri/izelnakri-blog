@@ -6,21 +6,21 @@ import { setupRenderingTest } from 'frontend/tests/helpers';
 module('Integration | Component | fa-icon', function(hooks) {
   setupRenderingTest(hooks);
 
-  test('it renders', async function(assert) {
-    // Set any properties with this.set('myProperty', 'value');
-    // Handle any actions with this.set('myAction', function(val) { ... });
+  test('can render an fa icon', async function(assert) {
+    await render(hbs`{{fa-icon "close"}}`);
 
-    await render(hbs`{{fa-icon}}`);
+    const expectedClasses = 'fas fa-icon fa-close ember-view';
 
-    assert.equal(this.element.textContent.trim(), '');
+    assert.equal(this.element.querySelector('.fas').getAttribute('class'), expectedClasses);
+  });
 
-    // Template block usage:
-    await render(hbs`
-      {{#fa-icon}}
-        template block text
-      {{/fa-icon}}
-    `);
+  test('can render another icon with different options', async function(assert) {
+    await render(hbs`{{fa-icon "check" spin=true size="lg" circle=true fixedWidth=true}}`);
 
-    assert.equal(this.element.textContent.trim(), 'template block text');
+    const expectedClasses = 'fas fa-icon fa-check fa-fw fa-round fa-lg fa-spin ember-view';
+
+    assert.equal(this.element.querySelector('.fas').getAttribute('class'), expectedClasses);
   });
 });
+
+// NOTE: later test that tooltip works

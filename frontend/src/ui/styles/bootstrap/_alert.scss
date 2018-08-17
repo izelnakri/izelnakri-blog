@@ -1,0 +1,52 @@
+@keyframes slideInDown {
+  from {
+    transform: translate3d(0, -100%, 0);
+    visibility: visible;
+  }
+
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes slideOutUp {
+  from {
+    transform: translate3d(0, 0, 0);
+    visibility: visible;
+  }
+
+  to {
+    transform: translate3d(0, -100%, 0);
+  }
+}
+
+.alert {
+  animation-name: slideInDown;
+  animation-duration: 0.4s;
+  animation-fill-mode: both;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 99999999;
+  border-radius: 0;
+  color: white;
+
+  button {
+    right: 15px;
+    top: 0;
+    width: initial;
+    padding: 10px;
+
+    span {
+      color: white;
+    }
+  }
+}
+
+.alert-danger {
+  background: #C73D32;
+}
+
+.alert-success {
+  background: #00BF87;
+}

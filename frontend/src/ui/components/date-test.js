@@ -6,12 +6,11 @@ import { setupRenderingTest } from 'frontend/tests/helpers';
 module('Integration | Helper | date', function(hooks) {
   setupRenderingTest(hooks);
 
-  // Replace this with your real tests.
   test('it renders', async function(assert) {
-    this.set('inputValue', '1234');
+    this.set('inputValue', new Date('1992-04-01'));
 
     await render(hbs`{{date inputValue}}`);
 
-    assert.equal(this.element.textContent.trim(), '1234');
+    assert.equal(this.element.textContent.trim(), 'April 01, 1992');
   });
 });

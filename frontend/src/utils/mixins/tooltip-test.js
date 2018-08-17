@@ -5,8 +5,8 @@ import { module, test } from 'qunit';
 module('Unit | Mixin | tooltip', function() {
   // Replace this with your real tests.
   test('it works', function (assert) {
-    let TooltipObject = EmberObject.extend(AuthMixin);
-    let subject = TooltipMixin.create();
+    let TooltipObject = EmberObject.extend(TooltipMixin);
+    let subject = TooltipObject.create();
     assert.ok(subject);
   });
 });

@@ -1,1 +1,15 @@
-{{yield}}
+<div class="modal-dialog {{dialogClassNames}}" role="document">
+  <div class="modal-content">
+    {{#if header}}
+      <div class="modal-header">
+        <h5 class="modal-title">{{title}}</h5>
+
+        <button class="close" aria-label="Close" data-dismiss="modal" type="button">
+          {{fa-icon "times"}}
+        </button>
+      </div>
+    {{/if}}
+
+    {{yield}}
+  </div>
+</div>

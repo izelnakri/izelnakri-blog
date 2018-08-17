@@ -1,4 +1,4 @@
-import RSVP from 'rsvp';
+import { Promise } from 'rsvp';
 import Service from '@ember/service';
 import { inject as service } from '@ember/service';
 import ENV from 'frontend/config/environment';
@@ -7,14 +7,14 @@ export default Service.extend({
   session: service(),
 
   fetch(url, headers) {
-    return new RSVP.Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       return fetch(buildUrl(url), {
         method: 'GET', mode: 'no-cors', headers: this.buildHeaders(headers)
       }).then((response) => prepareResponsesFor(200, response, resolve, reject));
     });
   },
   post(url, data, headers) {
-    return new RSVP.Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       return fetch(buildUrl(url), {
         method: 'POST', mode: 'no-cors', headers: this.buildHeaders(headers),
         body: JSON.stringify(data)
@@ -22,7 +22,7 @@ export default Service.extend({
     });
   },
   put(url, data, headers) {
-    return new RSVP.Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       return fetch(buildUrl(url), {
         method: 'PUT', mode: 'no-cors', headers: this.buildHeaders(headers),
         body: JSON.stringify(data)
@@ -30,7 +30,7 @@ export default Service.extend({
     });
   },
   delete(url, headers) {
-    return new RSVP.Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       return fetch(buildUrl(url), {
         method: 'DELETE', mode: 'no-cors', headers: this.buildHeaders(headers)
       }).then((response) => prepareResponsesFor(204, response, resolve, reject));

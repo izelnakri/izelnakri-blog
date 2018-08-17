@@ -10,12 +10,14 @@ module.exports = function(ENV) {
 
   app.importAddon('mber-head', { type: 'vendor' });
 
-  // app.import('node_modules/fastclick/lib/fastclick.js', { type: 'vendor', using: [{ transformation: 'fastbootShim' }] });
+  app.import('node_modules/fastclick/lib/fastclick.js', { type: 'vendor', using: [{ transformation: 'fastbootShim' }] });
 
   app.import('node_modules/raven-js/dist/raven.min.js', { type: 'vendor' }); // NOTE: maybe make it a module
   app.import('node_modules/raven-js/dist/plugins/ember.min.js', { type: 'vendor' });
 
-  app.import('node_modules/bootstrap/dist/js/bootstrap.bundle.min.js', { type: 'vendor', using: [{ transformation: 'fastbootShim' }] });
+  app.import('node_modules/bootstrap/dist/js/bootstrap.bundle.min.js', {
+    type: 'vendor', using: [{ transformation: 'fastbootShim' }]
+  });
 
   if (environment !== 'production') {
     app.importAddon('ember-devtools', { type: 'vendor' });
@@ -33,7 +35,7 @@ module.exports = function(ENV) {
 
   app.importAsAMDModule('moment', 'node_modules/moment/min/moment.min.js', { type: 'vendor' });
 
-  if (ENV.sentry.url) {
+  if (ENV.sentry && ENV.sentry.url) {
     app.injectInlineContent('sentry', `
       <script>
         Raven.config('${ENV.sentry.url}', {
@@ -54,11 +56,11 @@ module.exports = function(ENV) {
     `);
   }
 
-  // app.import('bower_components/marked/lib/marked.js', { type: 'vendor' });
-  // app.import('bower_components/prism/prism.js', { type: 'vendor' });
-  // app.import('bower_components/prism/components/prism-sql.min.js', { type: 'vendor' });
-  // app.import('bower_components/prism/components/prism-elixir.min.js', { type: 'vendor' });
-  // app.import('bower_components/selectize/dist/js/standalone/selectize.min.js', { type: 'vendor' });
+  app.importAsAMDModule('marked', 'node_modules/marked/lib/marked.js', { type: 'vendor' });
+  app.import('node_modules/prismjs/prism.js', { type: 'vendor' });
+  app.import('node_modules/prismjs/components/prism-sql.min.js', { type: 'vendor' });
+  app.import('node_modules/prismjs/components/prism-elixir.min.js', { type: 'vendor' });
+  app.import('node_modules/selectize/dist/js/standalone/selectize.min.js', { type: 'vendor' });
 
   return app.build(environment);
 }

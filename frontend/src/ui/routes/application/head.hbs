@@ -1,1 +1,35 @@
 <title>{{headData.title}}</title>
+<meta property="description" content={{headData.description}} />
+
+<meta property="og:type" content="website" />
+{{#if headData.ogTitle}}
+  <meta property="og:title" content={{headData.ogTitle}} />
+{{else}}
+  <meta property="og:title" content={{headData.title}} />
+{{/if}}
+
+{{#if headData.ogDescription}}
+  <meta property="og:description" content={{headData.ogDescription}} />
+{{else}}
+  <meta property="og:description" content={{headData.description}} />
+{{/if}}
+
+<meta property="og:image" content="{{headData.ogImage}}">
+<meta property="og:url" content="{{headData.url}}">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@izelnakri">
+<meta name="twitter:creator" content="@izelnakri">
+
+{{#if headData.twitterTitle}}
+  <meta name="twitter:title" content="{{headData.twitterTitle}}">
+{{else}}
+  <meta name="twitter:title" content="{{headData.title}}">
+{{/if}}
+
+{{#if headData.twitterDescription}}
+  <meta name="twitter:description" content="{{headData.twitterDescription}}">
+{{else}}
+  <meta name="twitter:description" content="{{headData.description}}">
+{{/if}}
+<meta name="twitter:image" content="{{headData.twitterImage}}">

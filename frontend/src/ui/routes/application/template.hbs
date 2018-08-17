@@ -1,5 +1,9 @@
 {{head-layout}}
 
-<div>
-  {{outlet}}
-</div>
+{{#each flashMessages.queue as |flash|}}
+  {{in-flash-message flash=flash}}
+{{/each}}
+
+{{outlet}}
+
+{{#in-modal/modal-manager}}{{/in-modal/modal-manager}}

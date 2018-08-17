@@ -1,1 +1,35 @@
-{{yield}}
+{{#in-form/wrapper name=name model=model attribute=attribute
+  placeholder=placeholder label=label hint=hint inputGroup=inputGroup addonLeft=addonLeft
+}}
+  {{#if addonLeft}}
+    <div class="input-group-btn">
+      <button class="btn btn-outline-secondary" type="button" tabindex="-1" {{action "addonClick"}}>
+        {{#if addonLeftIsIcon}}
+          {{fa-icon addonLeftIcon}}
+        {{else if addonLeftIsCustomIcon}}
+          {{in-icon addonLeft}}
+        {{else}}
+          {{addonLeft}}
+        {{/if}}
+      </button>
+    </div>
+  {{/if}}
+
+  <input id={{name}} type={{type}} name={{name}} data-test-input="{{name}}"
+    class="form-control {{inputClass}}" value={{value}} step="{{step}}" required={{required}}
+    placeholder={{placeholder}} autofocus={{autofocus}} />
+
+  {{#if addonRight}}
+    <div class="input-group-btn">
+      <button class="btn btn-outline-secondary" type="button" tabindex="-1" {{action "addonClick"}}>
+        {{#if addonRightIsIcon}}
+          {{fa-icon addonRightIcon}}
+        {{else if addonRightIsCustomIcon}}
+          {{in-icon addonRight}}
+        {{else}}
+          {{addonRight}}
+        {{/if}}
+      </button>
+    </div>
+  {{/if}}
+{{/in-form/wrapper}}

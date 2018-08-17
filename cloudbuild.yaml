@@ -1,0 +1,29 @@
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'gcr.io/izelnakri-210919/base', '.'] # do this manually perhaps
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'gcr.io/izelnakri-210919/frontend', 'frontend']
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['exec', '-t', 'gcr.io/izelnakri-210919/frontend', '/code/node_modules/.bin/mber', 'test']
+images: ['gcr.io/izelnakri-210919/base', 'gcr.io/izelnakri-210919/frontend']
+
+
+
+
+
+
+
+
+# TODO: build and push the container
+# NOTE: learn how to do branch filters
+# steps:
+# - name: 'gcr.io/cloud-builders/docker'
+#   args: ['build', '-t', 'gcr.io/my-project/my-image', '.']
+#   timeout: 500s
+# - name: 'gcr.io/cloud-builders/docker'
+#   args: ['push', 'gcr.io/my-project/my-image']
+# - name: 'gcr.io/cloud-builders/kubectl'
+#   args: ['set', 'image', 'deployment/my-deployment', 'my-container=gcr.io/my-project/my-image']
+#   env:
+#   - 'CLOUDSDK_COMPUTE_ZONE=us-east4-b'
+#   - 'CLOUDSDK_CONTAINER_CLUSTER=my-cluster'

@@ -1,0 +1,6 @@
+.in-panel {
+  @extend .card;
+  height: calc(100vh - 58px);
+  overflow-y: scroll;
+  display: block;
+}

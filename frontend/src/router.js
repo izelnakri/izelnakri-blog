@@ -15,10 +15,16 @@ Router.map(function() {
   this.route('admin', function() {
     this.route('index', { path: '/' });
     this.route('content');
-    this.route('posts', function() {
+
+    this.route('posts', { resetNamespace: true }, function() {
       this.route('new');
       this.route('post', { path: '/:slug' });
     });
+
+    this.route('lol', function() {
+      this.route('abc');
+    })
+
     this.route('settings');
   });
 
@@ -27,3 +33,6 @@ Router.map(function() {
 });
 
 export default Router;
+
+
+// docsRoute

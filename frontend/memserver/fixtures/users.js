@@ -1,7 +1,7 @@
 export default [
   {
     updated_at: '2017-02-17T17:22:05.088764',
-    password: null,
+    password: 'passwordyeah',
     is_admin: true,
     inserted_at: '2017-02-17T17:22:04.987466',
     id: 1,

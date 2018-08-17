@@ -2,7 +2,7 @@ import moment from 'moment';
 import Service from '@ember/service';
 import { inject as service } from '@ember/service';
 import { computed } from '@ember/object';
-import config from 'frontend/config/environment';
+import ENV from 'frontend/config/environment';
 
 export default Service.extend({
   i18n: service(),
@@ -20,9 +20,9 @@ export default Service.extend({
   getCurrentLocale() {
     const userLocale = this.get('session.currentUser.locale');
     const cachedLocale = window.localStorage.getItem('in-locale');
-    const locale = userLocale || cachedLocale || config.i18n.defaultLocale;
+    const locale = userLocale || cachedLocale || ENV.i18n.defaultLocale;
 
-    return this.i18n.locales.includes(locale) ? locale : config.i18n.defaultLocale;
+    return this.i18n.locales.includes(locale) ? locale : ENV.i18n.defaultLocale;
   },
   chooseLocale(locale) {
     this.setLocale(locale);

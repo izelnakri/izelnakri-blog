@@ -1,5 +1,5 @@
 import $ from 'jquery';
-// TODO: add marked
+import marked from 'marked';
 import DS from 'ember-data';
 import { observer } from '@ember/object';
 import { dasherize } from '@ember/string';
@@ -25,14 +25,13 @@ export default Model.extend({
     }
   }),
   contentChange: observer('markdownContent', function() {
-    // TODO: add here with marked
-    // if (this.get('isNew')) {
-    //   const html = $(marked(this.get('markdownContent'))),
-    //         targetText = html.find('p').text() ? html.find('p').text() : html.text(),
-    //         content = targetText.replace('\n', '');
-    //
-    //   this.set('metaDescription', content.length > 155 ? content.slice(0, 155) + '...' : content);
-    // }
+    if (this.get('isNew')) {
+      const html = $(marked(this.get('markdownContent'))),
+            targetText = html.find('p').text() ? html.find('p').text() : html.text(),
+            content = targetText.replace('\n', '');
+
+      this.set('metaDescription', content.length > 155 ? content.slice(0, 155) + '...' : content);
+    }
   }),
 
   user: belongsTo(),
