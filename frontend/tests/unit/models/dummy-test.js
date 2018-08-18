@@ -5,6 +5,6 @@ module('Unit | Model | Dummy', function(hooks) {
   setupTest(hooks);
 
   test('it exists', function(assert) {
-    assert.ok(!!true);
+    assert.ok(!true);
   });
 });
