@@ -1,21 +1,19 @@
-# research further on stateful app deployment problem
-
-# NOTE: try parallel job execution for backend and frontend builds
 steps:
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['pull', 'gcr.io/$PROJECT_ID/backend:$BRANCH_NAME', '||', 'true']
-- name: 'gcr.io/cloud-builders/docker'
-  args: ['pull', 'gcr.io/$PROJECT_ID/frontend:$BRANCH_NAME', '||', 'true']
-- name: 'gcr.io/$PROJECT_ID/docker-compose'
+  args: ['pull', 'inakri/base']
+- id: 'run-images'
+  name: 'gcr.io/$PROJECT_ID/docker-compose'
   env: ['MIX_ENV=test', 'BACKEND_IMAGE_NAME=gcr.io/$PROJECT_ID/backend:$BRANCH_NAME', 'FRONTEND_IMAGE_NAME=gcr.io/$PROJECT_ID/frontend:$BRANCH_NAME']
   args: ['up', '--build', '-d']
 - name: 'gcr.io/$PROJECT_ID/docker-compose'
   args: ['exec', '-T', 'backend', 'mix', 'test', '--trace']
+  waitFor:
+  - 'run-images'
 - name: 'gcr.io/$PROJECT_ID/docker-compose'
   args: ['exec', '-T', 'frontend', '/code/node_modules/.bin/mber', 'test']
+  waitFor:
+  - 'run-images'
 images: ['gcr.io/$PROJECT_ID/backend:$BRANCH_NAME', 'gcr.io/$PROJECT_ID/frontend:$BRANCH_NAME']
 
-# add full frontend tests
-
-# NOTE: check --cache-from caches, + run postgres app on container for tests
 # NOTE: learn how to do branch filters: # you can write bash scripts with if checks to do certain things at certain times
+# research further on stateful app deployment problem
