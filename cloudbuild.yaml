@@ -1,26 +1,24 @@
 # research further on stateful app deployment problem
-# TODO: now optimize steps + builds
-# NOTE: try parallel job execution for docker builds and compose
+# NOTE: try parallel job execution for backend and frontend builds
 
 steps:
-- name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'gcr.io/$PROJECT_ID/backend:$BRANCH_NAME', 'backend']
 - name: 'gcr.io/$PROJECT_ID/docker-compose'
+  env: ['BACKEND_IMAGE_NAME=gcr.io/$PROJECT_ID/backend:$BRANCH_NAME', 'FRONTEND_IMAGE_NAME=gcr.io/$PROJECT_ID/frontend:$BRANCH_NAME']
   args: ['up', '-d']
 - name: 'gcr.io/$PROJECT_ID/docker-compose'
-  args: ['exec', '-T', 'phoenix', 'mix', 'test', '--trace']
-- name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'gcr.io/$PROJECT_ID/frontend:$BRANCH_NAME', 'frontend']
-- name: 'gcr.io/cloud-builders/docker'
-  args: ['run', '-it', '-d', '--name', 'frontend', 'gcr.io/$PROJECT_ID/frontend:$BRANCH_NAME']
-- name: 'gcr.io/cloud-builders/docker'
-  args: ['exec', '-t', 'frontend', '/code/node_modules/.bin/mber', 'test']
+  args: ['exec', '-T', 'backend', 'mix', 'test', '--trace']
+- name: 'gcr.io/cloud-builders/docker-compose'
+  args: ['exec', '-T', 'frontend', '/code/node_modules/.bin/mber', 'test']
 images: ['gcr.io/$PROJECT_ID/backend:$BRANCH_NAME', 'gcr.io/$PROJECT_ID/frontend:$BRANCH_NAME']
+
+# add full frontend tests
 
 # NOTE: check --cache-from caches, + run postgres app on container for tests
 # NOTE: learn how to do branch filters: # you can write bash scripts with if checks to do certain things at certain times
 
-# - name: 'gcr.io/$PROJECT_ID/docker-compose'
-#   args: ['build']
-# - name: 'gcr.io/$PROJECT_ID/docker-compose'
-#   args: ['exec', '-T', 'phoenix', './setup-database.sh']
+# - name: 'gcr.io/cloud-builders/docker'
+#   args: ['build', '-t', 'gcr.io/$PROJECT_ID/backend:$BRANCH_NAME', 'backend']
+# - name: 'gcr.io/cloud-builders/docker'
+#   args: ['build', '-t', 'gcr.io/$PROJECT_ID/frontend:$BRANCH_NAME', 'frontend']
+# - name: 'gcr.io/cloud-builders/docker'
+#   args: ['run', '-it', '-d', '--name', 'frontend', 'gcr.io/$PROJECT_ID/frontend:$BRANCH_NAME']

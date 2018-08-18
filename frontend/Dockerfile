@@ -9,4 +9,4 @@ RUN npm install
 
 ADD . /code/
 
-ENTRYPOINT "/bin/bash"
+CMD ["./node_modules/.bin/mber", "s"]

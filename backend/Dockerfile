@@ -13,8 +13,7 @@ ADD . /code/
 
 RUN mix compile
 
-ENTRYPOINT "/bin/bash"
+CMD ["mix", "phx.server"]
 
 # mix ecto.create
 # mix ecto.migrate
-# mix phx.server

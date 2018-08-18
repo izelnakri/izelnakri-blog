@@ -8,6 +8,14 @@ use Mix.Config
 # General application configuration
 config :backend, ecto_repos: [Repo]
 
+# IO.puts("Mix.env is")
+# IO.puts(Mix.env())
+# IO.puts("PGHOST is")
+# pg_host = System.get_env("PGHOST")
+# IO.puts(pg_host)
+# image = System.get_env("IMAGE")
+# IO.puts("IMAGE IS")
+# IO.puts(image || "not found")
 # Configures the endpoint
 config :backend, Backend.Endpoint,
   url: [host: "localhost"],

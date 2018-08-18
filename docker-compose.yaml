@@ -1,36 +1,45 @@
 version: '3.2'
-
 services:
-  phoenix:
+  db:
+    image: postgres:10.5
+    environment:
+      POSTGRES_USER: $PGHOST
+      POSTGRES_PASSWORD: $PGPASSWORD
+      PGDATA: /var/lib/postgresql/data/pgdata
+    restart: always
+    networks:
+      - backend_network
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+  backend:
+    image: $BACKEND_IMAGE_NAME
     build:
       context: ./backend
     environment:
-      PGUSER: postgres
-      PGPASSWORD: postgres
-      PGPORT: 5432
+      PGUSER: $PGUSER
+      PGPASSWORD: $PGPASSWORD
+      PGPORT: $PGPORT
       PGHOST: db
-      MIX_ENV: test
+      MIX_ENV: dev
     tty: true
     ports:
       - "4000:4000"
     depends_on:
       - db
     networks:
-      - backend
+      - backend_network
     command: ["./scripts/setup-database.sh"]
-  db:
-    image: postgres:10.5
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      PGDATA: /var/lib/postgresql/data/pgdata
-    restart: always
+  frontend:
+    image: $FRONTEND_IMAGE_NAME
+    tty: true
+    build:
+      context: ./frontend
+    ports:
+      - "4200:4200"
     networks:
-      - backend
-    volumes:
-      - pgdata:/var/lib/postgresql/data
+      - backend_network
 volumes:
   pgdata:
 networks:
-  backend:
+  backend_network:
     driver: bridge
