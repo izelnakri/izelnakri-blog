@@ -1,19 +1,36 @@
 steps:
 - name: 'gcr.io/cloud-builders/docker'
+  id: 'pull-base-image'
   args: ['pull', 'inakri/base']
-- id: 'run-images'
-  name: 'gcr.io/$PROJECT_ID/docker-compose'
+- name: 'gcr.io/cloud-builders/docker'
+  id: 'pull-backend'
+  args: ['pull', 'gcr.io/$PROJECT_ID/backend:latest']
+  waitFor: ['pull-base-image']
+- name: 'gcr.io/cloud-builders/docker'
+  id: 'pull-frontend'
+  args: ['pull', 'gcr.io/$PROJECT_ID/frontend:latest']
+  waitFor: ['pull-base-image']
+- name: 'gcr.io/$PROJECT_ID/docker-compose'
+  id: 'run-images'
   env: ['MIX_ENV=test', 'BACKEND_IMAGE_NAME=gcr.io/$PROJECT_ID/backend:$BRANCH_NAME', 'FRONTEND_IMAGE_NAME=gcr.io/$PROJECT_ID/frontend:$BRANCH_NAME']
   args: ['up', '--build', '-d']
+  waitFor: ['pull-backend', 'pull-frontend']
 - name: 'gcr.io/$PROJECT_ID/docker-compose'
+  id: 'test-backend'
   args: ['exec', '-T', 'backend', 'mix', 'test', '--trace']
-  waitFor:
-  - 'run-images'
+  waitFor: ['run-images']
 - name: 'gcr.io/$PROJECT_ID/docker-compose'
+  id: 'test-frontend'
   args: ['exec', '-T', 'frontend', '/code/node_modules/.bin/mber', 'test']
-  waitFor:
-  - 'run-images'
-images: ['gcr.io/$PROJECT_ID/backend:$BRANCH_NAME', 'gcr.io/$PROJECT_ID/frontend:$BRANCH_NAME']
+  waitFor: ['run-images']
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['tag', 'gcr.io/$PROJECT_ID/backend:$BRANCH_NAME', 'gcr.io/$PROJECT_ID/backend:latest']
+  waitFor: ['test-backend']
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['tag', 'gcr.io/$PROJECT_ID/frontend:$BRANCH_NAME', 'gcr.io/$PROJECT_ID/frontend:latest']
+  waitFor: ['test-frontend']
+
+images: ['gcr.io/$PROJECT_ID/backend:latest', 'gcr.io/$PROJECT_ID/backend:$BRANCH_NAME', 'gcr.io/$PROJECT_ID/frontend:latest', 'gcr.io/$PROJECT_ID/frontend:$BRANCH_NAME']
 
 # NOTE: learn how to do branch filters: # you can write bash scripts with if checks to do certain things at certain times
 # research further on stateful app deployment problem
