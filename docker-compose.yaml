@@ -15,6 +15,9 @@ services:
     image: $BACKEND_IMAGE_NAME
     build:
       context: ./backend
+      cache_from:
+        - inakri/base
+        - $BACKEND_IMAGE_NAME
     environment:
       PGUSER: $PGUSER
       PGPASSWORD: $PGPASSWORD
@@ -34,6 +37,9 @@ services:
     tty: true
     build:
       context: ./frontend
+      cache_from:
+        - inakri/base
+        - $FRONTEND_IMAGE_NAME
     ports:
       - "4200:4200"
     networks:

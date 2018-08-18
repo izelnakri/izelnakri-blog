@@ -1,8 +1,11 @@
 # research further on stateful app deployment problem
-# NOTE: try parallel job execution for backend and frontend builds
 
-# NOTE: Maybe needs env-file explicitly
+# NOTE: try parallel job execution for backend and frontend builds
 steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['pull', 'gcr.io/$PROJECT_ID/backend:$BRANCH_NAME']
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['pull', 'gcr.io/$PROJECT_ID/frontend:$BRANCH_NAME']
 - name: 'gcr.io/$PROJECT_ID/docker-compose'
   env: ['MIX_ENV=test', 'BACKEND_IMAGE_NAME=gcr.io/$PROJECT_ID/backend:$BRANCH_NAME', 'FRONTEND_IMAGE_NAME=gcr.io/$PROJECT_ID/frontend:$BRANCH_NAME']
   args: ['up', '-d']
@@ -16,10 +19,3 @@ images: ['gcr.io/$PROJECT_ID/backend:$BRANCH_NAME', 'gcr.io/$PROJECT_ID/frontend
 
 # NOTE: check --cache-from caches, + run postgres app on container for tests
 # NOTE: learn how to do branch filters: # you can write bash scripts with if checks to do certain things at certain times
-
-# - name: 'gcr.io/cloud-builders/docker'
-#   args: ['build', '-t', 'gcr.io/$PROJECT_ID/backend:$BRANCH_NAME', 'backend']
-# - name: 'gcr.io/cloud-builders/docker'
-#   args: ['build', '-t', 'gcr.io/$PROJECT_ID/frontend:$BRANCH_NAME', 'frontend']
-# - name: 'gcr.io/cloud-builders/docker'
-#   args: ['run', '-it', '-d', '--name', 'frontend', 'gcr.io/$PROJECT_ID/frontend:$BRANCH_NAME']
