@@ -12,7 +12,13 @@ steps:
   waitFor: ['pull-base-image']
 - name: 'gcr.io/$PROJECT_ID/docker-compose'
   id: 'run-images'
-  env: ['MIX_ENV=test', 'BACKEND_IMAGE_NAME=gcr.io/$PROJECT_ID/backend:$BRANCH_NAME', 'FRONTEND_IMAGE_NAME=gcr.io/$PROJECT_ID/frontend:$BRANCH_NAME']
+  env: [
+    'MIX_ENV=test',
+    'BACKEND_IMAGE_NAME=gcr.io/$PROJECT_ID/backend:$BRANCH_NAME',
+    'BACKEND_IMAGE_CACHE=gcr.io/$PROJECT_ID/backend:latest',
+    'FRONTEND_IMAGE_NAME=gcr.io/$PROJECT_ID/frontend:$BRANCH_NAME',
+    'FRONTEND_IMAGE_CACHE=gcr.io/$PROJECT_ID/frontend:latest'
+  ]
   args: ['up', '--build', '-d']
   waitFor: ['pull-backend', 'pull-frontend']
 - name: 'gcr.io/$PROJECT_ID/docker-compose'

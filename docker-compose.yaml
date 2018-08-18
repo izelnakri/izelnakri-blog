@@ -17,7 +17,7 @@ services:
       context: ./backend
       cache_from:
         - inakri/base
-        - $BACKEND_IMAGE_NAME
+        - $BACKEND_IMAGE_CACHE
     environment:
       PGUSER: $PGUSER
       PGPASSWORD: $PGPASSWORD
@@ -39,7 +39,7 @@ services:
       context: ./frontend
       cache_from:
         - inakri/base
-        - $FRONTEND_IMAGE_NAME
+        - $FRONTEND_IMAGE_CACHE
     ports:
       - "4200:4200"
     networks:
