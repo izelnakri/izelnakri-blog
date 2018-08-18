@@ -3,8 +3,8 @@ services:
   db:
     image: postgres:10.5
     environment:
-      POSTGRES_USER: $PGHOST
-      POSTGRES_PASSWORD: $PGPASSWORD
+      POSTGRES_PASSWORD: $PGUSER
+      POSTGRES_USER: $PGPASSWORD
       PGDATA: /var/lib/postgresql/data/pgdata
     restart: always
     networks:
@@ -18,9 +18,9 @@ services:
     environment:
       PGUSER: $PGUSER
       PGPASSWORD: $PGPASSWORD
-      PGPORT: $PGPORT
+      PGPORT: 5432
       PGHOST: db
-      MIX_ENV: dev
+      MIX_ENV: $MIX_ENV
     tty: true
     ports:
       - "4000:4000"
@@ -38,6 +38,7 @@ services:
       - "4200:4200"
     networks:
       - backend_network
+
 volumes:
   pgdata:
 networks:

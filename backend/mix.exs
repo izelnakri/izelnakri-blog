@@ -38,7 +38,7 @@ defmodule Backend.Mixfile do
   defp deps do
     [
       # {:bureaucrat, "~> 0.1.4"},
-      {:bcrypt_elixir, "~> 0.12"},
+      {:bcrypt_elixir, "~> 1.0.9"},
       {:cors_plug, "~> 1.5.2", only: [:dev, :test]},
       {:cowboy, "~> 1.0"},
       {:comeonin, "~> 4.1.1"}, # NOTE: upgrade

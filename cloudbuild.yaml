@@ -1,13 +1,14 @@
 # research further on stateful app deployment problem
 # NOTE: try parallel job execution for backend and frontend builds
 
+# NOTE: Maybe needs env-file explicitly
 steps:
 - name: 'gcr.io/$PROJECT_ID/docker-compose'
-  env: ['BACKEND_IMAGE_NAME=gcr.io/$PROJECT_ID/backend:$BRANCH_NAME', 'FRONTEND_IMAGE_NAME=gcr.io/$PROJECT_ID/frontend:$BRANCH_NAME']
+  env: ['MIX_ENV=test', 'BACKEND_IMAGE_NAME=gcr.io/$PROJECT_ID/backend:$BRANCH_NAME', 'FRONTEND_IMAGE_NAME=gcr.io/$PROJECT_ID/frontend:$BRANCH_NAME']
   args: ['up', '-d']
 - name: 'gcr.io/$PROJECT_ID/docker-compose'
   args: ['exec', '-T', 'backend', 'mix', 'test', '--trace']
-- name: 'gcr.io/cloud-builders/docker-compose'
+- name: 'gcr.io/$PROJECT_ID/docker-compose'
   args: ['exec', '-T', 'frontend', '/code/node_modules/.bin/mber', 'test']
 images: ['gcr.io/$PROJECT_ID/backend:$BRANCH_NAME', 'gcr.io/$PROJECT_ID/frontend:$BRANCH_NAME']
 
