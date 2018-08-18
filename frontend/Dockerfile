@@ -2,8 +2,7 @@ FROM "inakri/base"
 
 WORKDIR /code/
 
-ADD package-lock.json /code/package-lock.json
-ADD package.json /code/package.json
+COPY ["package-lock.json", "package.json", "/code/"]
 
 RUN npm install
 

@@ -4,8 +4,7 @@ WORKDIR /code/
 
 RUN mix local.hex --force && mix local.rebar --force
 
-ADD mix.lock /code/mix.lock
-ADD mix.exs /code/mix.exs
+COPY ["mix.lock", "mix.exs", "/code/"]
 
 RUN mix deps.get
 
