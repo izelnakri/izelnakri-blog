@@ -23,6 +23,7 @@ steps:
   waitFor: ['pull-backend', 'pull-frontend']
 - name: 'gcr.io/$PROJECT_ID/docker-compose'
   id: 'test-backend'
+  env: ['MIX_ENV=test']
   args: ['exec', '-T', 'backend', 'mix', 'test', '--trace']
   waitFor: ['run-images']
 - name: 'gcr.io/$PROJECT_ID/docker-compose'
