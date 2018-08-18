@@ -8,7 +8,7 @@ steps:
   args: ['pull', 'gcr.io/$PROJECT_ID/frontend:$BRANCH_NAME']
 - name: 'gcr.io/$PROJECT_ID/docker-compose'
   env: ['MIX_ENV=test', 'BACKEND_IMAGE_NAME=gcr.io/$PROJECT_ID/backend:$BRANCH_NAME', 'FRONTEND_IMAGE_NAME=gcr.io/$PROJECT_ID/frontend:$BRANCH_NAME']
-  args: ['up', '-d']
+  args: ['up', '--build', '-d']
 - name: 'gcr.io/$PROJECT_ID/docker-compose'
   args: ['exec', '-T', 'backend', 'mix', 'test', '--trace']
 - name: 'gcr.io/$PROJECT_ID/docker-compose'
