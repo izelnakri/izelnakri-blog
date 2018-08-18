@@ -15,8 +15,9 @@ services:
     image: $BACKEND_IMAGE_NAME
     build:
       context: ./backend
+      dockerfile: $BACKEND_DOCKERFILE
       cache_from:
-        - inakri/base
+        - $BASE_IMAGE
         - $BACKEND_IMAGE_CACHE
     environment:
       PGUSER: $PGUSER
@@ -37,8 +38,9 @@ services:
     tty: true
     build:
       context: ./frontend
+      dockerfile: $FRONTEND_DOCKERFILE
       cache_from:
-        - inakri/base
+        - $BASE_IMAGE
         - $FRONTEND_IMAGE_CACHE
     ports:
       - "4200:4200"
