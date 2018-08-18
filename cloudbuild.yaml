@@ -3,9 +3,9 @@
 # NOTE: try parallel job execution for backend and frontend builds
 steps:
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['pull', 'gcr.io/$PROJECT_ID/backend:$BRANCH_NAME']
+  args: ['pull', 'gcr.io/$PROJECT_ID/backend:$BRANCH_NAME', '||', 'true']
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['pull', 'gcr.io/$PROJECT_ID/frontend:$BRANCH_NAME']
+  args: ['pull', 'gcr.io/$PROJECT_ID/frontend:$BRANCH_NAME', '||', 'true']
 - name: 'gcr.io/$PROJECT_ID/docker-compose'
   env: ['MIX_ENV=test', 'BACKEND_IMAGE_NAME=gcr.io/$PROJECT_ID/backend:$BRANCH_NAME', 'FRONTEND_IMAGE_NAME=gcr.io/$PROJECT_ID/frontend:$BRANCH_NAME']
   args: ['up', '--build', '-d']
