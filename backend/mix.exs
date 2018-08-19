@@ -46,7 +46,7 @@ defmodule Backend.Mixfile do
       {:phoenix, "~> 1.3.4"},
       {:phoenix_ecto, "~> 3.2"},
       {:phoenix_pubsub, "~> 1.0"},
-      {:phoenix_html, "~> 2.6"},
+      {:phoenix_html, "~> 2.6"}, # NOTE: is this needed?!?
       {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:postgrex, ">= 0.0.0"},
       {:scribe, "~> 0.4.0", only: [:dev]},

@@ -22,3 +22,5 @@ mix ecto.create
 mix ecto.migrate
 
 echo "\nPostgres migrations finished..."
+
+mix phx.server
