@@ -5,7 +5,7 @@ steps:
 - name: 'gcr.io/cloud-builders/docker'
   id: 'pull-base-image'
   waitFor: ['-']
-  args: ['pull', 'inakri/base']
+  args: ['pull', 'inakri/base-slim']
 - name: 'gcr.io/cloud-builders/docker'
   id: 'pull-backend'
   args: ['pull', 'gcr.io/$PROJECT_ID/backend:latest']

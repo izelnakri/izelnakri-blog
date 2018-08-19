@@ -49,7 +49,7 @@ defmodule Backend.Mixfile do
       {:phoenix_html, "~> 2.6"},
       {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:postgrex, ">= 0.0.0"},
-      {:scribe, "~> 0.4.0", only: [:dev, :test]},
+      {:scribe, "~> 0.4.0", only: [:dev]},
     ]
   end
 
