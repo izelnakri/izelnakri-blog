@@ -28,9 +28,11 @@ module.exports = function(ENV) {
   app.importAddon('ember-route-action-helper', { type: 'vendor' });
 
   if (environment !== 'production') {
-    app.importAsAMDModule('sinon', 'node_modules/sinon/pkg/sinon-no-sourcemaps.js', { type: 'vendor', transpile: false });
+    app.importAsAMDModule('sinon', 'node_modules/sinon/pkg/sinon-no-sourcemaps.js', {
+      type: 'test', prepend: true, transpile: false
+    });
     app.importAddon('ember-test-selectors');
-    app.import('node_modules/ember-test-selectors/vendor/ember-test-selectors/patch-component.js', { type: 'vendor' });
+    app.import('node_modules/ember-test-selectors/vendor/ember-test-selectors/patch-component.js');
   }
 
   app.importAsAMDModule('moment', 'node_modules/moment/min/moment.min.js', { type: 'vendor' });

@@ -22,7 +22,7 @@ services:
     environment:
       PGUSER: $PGUSER
       PGPASSWORD: $PGPASSWORD
-      PGPORT: 5432
+      PGPORT: $PGPORT
       PGHOST: db
       MIX_ENV: $MIX_ENV
     tty: true

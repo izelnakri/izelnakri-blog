@@ -5,9 +5,12 @@ import { run } from '@ember/runloop';
 import { inject as service } from '@ember/service';
 import generateUUID from '../utils/uuid';
 import ENV from 'frontend/config/environment';
+import { getOwner } from '@ember/application';
 
 export default Service.extend({
-  fastboot: service(),
+  fastboot: computed(function() {
+    return getOwner(this).lookup('service:fastboot') || Ember.Object.create({}); // TODO: remove after mber upgrade
+  }),
   router: service(),
 
   runsFakeData: computed(function() {
