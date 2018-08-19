@@ -32,7 +32,7 @@ services:
       - db
     networks:
       - backend_network
-    command: ["./scripts/setup-database.sh"]
+    command: $BACKEND_COMMAND
   frontend:
     image: $FRONTEND_IMAGE_NAME
     tty: true
@@ -42,8 +42,9 @@ services:
       cache_from:
         - $BASE_IMAGE
         - $FRONTEND_IMAGE_CACHE
+    command: $FRONTEND_COMMAND
     ports:
-      - "4200:4200"
+      - "1234:1234"
     networks:
       - backend_network
 

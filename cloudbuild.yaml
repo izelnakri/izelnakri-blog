@@ -18,8 +18,10 @@ steps:
   id: 'run-images'
   env: [
     'MIX_ENV=test',
+    'BACKEND_COMMAND=/bin/sh',
     'BACKEND_IMAGE_NAME=gcr.io/$PROJECT_ID/backend:$BRANCH_NAME',
     'BACKEND_IMAGE_CACHE=gcr.io/$PROJECT_ID/backend:latest',
+    'FRONTEND_COMMAND=/bin/sh',
     'FRONTEND_IMAGE_NAME=gcr.io/$PROJECT_ID/frontend:$BRANCH_NAME',
     'FRONTEND_IMAGE_CACHE=gcr.io/$PROJECT_ID/frontend:latest'
   ]

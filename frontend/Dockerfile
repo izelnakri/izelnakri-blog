@@ -9,4 +9,3 @@ RUN npm install
 ADD . /code/
 
 CMD ["/bin/sh"]
-# CMD ["./node_modules/.bin/mber", "s"]

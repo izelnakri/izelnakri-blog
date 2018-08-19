@@ -12,7 +12,7 @@ ADD . /code/
 
 RUN mix compile
 
-CMD ["mix", "phx.server"]
+CMD ["/bin/sh"]
 
 # mix ecto.create
 # mix ecto.migrate
