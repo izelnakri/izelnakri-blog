@@ -16,7 +16,7 @@ defmodule Backend.BlogPostTest do
 
     changeset = BlogPost.changeset(blog_post_struct, @valid_attrs)
 
-    refute changeset.valid?
+    assert changeset.valid?
   end
 
   test "changeset without user" do
