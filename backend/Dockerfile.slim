@@ -12,6 +12,14 @@ ADD ["mix.lock", "mix.exs", "/code/"]
 RUN mix deps.get && MIX_ENV=test mix deps.compile && \
   MIX_ENV=$MIX_ENV mix deps.compile && MIX_ENV=prod mix deps.compile
 
+ADD ["config", "lib", "priv", "web", "/code/"]
+
+RUN MIX_ENV=$MIX_ENV mix compile
+
+ADD ["test", "/code/"]
+
+RUN MIX_ENV=test mix compile && MIX_ENV=$MIX_ENV mix compile
+
 ADD . /code/
 
 RUN MIX_ENV=test mix compile && MIX_ENV=$MIX_ENV mix compile
