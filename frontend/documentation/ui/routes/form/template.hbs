@@ -1,0 +1,33 @@
+<h2>Forms</h2>
+
+{{#docs-demo as |demo|}}
+  {{#demo.example}}
+    {{#ml-form model=model.user as |form|}}
+      {{form.input attribute="username" label="Username"}}
+
+      {{#form.button block=true size="lg"}}Submit{{/form.button}}
+    {{/ml-form}}
+  {{/demo.example}}
+
+  {{demo.snippet title="Basic template" code='
+  {{#ml-form model=model.user as |form|}}
+    {{form.input attribute="username" label="Username"}}
+
+    {{#form.button block=true size="lg"}}Submit{{/form.button}}
+  {{/ml-form}}
+  '}}
+{{/docs-demo}}
+
+<h2>Input addons</h2>
+
+<h2>Basic inputs</h2>
+<!-- date, gender, password, select, slider, textarea, toggle -->
+
+<h2>Privacy inputs</h2>
+<!-- date, gender, password, select, slider, textarea, toggle -->
+
+<h2>Phone number</h2>
+
+<h2>Ethereum Address</h2>
+
+<h2>Mnemonic Phrase</h2>

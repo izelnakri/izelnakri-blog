@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
-import { render } from '@ember/test-helpers';
-import hbs from 'htmlbars-inline-precompile';
+// import { render } from '@ember/test-helpers';
+// import hbs from 'htmlbars-inline-precompile';
 import { setupRenderingTest } from 'frontend/tests/helpers';
 // import { startMemServer } from 'frontend/instance-initializers/memserver';
 

@@ -1,4 +1,4 @@
-FROM "inakri/base"
+FROM "inakri/base-slim"
 
 ARG MIX_ENV=dev
 ENV MIX_ENV=$MIX_ENV

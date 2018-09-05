@@ -3,6 +3,7 @@ import marked from 'marked';
 import DS from 'ember-data';
 import { observer } from '@ember/object';
 import { dasherize } from '@ember/string';
+
 const { Model, attr, belongsTo, hasMany } = DS;
 
 export default Model.extend({

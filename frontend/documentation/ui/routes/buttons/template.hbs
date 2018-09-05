@@ -1,0 +1,93 @@
+<h1>Buttons</h1>
+
+{{#docs-demo as |demo|}}
+  {{#demo.example}}
+    {{#ml-button "primary"}}Primary{{/ml-button}}
+    {{#ml-button "secondary"}}Secondary{{/ml-button}}
+    {{#ml-button "success"}}Success{{/ml-button}}
+    {{#ml-button "danger"}}Danger{{/ml-button}}
+    {{#ml-button "warning"}}Warning{{/ml-button}}
+    {{#ml-button "info"}}Info{{/ml-button}}
+    {{#ml-button "light"}}Light{{/ml-button}}
+    {{#ml-button "dark"}}Dark{{/ml-button}}
+    {{#ml-button "link"}}Link{{/ml-button}}
+  {{/demo.example}}
+
+  {{demo.snippet title="Button colors" code='
+  {{#ml-button "primary"}}Primary{{/ml-button}}
+  {{#ml-button "secondary"}}Secondary{{/ml-button}}
+  {{#ml-button "success"}}Success{{/ml-button}}
+  {{#ml-button "danger"}}Danger{{/ml-button}}
+  {{#ml-button "warning"}}Warning{{/ml-button}}
+  {{#ml-button "info"}}Info{{/ml-button}}
+  {{#ml-button "light"}}Light{{/ml-button}}
+  {{#ml-button "dark"}}Dark{{/ml-button}}
+  {{#ml-button "link"}}Link{{/ml-button}}
+  '}}
+{{/docs-demo}}
+
+<h2>Outline Buttons</h2>
+
+{{#docs-demo as |demo|}}
+  {{#demo.example}}
+  {{#ml-button "primary" outline=true}}Primary{{/ml-button}}
+  {{#ml-button "secondary" outline=true}}Secondary{{/ml-button}}
+  {{#ml-button "success" outline=true}}Success{{/ml-button}}
+  {{#ml-button "danger" outline=true}}Danger{{/ml-button}}
+  {{#ml-button "warning" outline=true}}Warning{{/ml-button}}
+  {{#ml-button "info" outline=true}}Info{{/ml-button}}
+  {{#ml-button "light" outline=true}}Light{{/ml-button}}
+  {{#ml-button "dark" outline=true}}Dark{{/ml-button}}
+  {{#ml-button "link" outline=true}}Link{{/ml-button}}
+  {{/demo.example}}
+
+  {{demo.snippet title="Outline buttons" code='
+  {{#ml-button "primary" outline=true}}Primary{{/ml-button}}
+  {{#ml-button "secondary" outline=true}}Secondary{{/ml-button}}
+  {{#ml-button "success" outline=true}}Success{{/ml-button}}
+  {{#ml-button "danger" outline=true}}Danger{{/ml-button}}
+  {{#ml-button "warning" outline=true}}Warning{{/ml-button}}
+  {{#ml-button "info" outline=true}}Info{{/ml-button}}
+  {{#ml-button "light" outline=true}}Light{{/ml-button}}
+  {{#ml-button "dark" outline=true}}Dark{{/ml-button}}
+  {{#ml-button "link" outline=true}}Link{{/ml-button}}
+  '}}
+{{/docs-demo}}
+
+<h2>Button Sizes</h2>
+
+{{#docs-demo as |demo|}}
+  {{#demo.example}}
+    {{#ml-button "primary" size="xs"}}XS button{{/ml-button}}
+    {{#ml-button "primary" size="sm"}}Small button{{/ml-button}}
+    {{#ml-button "primary"}}Normal button{{/ml-button}}
+    {{#ml-button "primary" size="lg"}}Large button{{/ml-button}}
+    {{#ml-button "primary" size="lg" block=true}}Large block button{{/ml-button}}
+  {{/demo.example}}
+
+  {{demo.snippet title="Button sizes" code='
+  {{#ml-button "primary" size="xs"}}XS button{{/ml-button}}
+  {{#ml-button "primary" size="sm"}}Small button{{/ml-button}}
+  {{#ml-button "primary"}}Normal button{{/ml-button}}
+  {{#ml-button "primary" size="lg"}}Large button{{/ml-button}}
+  {{#ml-button "primary" size="lg"}}Large block button{{/ml-button}}
+  '}}
+{{/docs-demo}}
+
+<h2>Other Button States</h2>
+
+{{#docs-demo as |demo|}}
+  {{#demo.example}}
+    {{#ml-button "primary" size="lg" disabled=true}}Disabled button{{/ml-button}}
+    {{#ml-button "primary" size="lg" loading=true}}Loading button{{/ml-button}}
+    {{#ml-button "danger" size="lg" muted=true}}Muted button{{/ml-button}}
+    {{#ml-button "primary" circle=true}}{{fa-icon "check"}}{{/ml-button}}
+  {{/demo.example}}
+
+  {{demo.snippet title="States" code='
+  {{#ml-button "primary" size="lg" disabled=true}}Disabled button{{/ml-button}}
+  {{#ml-button "primary" size="lg" loading=true}}Loading button{{/ml-button}}
+  {{#ml-button "danger" size="lg" muted=true}}Muted button{{/ml-button}}
+  {{#ml-button "primary" circle=true}}{{fa-icon "check"}}{{/ml-button}}
+  '}}
+{{/docs-demo}}

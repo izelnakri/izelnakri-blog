@@ -1,7 +1,13 @@
 {{head-layout}}
 
 {{#each flashMessages.queue as |flash|}}
-  {{in-flash-message flash=flash}}
+  {{#flash-message flash=flash as |component flash|}}
+    <button type="button" class="alert close text-{{flash.type}}" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    <strong data-test-flash-message>{{flash.message}}</strong>
+
+  {{/flash-message}}
 {{/each}}
 
 {{outlet}}

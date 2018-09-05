@@ -12,8 +12,8 @@ module.exports = function(ENV) {
 
   app.import('node_modules/fastclick/lib/fastclick.js', { type: 'vendor', using: [{ transformation: 'fastbootShim' }] });
 
-  app.import('node_modules/raven-js/dist/raven.min.js', { type: 'vendor' }); // NOTE: maybe make it a module
-  app.import('node_modules/raven-js/dist/plugins/ember.min.js', { type: 'vendor' });
+  app.import('node_modules/raven-js/dist/raven.min.js', { type: 'vendor', using: [{ transformation: 'fastbootShim' }] }); // NOTE: maybe make it a module
+  app.import('node_modules/raven-js/dist/plugins/ember.min.js', { type: 'vendor', using: [{ transformation: 'fastbootShim' }] });
 
   app.import('node_modules/bootstrap/dist/js/bootstrap.bundle.min.js', {
     type: 'vendor', using: [{ transformation: 'fastbootShim' }]
@@ -58,11 +58,11 @@ module.exports = function(ENV) {
     `);
   }
 
-  app.importAsAMDModule('marked', 'node_modules/marked/lib/marked.js', { type: 'vendor' });
-  app.import('node_modules/prismjs/prism.js', { type: 'vendor' });
-  app.import('node_modules/prismjs/components/prism-sql.min.js', { type: 'vendor' });
-  app.import('node_modules/prismjs/components/prism-elixir.min.js', { type: 'vendor' });
-  app.import('node_modules/selectize/dist/js/standalone/selectize.min.js', { type: 'vendor' });
+  app.importAsAMDModule('marked', 'node_modules/marked/lib/marked.js', { type: 'vendor', using: [{ transformation: 'fastbootShim' }] });
+  app.import('node_modules/prismjs/prism.js', { type: 'vendor', using: [{ transformation: 'fastbootShim' }] });
+  app.import('node_modules/prismjs/components/prism-sql.min.js', { type: 'vendor', using: [{ transformation: 'fastbootShim' }] });
+  app.import('node_modules/prismjs/components/prism-elixir.min.js', { type: 'vendor', using: [{ transformation: 'fastbootShim' }] });
+  app.import('node_modules/selectize/dist/js/standalone/selectize.min.js', { type: 'vendor', using: [{ transformation: 'fastbootShim' }] });
 
   return app.build(environment);
 }

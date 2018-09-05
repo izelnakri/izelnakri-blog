@@ -23,9 +23,24 @@ module.exports = function(environment) {
       minify: ['demo', 'production'].includes(environment),
       enabled: ['demo', 'test', 'memserver'].includes(environment)
     },
+    documentation: {
+      path: '/styleguide',
+      enabled: ['development', 'memserver', 'demo'].includes(environment),
+    },
     i18n: {
       defaultLocale: 'en',
       warnOnMissingTranslations: environment === 'production',
+    },
+    flashMessageDefaults: {
+      // flash message defaults
+      // timeout: environment === 'test' ? 50 : 3500,
+      timeout: 40000,
+      preventDuplicates: true
+      // extendedTimeout: 200,
+      // priority: 200,
+      // sticky: false,
+      // showProgress: false,
+      // preventDuplicates: true
     },
     EmberENV: {
       FEATURES: {

@@ -1,0 +1,30 @@
+{{#docs-header logo="/images/ember-cli.svg" repository="https://github.com/izelnakri/mber" as |header|}}
+  {{#header.link "documentation.index"}}Documentation{{/header.link}}
+{{/docs-header}}
+
+{{#docs-viewer as |viewer|}}
+  {{#viewer.navigation as |nav|}}
+    {{nav.title "Foundation"}}
+    {{nav.link "Introduction" "documentation.index"}}
+    {{nav.link "Color Scheme" "documentation.color-scheme"}}
+    {{nav.link "Buttons" "documentation.buttons"}}
+    {{nav.link "Form" "documentation.form"}}
+    {{nav.link "Tables" "documentation.tables"}}
+    {{nav.link "Icons" "documentation.icons"}}
+
+    {{nav.title "Components"}}
+    {{nav.link "App Header" "documentation.components.app-header"}}
+    {{nav.link "Image Generator" "documentation.components.image-generator"}}
+    {{nav.link "Modal Window" "documentation.components.modal"}}
+    {{nav.link "Panel" "documentation.components.panel"}}
+    {{nav.link "QR Code" "documentation.components.qr-code"}}
+    {{nav.link "SMS Verification" "documentation.components.sms-verification"}}
+    {{nav.link "User Header" "documentation.components.user-header"}}
+
+    {{!-- TODO: check description component, maybe modals section, services, mixins, helpers --}}
+  {{/viewer.navigation}}
+
+  {{#viewer.page}}
+    {{outlet}}
+  {{/viewer.page}}
+{{/docs-viewer}}

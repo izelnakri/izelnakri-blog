@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import Service from '@ember/service';
-import { computed } from '@ember/object';
+import EmberObject, { computed } from '@ember/object';
 import { run } from '@ember/runloop';
 import { inject as service } from '@ember/service';
 import generateUUID from '../utils/uuid';
@@ -9,7 +9,7 @@ import { getOwner } from '@ember/application';
 
 export default Service.extend({
   fastboot: computed(function() {
-    return getOwner(this).lookup('service:fastboot') || Ember.Object.create({}); // TODO: remove after mber upgrade
+    return getOwner(this).lookup('service:fastboot') || EmberObject.create({}); // TODO: remove after mber upgrade
   }),
   router: service(),
 

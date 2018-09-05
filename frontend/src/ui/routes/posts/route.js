@@ -18,22 +18,22 @@ export default AdminRoute.extend({
         }).catch((error) => {
           console.log('catch called');
           this.get('flashMessages').danger(this.get('i18n').t('flash_messages.save_error'));
-          Raven.captureMessage(error);
+          window.Raven.captureMessage(error);
         })
       });
     },
-    deleteBlogPost(blogPost) {
-      this.get('modals').open('confirmation-modal')
-      // .then(() => {
-      //   blogPost.destroyRecord().then(() => {
-      //     this.get('flashMessages').t('flash_messages.blog-post.deleted');
-      //     this.transitionTo('admin.content');
-      //   }).catch((error) => {
-      //     this.get('flashMessages').t('flash_messages.save_error');
-      //     Raven.captureMessage(error);
-      //   });
-      // });
-    },
+    // deleteBlogPost(blogPost) {
+    //   this.get('modals').open('confirmation-modal')
+    //   // .then(() => {
+    //   //   blogPost.destroyRecord().then(() => {
+    //   //     this.get('flashMessages').t('flash_messages.blog-post.deleted');
+    //   //     this.transitionTo('admin.content');
+    //   //   }).catch((error) => {
+    //   //     this.get('flashMessages').t('flash_messages.save_error');
+    //   //     Raven.captureMessage(error);
+    //   //   });
+    //   // });
+    // },
     uploadBlogPostImage(){
 
     }

@@ -1,4 +1,6 @@
-FROM "inakri/base"
+FROM "inakri/base-slim"
+
+ENV CHROME_BIN=/usr/bin/chromium-browser
 
 WORKDIR /code/
 

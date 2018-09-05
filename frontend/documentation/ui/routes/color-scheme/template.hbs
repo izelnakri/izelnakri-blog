@@ -1,0 +1,62 @@
+<h1>Color Scheme</h1>
+
+{{#docs-demo}}
+  {{docs-color title="primary" color="#244C59"}}
+  {{docs-color title="secondary" color="#6c757d"}}
+  {{docs-color title="success" color="#00BF87"}}
+  {{docs-color title="info" color="#244C59"}}
+  {{docs-color title="warning" color="#ffc107"}}
+  {{docs-color title="danger" color="#C73D32"}}
+  {{docs-color title="light" color="#f8f9fa"}}
+{{/docs-demo}}
+
+<h2>Text colors</h2>
+
+{{#docs-demo as |demo|}}
+
+  {{#demo.example}}
+    <p>Normal text</p>
+    <p class="text-primary">.text-primary</p>
+    <p class="text-secondary">.text-secondary</p>
+    <p class="text-success">.text-success</p>
+    <p class="text-danger">.text-danger</p>
+    <p class="text-warning">.text-warning</p>
+    <p class="text-info">.text-info</p>
+    <p class="text-muted">.text-muted</p>
+  {{/demo.example}}
+
+  {{demo.snippet title="Text colors" code='
+  <p>Normal text</p>
+  <p class="text-primary">.text-primary</p>
+  <p class="text-secondary">.text-secondary</p>
+  <p class="text-success">.text-success</p>
+  <p class="text-danger">.text-danger</p>
+  <p class="text-warning">.text-warning</p>
+  <p class="text-info">.text-info</p>
+  <p class="text-muted">.text-muted</p>
+  '}}
+{{/docs-demo}}
+
+<h2>Background colors</h2>
+
+{{#docs-demo as |demo|}}
+  {{#demo.example}}
+    <div class="bg-primary text-white" style="padding: 15px;">.bg-primary</div>
+    <div class="bg-secondary text-white" style="padding: 15px;">.bg-secondary</div>
+    <div class="bg-success text-white" style="padding: 15px;">.bg-success</div>
+    <div class="bg-danger text-white" style="padding: 15px;">.bg-danger</div>
+    <div class="bg-warning text-dark" style="padding: 15px;">.bg-warning</div>
+    <div class="bg-info text-white" style="padding: 15px;">.bg-info</div>
+    <div class="bg-light text-dark" style="padding: 15px;">.bg-light</div>
+  {{/demo.example}}
+
+  {{demo.snippet title="Background colors" code='
+  <div class="bg-primary text-white">.bg-primary</div>
+  <div class="bg-secondary text-white">.bg-secondary</div>
+  <div class="bg-success text-white">.bg-success</div>
+  <div class="bg-danger text-white">.bg-danger</div>
+  <div class="bg-warning text-dark">.bg-warning</div>
+  <div class="bg-info text-white">.bg-info</div>
+  <div class="bg-light text-dark">.bg-light</div>
+  '}}
+{{/docs-demo}}

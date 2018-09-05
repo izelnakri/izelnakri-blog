@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import Component from '@ember/component';
 import { inject as service } from '@ember/service';
 import FormComponentMixin from 'frontend/src/utils/mixins/form-component';
@@ -16,11 +17,11 @@ export default Component.extend(FormComponentMixin, {
     $(`#${this.get('labelRef')}`).selectize({
       create: true,
       maxItems: 5,
-      onItemAdd(value, $item) {
+      onItemAdd(value) { // _$item second param
         const model = self.get('store').createRecord(modelName, { [itemLabel]: value });
         array.pushObject(model);
       },
-      onItemRemove(value, $item) {
+      onItemRemove(value) { // _$item second param
         const foundObject = array.find((element) => element.get(itemLabel) === value)
         array.removeObject(foundObject);
       }

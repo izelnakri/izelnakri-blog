@@ -1,7 +1,7 @@
 import Response from 'memserver/response';
 import ENV from '../config/environment';
 
-export default function({ Email, User }) {
+export default function({ BlogPost, Email, User }) {
   this.urlPrefix = ENV.APP ? ENV.APP.API_HOST : 'http://localhost:3000';
 
   // this.get('/users/:id', (request) => {
@@ -34,10 +34,14 @@ export default function({ Email, User }) {
     return user ? { user: User.loginSerializer(user) } : Response(401, { message: 'unauthorized' });
   });
 
-  // this.get('/blog-posts', () => {
-  //
-  // });
-  //
+  this.get('/blog-posts', ({ queryParams }) => {
+    if (queryParams.filter && queryParams.filter === 'latest') {
+      return { blog_posts: BlogPost.serializer(BlogPost.latest()) };
+    } else if (queryParams.slug) {
+      return { blog_post: BlogPost.serializer(BlogPost.findBy({ slug: queryParams.slug })) };
+    }
+  });
+
   // this.post('/blog-posts', () => {
   //
   // });

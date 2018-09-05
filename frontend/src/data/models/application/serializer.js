@@ -13,6 +13,10 @@ export default RESTSerializer.extend(EmbeddedRecordsMixin, {
     }
 
     return `${underscore(key)}_id`;
+  },
+  serializeIntoHash(data, type, record, options) {
+    const root = underscore(type.modelName);
+    data[root] = this.serialize(record, options);
   }
 });
 

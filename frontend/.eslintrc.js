@@ -8,5 +8,7 @@ module.exports = {
   env: {
     browser: true
   },
-  rules: {}
+  rules: {
+    'no-console': 'off'
+  }
 };

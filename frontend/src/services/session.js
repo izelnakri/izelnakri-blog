@@ -1,7 +1,7 @@
 // TODO: write tests for this service
 import Service from '@ember/service';
 import { inject as service } from '@ember/service';
-import { computed } from '@ember/object';
+import EmberObject, { computed } from '@ember/object';
 import { run } from '@ember/runloop';
 import { typeOf } from '@ember/utils';
 import { Promise } from 'rsvp';
@@ -9,7 +9,7 @@ import { getOwner } from '@ember/application';
 
 export default Service.extend({
   fastboot: computed(function() {
-    return getOwner(this).lookup('service:fastboot') || Ember.Object.create({}); // TODO: remove after mber upgrade
+    return getOwner(this).lookup('service:fastboot') || EmberObject.create({}); // TODO: remove after mber upgrade
   }),
   store: service(),
   i18n: service(),

@@ -1,7 +1,7 @@
 import moment from 'moment';
 import Helper from '@ember/component/helper';
 
-export let helper = Helper.helper(([date, format]) => {
+export let helper = Helper.helper(([date]) => {
   return moment(date).calendar(null, {
     sameDay: '[Today]',
     lastDay: '[Yesterday]',
