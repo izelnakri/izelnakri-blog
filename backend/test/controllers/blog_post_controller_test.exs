@@ -269,7 +269,29 @@ defmodule Backend.BlogPostControllerTest do
     assert BlogPost.count() == 1
   end
 
-  # test "/blog-posts?filter=latest returns last blog posts", %{conn: conn} do
+  test "GET /blog-posts?filter=latest returns last blog posts", %{conn: conn} do
+    user = insert_normal_user()
+    conn_with_token = set_conn_with_token(conn, user.authentication_token)
+    conn = get(conn_with_token, "/blog-posts?filter=latest")
+
+    assert json_response(conn, 200)["blog_posts"] == []
+
+    blog_post = insert_blog_post()
+
+    second_conn = get(conn_with_token, "/blog-posts?filter=latest")
+
+    assert json_response(second_conn, 200)["blog_posts"]
+
+    second_conn_result = json_response(second_conn, 200)["blog_posts"]
+
+    assert Enum.count(second_conn_result) == 1
+  end
+
+  # test "GET /blog-posts?slug returns the right blog post", %{conn: conn} do
+  #
+  # end
+  #
+  # test "GET /blog-posts?slug return 404 when not found", %{conn: conn} do
   #
   # end
 end

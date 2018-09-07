@@ -54,7 +54,7 @@ export default Service.extend({
 
       if (!this.fastboot.isFastBoot) {
         localStorage.setItem('in-token', token);
-        // window.Cookies.set('in-token', token);
+        window.Cookies.set('in-token', token);
       }
     });
   },

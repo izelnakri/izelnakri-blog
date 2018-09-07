@@ -1,6 +1,22 @@
 /* eslint-env node */
 const app = require('mber');
 
+Number.prototype.times = function(func) {
+  return Array.from({ length: this }).map((_, index) => func(index + 1));
+};
+
+Object.filter = (object, arrayOfKeys) => {
+  return Object.keys(object).reduce((newObject, key) => {
+    return arrayOfKeys.includes(key) ? newObject : Object.assign(newObject, { [key]: object[key] });
+  }, {});
+};
+
+Object.take = (object, arrayOfKeys) => {
+  return Object.keys(object).reduce((newObject, key) => {
+    return arrayOfKeys.includes(key) ? Object.assign(newObject, { [key]: object[key] }) : newObject;
+  }, {});
+};
+
 module.exports = function(ENV) {
   const { environment } = ENV;
 
@@ -10,6 +26,7 @@ module.exports = function(ENV) {
 
   app.importAddon('mber-head', { type: 'vendor' });
 
+  app.import('vendor/cookie.js', { type: 'vendor' });
   app.import('node_modules/fastclick/lib/fastclick.js', { type: 'vendor', using: [{ transformation: 'fastbootShim' }] });
 
   app.import('node_modules/raven-js/dist/raven.min.js', { type: 'vendor', using: [{ transformation: 'fastbootShim' }] }); // NOTE: maybe make it a module

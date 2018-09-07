@@ -45,4 +45,3 @@ steps:
 images: ['gcr.io/$PROJECT_ID/backend:latest', 'gcr.io/$PROJECT_ID/backend:$BRANCH_NAME', 'gcr.io/$PROJECT_ID/frontend:latest', 'gcr.io/$PROJECT_ID/frontend:$BRANCH_NAME']
 
 # NOTE: learn how to do branch filters: # you can write bash scripts with if checks to do certain things at certain times
-# research further on stateful app deployment problem

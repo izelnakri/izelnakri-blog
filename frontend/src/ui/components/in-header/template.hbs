@@ -4,8 +4,7 @@
 
   </ul>
 
-
-  <ul class="nav navbar-nav hidden-md-down">
+  <ul class="nav navbar-nav hidden-md-down ml-auto">
     <!-- <li class="nav-item">
       <a class="nav-link" href="#">CONTACT</a>
     </li> -->
@@ -15,7 +14,7 @@
         {{link-to "ADMIN" "admin" class="nav-link"}}
       </li>
       <li class="nav-item">
-        {{link-to "LOGOUT" "logout" class="nav-link"}}
+        <span class="nav-link" {{action (route-action "logout")}}>LOGOUT</span>
       </li>
     {{/if}}
   </ul>

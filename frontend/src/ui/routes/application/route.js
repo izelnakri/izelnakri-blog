@@ -1,15 +1,18 @@
+import RSVP from 'rsvp';
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
 
 export default Route.extend({
   flashMessages: service('flash-messages'),
+  session: service(),
 
   model() {
-    if (window && window.localStorage) {
-      this.get('session').set('authenticationToken', localStorage.getItem('inb_token'));
-
-      return this.get('session').fetchCurrentUser().then(() => {}).catch(() => {});
-    }
+    return RSVP.hash({
+      user: this.session.fetchCurrentUser()
+    }).catch((error) => {
+      console.log('hash error');
+      console.log(error);
+    });
   },
   actions: {
     login(model) {
@@ -27,9 +30,9 @@ export default Route.extend({
       });
     },
     logout() {
-      if (this.get('currentUser')) {
-        this.get('flashMessages').success('You have been logged out.');
-        this.get('session').logout();
+      if (this.session.currentUser) {
+        this.flashMessages.success('You have been logged out.');
+        this.session.logout();
         this.transitionTo('public');
       }
     }

@@ -1,6 +1,10 @@
 import Component from '@ember/component';
+import { inject as service } from '@ember/service';
 
 export default Component.extend({
+  i18n: service(),
+  flashMessages: service(),
+
   tagName: 'form',
   classNameBindings: [':in-form'],
   isLoading: false,
@@ -18,10 +22,11 @@ export default Component.extend({
       this.set('isLoading', true);
 
       model.save().then((model) => {
-        this.get('flashMessages').success(this.get('i18n').t('components.in-form.success'));
+        this.flashMessages.success(this.get('i18n').t('components.in-form.success'));
+
         return this.get('onSuccess') ? this.get('onSuccess')(model) : undefined;
       }).catch((error) => {
-        this.get('flashMessages').danger(this.get('i18n').t('components.in-form.failure'));
+        this.flashMessages.danger(this.get('i18n').t('components.in-form.failure'));
         window.Raven.captureMessage(error);
         return this.get('onError') ? this.get('onError')(model) : undefined;
       }).finally(() => {

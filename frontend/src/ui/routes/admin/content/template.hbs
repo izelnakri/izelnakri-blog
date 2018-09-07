@@ -3,8 +3,8 @@
     <div class="card-header">
       Last Blog Posts
     </div>
-    {{#each model.blogPosts as |blogPost|}}
-      {{#link-to "admin.posts.post" blogPost.slug class="card card-block"}}
+    {{#each model.lastBlogPosts as |blogPost|}}
+      {{#link-to "posts.post" blogPost.slug class="card card-body"}}
         <h5 class="card-title">{{blogPost.title}}</h5>
       {{/link-to}}
     {{/each}}
