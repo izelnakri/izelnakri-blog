@@ -1,24 +1,8 @@
----
 kind: pipeline
 name: default
 steps:
 - name: test
-  image: docker:dind
-  volumes:
-  - name: dockersock
-    path: /var/run
+  image: node
   commands:
-  - sleep 5 # give docker enough time to start
-  - docker ps -a
-services:
-- name: docker
-  image: docker:dind
-  privileged: true
-  volumes:
-  - name: dockersock
-    path: /var/run
-volumes:
-- name: dockersock
-  temp: {}
-
+  - cat .drone.yml
 # NOTE: learn how to do branch filters: # you can write bash scripts with if checks to do certain things at certain times
