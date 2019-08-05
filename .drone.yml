@@ -4,7 +4,5 @@ steps:
 - name: test
   image: node
   commands:
-  - npm install
-  - npm test
-
+  - cat .drone.yml
 # NOTE: learn how to do branch filters: # you can write bash scripts with if checks to do certain things at certain times
