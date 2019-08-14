@@ -1,0 +1,469 @@
+---
+# Source: stolon/templates/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: stolon
+  labels:
+    app: stolon
+    chart: stolon-1.1.2
+    release: stolon
+    heritage: Tiller
+data:
+
+---
+# Source: stolon/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: stolon
+  labels:
+    app: stolon
+    chart: stolon-1.1.2
+    release: stolon
+    heritage: Tiller
+---
+# Source: stolon/templates/role.yaml
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: Role
+metadata:
+  name: stolon
+  labels:
+    app: stolon
+    chart: stolon-1.1.2
+    release: stolon
+    heritage: Tiller
+rules:
+- apiGroups:
+    - ""
+  resources:
+    - pods
+    - endpoints
+    - configmaps
+    - events
+  verbs:
+    - "*"
+---
+# Source: stolon/templates/rolebinding.yaml
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: RoleBinding
+metadata:
+  name: stolon
+  labels:
+    app: stolon
+    chart: stolon-1.1.2
+    release: stolon
+    heritage: Tiller
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: stolon
+subjects:
+- kind: ServiceAccount
+  name: stolon
+---
+# Source: stolon/templates/keeper-headless-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: stolon-keeper-headless
+  labels:
+    app: stolon
+    chart: stolon-1.1.2
+    release: stolon
+    heritage: Tiller
+  annotations:
+spec:
+  clusterIP: None
+  ports:
+    - name: keeper
+      port: 5432
+      protocol: TCP
+      targetPort: 5432
+      
+  selector:
+    app: stolon
+    release: stolon
+    component: stolon-keeper
+
+---
+# Source: stolon/templates/proxy-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: stolon-proxy
+  labels:
+    app: stolon
+    chart: stolon-1.1.2
+    release: stolon
+    heritage: Tiller
+  annotations:
+spec:
+  type: ClusterIP
+  ports:
+    - name: proxy
+      port: 5432
+      protocol: TCP
+      targetPort: 5432
+      
+  selector:
+    app: stolon
+    release: stolon
+    component: stolon-proxy
+
+---
+# Source: stolon/templates/proxy-deployment.yaml
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: stolon-proxy
+  labels:
+    app: stolon
+    chart: stolon-1.1.2
+    release: stolon
+    heritage: Tiller
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: stolon
+      release: stolon
+      component: stolon-proxy
+  template:
+    metadata:
+      labels:
+        app: stolon
+        release: stolon
+        component: stolon-proxy
+        stolon-cluster: stolon
+      annotations:
+    spec:
+      serviceAccountName: stolon
+      containers:
+        - name: stolon
+          image: "sorintlab/stolon:v0.13.0-pg10"
+          imagePullPolicy: IfNotPresent
+          command:
+            - "/bin/bash"
+            - "-ec"
+            - |
+              exec gosu stolon stolon-proxy
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: STPROXY_CLUSTER_NAME
+              value: stolon
+            - name: STPROXY_STORE_BACKEND
+              value: "kubernetes"
+            - name: STPROXY_KUBE_RESOURCE_KIND
+              value: "configmap"
+            - name: STPROXY_LISTEN_ADDRESS
+              value: "0.0.0.0"
+            - name: STPROXY_METRICS_LISTEN_ADDRESS
+              value: "0.0.0.0:8080"
+            - name: STPROXY_DEBUG
+              value: "false"
+          ports:
+            - name: metrics
+              containerPort: 8080
+              
+            - name: stolon
+              containerPort: 5432
+              
+          resources:
+            {}
+            
+          readinessProbe:
+            tcpSocket:
+              port: 5432
+            initialDelaySeconds: 10
+            timeoutSeconds: 5
+
+---
+# Source: stolon/templates/sentinel-deployment.yaml
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: stolon-sentinel
+  labels:
+    app: stolon
+    chart: stolon-1.1.2
+    release: stolon
+    heritage: Tiller
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: stolon
+      release: stolon
+      component: stolon-sentinel
+  template:
+    metadata:
+      labels:
+        app: stolon
+        release: stolon
+        component: stolon-sentinel
+        stolon-cluster: stolon
+      annotations:
+        checksum/config: f8d8bf365482df99f4ed862e912e7bc1893e0ba450a741685976dbf102e8eb22
+    spec:
+      serviceAccountName: stolon
+      containers:
+        - name: stolon
+          image: "sorintlab/stolon:v0.13.0-pg10"
+          imagePullPolicy: IfNotPresent
+          command:
+            - "/bin/bash"
+            - "-ec"
+            - |
+              exec gosu stolon stolon-sentinel
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: STSENTINEL_CLUSTER_NAME
+              value: stolon
+            - name: STSENTINEL_STORE_BACKEND
+              value: "kubernetes"
+            - name: STSENTINEL_KUBE_RESOURCE_KIND
+              value: "configmap"
+            - name: STSENTINEL_METRICS_LISTEN_ADDRESS
+              value: "0.0.0.0:8080"
+            - name: STSENTINEL_DEBUG
+              value: "false"
+          ports:
+            - name: metrics
+              containerPort: 8080
+              
+            - name: stolon
+              containerPort: 5432
+              
+          resources:
+            {}
+            
+
+---
+# Source: stolon/templates/keeper-statefulset.yaml
+apiVersion: apps/v1beta2
+kind: StatefulSet
+metadata:
+  name: stolon-keeper
+  labels:
+    app: stolon
+    chart: stolon-1.1.2
+    release: stolon
+    heritage: Tiller
+spec:
+  serviceName: stolon-keeper-headless
+  replicas: 2
+  selector:
+    matchLabels:
+      app: stolon
+      release: stolon
+      component: stolon-keeper
+  template:
+    metadata:
+      labels:
+        app: stolon
+        release: stolon
+        component: stolon-keeper
+        stolon-cluster: stolon
+      annotations:
+    spec:
+      serviceAccountName: stolon
+      terminationGracePeriodSeconds: 10
+      containers:
+        - name: stolon
+          image: "sorintlab/stolon:v0.13.0-pg10"
+          imagePullPolicy: IfNotPresent
+          command:
+            - "/bin/bash"
+            - "-ec"
+            - |
+              # Generate our keeper uid using the pod index
+              IFS='-' read -ra ADDR <<< "$(hostname)"
+              export STKEEPER_UID="keeper${ADDR[-1]}"
+              export POD_IP=$(hostname -i)
+              export STKEEPER_PG_LISTEN_ADDRESS=$POD_IP
+              export STOLON_DATA=/stolon-data
+              chown stolon:stolon $STOLON_DATA
+              exec gosu stolon stolon-keeper --data-dir $STOLON_DATA
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: STKEEPER_CLUSTER_NAME
+              value: stolon
+            - name: STKEEPER_STORE_BACKEND
+              value: "kubernetes"
+            - name: STKEEPER_KUBE_RESOURCE_KIND
+              value: "configmap"
+            - name: STKEEPER_PG_REPL_USERNAME
+
+              valueFrom:
+                secretKeyRef:
+                  name: replicationuser
+                  key: pg_repl_username
+
+            - name: STKEEPER_PG_REPL_PASSWORDFILE
+
+              value: /etc/secrets/stolon-replicationuser/pg_repl_password
+
+            - name: STKEEPER_PG_SU_USERNAME
+
+              valueFrom:
+                secretKeyRef:
+                  name: superuser
+                  key: pg_su_username
+
+            - name: STKEEPER_PG_SU_PASSWORDFILE
+
+              value: /etc/secrets/stolon-superuser/pg_su_password
+
+            - name: STKEEPER_METRICS_LISTEN_ADDRESS
+              value: "0.0.0.0:8080"
+            - name: STKEEPER_DEBUG
+              value: "false"
+          ports:
+            - name: metrics
+              containerPort: 8080
+              
+            - name: stolon
+              containerPort: 5432
+              
+          resources:
+            {}
+            
+          volumeMounts:
+          - name: data
+            mountPath: /stolon-data
+
+
+          - name: stolon-secret-superuser
+            mountPath: /etc/secrets/stolon-superuser
+
+
+          - name: stolon-secret-replicationuser
+            mountPath: /etc/secrets/stolon-replicationuser
+
+      volumes:
+        - name: config
+          configMap:
+            name: stolon
+
+
+        - name: stolon-secret-superuser
+          secret:
+            secretName: superuser
+
+
+        - name: stolon-secret-replicationuser
+          secret:
+            secretName: replicationuser
+
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes:
+          - "ReadWriteOnce"
+        resources:
+          requests:
+            storage: "10Gi"
+
+---
+# Source: stolon/templates/hooks/create-cluster-job.yaml
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: stolon-create-cluster
+  labels:
+    app: stolon
+    chart: stolon-1.1.2
+    release: stolon
+    heritage: Tiller
+  annotations:
+    "helm.sh/hook": post-install
+    "helm.sh/hook-delete-policy": before-hook-creation
+spec:
+  template:
+    metadata:
+      labels:
+        app: stolon
+        release: stolon
+    spec:
+      restartPolicy: OnFailure
+      serviceAccountName: stolon
+      containers:
+        - name: stolon-create-cluster
+          image: "sorintlab/stolon:v0.13.0-pg10"
+          imagePullPolicy: IfNotPresent
+          command: ["/usr/local/bin/stolonctl"]
+          args:
+            - init
+            - --cluster-name=stolon
+            - --store-backend=kubernetes
+            - --kube-resource-kind=configmap
+            - --yes
+            - '{ "initMode": "new", "pgParameters": {} }'
+
+
+---
+# Source: stolon/templates/hooks/update-cluster-spec-job.yaml
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: stolon-update-cluster-spec
+  labels:
+    app: stolon
+    chart: stolon-1.1.2
+    release: stolon
+    heritage: Tiller
+  annotations:
+    "helm.sh/hook": post-upgrade
+    "helm.sh/hook-delete-policy": before-hook-creation
+spec:
+  template:
+    metadata:
+      labels:
+        app: stolon
+        release: stolon
+    spec:
+      restartPolicy: OnFailure
+      serviceAccountName: stolon
+      containers:
+        - name: stolon-update-cluster-spec
+          image: "sorintlab/stolon:v0.13.0-pg10"
+          imagePullPolicy: IfNotPresent
+          command: ["/usr/local/bin/stolonctl"]
+          args:
+            - update
+            - --cluster-name=stolon
+            - --store-backend=kubernetes
+            - --kube-resource-kind=configmap
+            - -p
+            - '{ "pgParameters": {} }'
+
+
+---
+# Source: stolon/templates/keeper-pdb.yaml
+
+
+---
+# Source: stolon/templates/proxy-pdb.yaml
+
+
+---
+# Source: stolon/templates/secret.yaml
+
+
+---
+# Source: stolon/templates/sentinel-pdb.yaml
+
+
