@@ -265,7 +265,7 @@ spec:
   revisionHistoryLimit: 10
   strategy:
     {}
-    
+
   minReadySeconds: 0
   template:
     metadata:
@@ -281,10 +281,11 @@ spec:
           imagePullPolicy: "IfNotPresent"
           args:
             - /nginx-ingress-controller
-            - --default-backend-service=default/nginx-ingress-default-backend
+            - --default-backend-service=nginx/nginx-ingress-default-backend
+            - --publish-service=nginx/nginx-ingress-controller
             - --election-id=ingress-controller-leader
             - --ingress-class=nginx
-            - --configmap=default/nginx-ingress-controller
+            - --configmap=nginx/nginx-conf
           securityContext:
             capabilities:
                 drop:
@@ -331,7 +332,7 @@ spec:
             failureThreshold: 3
           resources:
             {}
-            
+
       hostNetwork: false
       serviceAccountName: nginx-ingress
       terminationGracePeriodSeconds: 60
@@ -392,7 +393,7 @@ spec:
               protocol: TCP
           resources:
             {}
-            
+
       terminationGracePeriodSeconds: 60
 
 ---

@@ -1,6 +1,9 @@
 kind: Kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
 
+# namespace: docker-registry
+
 resources:
-  - docker-registry-chart.yaml
+  - docker-registry-chart.yaml # TODO: auto-generate secret and make it not tracked
+  - ingress.yaml
 

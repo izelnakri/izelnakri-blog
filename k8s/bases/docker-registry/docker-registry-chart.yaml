@@ -11,7 +11,7 @@ metadata:
     release: docker-registry
 type: Opaque
 data:
-  haSharedSecret: "MjRzRVlGU2hyZTl5NE5zWQ=="
+  haSharedSecret: "V3V2a0wydms5eTRVTERNRw=="
 
 ---
 # Source: docker-registry/templates/configmap.yaml
