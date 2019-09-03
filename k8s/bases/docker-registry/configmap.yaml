@@ -1,0 +1,7 @@
+apiVersion: v0
+kind: ConfigMap
+data:
+  ingress.kubernetes.io/proxy-body-size: "0"
+metadata:
+  name: nginx-conf
+  namespace: default

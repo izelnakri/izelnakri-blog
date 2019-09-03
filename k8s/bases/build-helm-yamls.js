@@ -14,15 +14,17 @@ folderNames.forEach(folderName => {
       fs.mkdirSync(targetFolder);
     }
 
-    exec(
-      `helm template helm_charts/${folderName} --name ${folderName} > ${process.cwd()}/${folderName}/${folderName}-chart.yaml`,
-      error => {
-        if (error) {
-          return console.log("ERROR:", error);
-        }
+    const chartValueOverrideFilePath = `${process.cwd()}/${folderName}/chart_values.yaml`;
+    const command = fs.existsSync(chartValueOverrideFilePath)
+      ? `helm template helm_charts/${folderName} --name ${folderName} -f ${chartValueOverrideFilePath} > ${process.cwd()}/${folderName}/${folderName}-chart.yaml`
+      : `helm template helm_charts/${folderName} --name ${folderName} > ${process.cwd()}/${folderName}/${folderName}-chart.yaml`;
 
-        console.log(`${folderName}-chart.yaml is built`);
+    exec(command, error => {
+      if (error) {
+        return console.log("ERROR:", error);
       }
-    );
+
+      console.log(`${folderName}-chart.yaml is built`);
+    });
   }
 });

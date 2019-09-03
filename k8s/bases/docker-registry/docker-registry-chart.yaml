@@ -11,7 +11,10 @@ metadata:
     release: docker-registry
 type: Opaque
 data:
-  haSharedSecret: "V3V2a0wydms5eTRVTERNRw=="
+  htpasswd: aXplbG5ha3JpOiQyeSQwNSQ0RXJhQjExa21Fa0xxRWszT2VWSXMueDcubFo2OXFWQXEwMi5NcFR5YXhwaXJoRzNNRS95Mg==
+  haSharedSecret: "N2V5OEhUejlyQnlPS2Njbw=="
+  s3AccessKey: "SE1MVktSRDNKSjdGVVRITjREWjQ="
+  s3SecretKey: "amZ0dDIxdHBuaXZBT2J0VlgvV2NRRzNTcGpRVzFDV296NlI2QzB3VHduVQ=="
 
 ---
 # Source: docker-registry/templates/configmap.yaml
@@ -45,23 +48,6 @@ data:
     version: 0.1
     
 
----
-# Source: docker-registry/templates/pvc.yaml
-kind: PersistentVolumeClaim
-apiVersion: v1
-metadata:
-  name: docker-registry
-  labels:
-    app: docker-registry
-    chart: "docker-registry-1.8.1"
-    release: "docker-registry"
-    heritage: "Tiller"
-spec:
-  accessModes:
-    - "ReadWriteOnce"
-  resources:
-    requests:
-      storage: "10Gi"
 ---
 # Source: docker-registry/templates/service.yaml
 apiVersion: v1
@@ -131,26 +117,81 @@ spec:
             {}
             
           env:
+            - name: REGISTRY_AUTH
+              value: "htpasswd"
+            - name: REGISTRY_AUTH_HTPASSWD_REALM
+              value: "Registry Realm"
+            - name: REGISTRY_AUTH_HTPASSWD_PATH
+              value: "/auth/htpasswd"
             - name: REGISTRY_HTTP_SECRET
               valueFrom:
                 secretKeyRef:
                   name: docker-registry-secret
                   key: haSharedSecret
-            - name: REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY
-              value: "/var/lib/registry"
+            - name: REGISTRY_STORAGE_S3_ACCESSKEY
+              valueFrom:
+                secretKeyRef:
+                  name: docker-registry-secret
+                  key: s3AccessKey
+            - name: REGISTRY_STORAGE_S3_SECRETKEY
+              valueFrom:
+                secretKeyRef:
+                  name: docker-registry-secret
+                  key: s3SecretKey
+            - name: REGISTRY_STORAGE_S3_REGION
+              value: fra1
+            - name: REGISTRY_STORAGE_S3_REGIONENDPOINT
+              value: fra1.digitaloceanspaces.com
+            - name: REGISTRY_STORAGE_S3_BUCKET
+              value: izelnakri
+            - name: REGISTRY_STORAGE_S3_SECURE
+              value: "true"
           volumeMounts:
-            - name: data
-              mountPath: /var/lib/registry/
+            - name: auth
+              mountPath: /auth
+              readOnly: true
             - name: "docker-registry-config"
               mountPath: "/etc/docker/registry"
       volumes:
-        - name: data
-          persistentVolumeClaim:
-            claimName: docker-registry
+        - name: auth
+          secret:
+            secretName: docker-registry-secret
+            items:
+            - key: htpasswd
+              path: htpasswd
         - name: docker-registry-config
           configMap:
             name: docker-registry-config
 
 ---
 # Source: docker-registry/templates/ingress.yaml
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: docker-registry
+  labels:
+    app: docker-registry
+    chart: docker-registry-1.8.1
+    release: docker-registry
+    heritage: Tiller
+  annotations:
+      certmanager.k8s.io/cluster-issuer: "docker-registry-cert-issuer"
+      kubernetes.io/ingress.class: "nginx"
+      nginx.ingress.kubernetes.io/proxy-body-size: "30720m"
+spec:
+  rules:
+    - host: registry.izelnakri.com
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: docker-registry
+              servicePort: 5000
+  tls:
+    - hosts:
+      - registry.izelnakri.com
+      secretName: docker-registry-cert
+    
+---
+# Source: docker-registry/templates/pvc.yaml
 

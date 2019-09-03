@@ -1,0 +1,36 @@
+controller:
+  defaultBackend:
+    enabled: true
+    name: "nginx/nginx-ingress-default-backend"
+  # defaultBackendService: "nginx/nginx-ingress-default-backend"
+  publishService:
+    enabled: true
+    pathOverride: "nginx/nginx-ingress-controller"
+# ingress:
+#   enabled: true
+#   hosts:
+#     - registry.izelnakri.com
+#   annotations:
+#     kubernetes.io/ingress.class: nginx
+#     certmanager.k8s.io/cluster-issuer: docker-registry-cert-issuer
+#     nginx.ingress.kubernetes.io/proxy-body-size: "30720m"
+#   tls:
+#     - secretName: docker-registry-cert
+#       hosts:
+#         - registry.izelnakri.com
+# storage: s3
+# persistence:
+#   enabled: false
+# secrets:
+#   htpasswd: "izelnakri:$2y$05$4EraB11kmEkLqEk3OeVIs.x7.lZ69qVAq02.MpTyaxpirhG3ME/y2"
+#   s3:
+#     accessKey: "HMLVKRD3JJ7FUTHN4DZ4"
+#     secretKey: "jftt21tpnivAObtVX/WcQG3SpjQW1CWoz6R6C0wTwnU"
+# s3:
+#   region: fra1
+#   regionEndpoint: fra1.digitaloceanspaces.com
+#   secure: true
+#   bucket: izelnakri
+#   #  encrypt: false
+
+# add resources limits maybe

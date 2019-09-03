@@ -12,7 +12,7 @@ metadata:
 type: Opaque
 data:
   
-  secret: "NXJNSmNkVXA3MnhwV0xYeXNsMHNESUJo"
+  secret: "RnFqQzN2VDl2ZVhUcGhSbFZabHJ0b2RH"
   
 ---apiVersion: v1
 kind: Secret
@@ -226,7 +226,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/secrets: b626f320647498d25a40023c6e63a8dfe68be3d76126e5cbd251615c43c81392
+        checksum/secrets: fffdb1595544ffab8cfbe323083031cbeaa29073d470d11ac7cd7b3a65a81030
       labels:
         app: drone
         release: "drone"

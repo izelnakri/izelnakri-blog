@@ -14,7 +14,7 @@ type: Opaque
 data:
  
   
-  dbPassword: "djlicWRRWFNEUw=="
+  dbPassword: "aTdJR2pESHlNdA=="
   
  
 
@@ -292,7 +292,7 @@ data:
     INSTALL_LOCK = false
     ; !!CHANGE THIS TO KEEP YOUR USER DATA SAFE!!
     
-    SECRET_KEY = "GS0ktQgllSmGWNoLYQu0pX7qjce8HlSTwNlEkkF5z0ISiPCE4zxvPb40pHrfE6tH"
+    SECRET_KEY = "sp8x2kqjo4sVLPqwhe1c6kTBhre1xjsuIm9CXFXVuJ693Lx3GmPY285zBJeZwaq8"
     
 
 

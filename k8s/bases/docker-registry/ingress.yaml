@@ -25,6 +25,8 @@ metadata:
     certmanager.k8s.io/cluster-issuer: docker-registry-cert-issuer
     certmanager.k8s.io/acme-challenge-type: http01
     nginx.ingress.kubernetes.io/proxy-body-size: "900m" # allows limiting data sent per req
+    # nginx.ingress.kubernetes.io/auth-type: basic
+    # nginx.ingress.kubernetes.io/auth-secret: http-basic-auth
     # TODO: add http auth: nginx.ingress.kubernetes.io/auth-tls-secret: "<namespace>/<secretName>"
 spec:
   tls:

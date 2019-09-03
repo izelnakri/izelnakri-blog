@@ -6,7 +6,7 @@ metadata:
   labels:
     app: izelnakri-com
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: izelnakri-com
@@ -19,7 +19,7 @@ spec:
         - name: izelnakri-com
           image: hashicorp/http-echo
           args:
-            - "-text=setting up k8s"
+            - "-text=setting up k8s."
           ports:
             - containerPort: 5678
 ---
