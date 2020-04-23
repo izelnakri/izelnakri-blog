@@ -1,38 +1,62 @@
 ---
-# Source: stolon/templates/configmap.yaml
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: stolon
-  labels:
-    app: stolon
-    chart: stolon-1.1.2
-    release: stolon
-    heritage: Tiller
-data:
-
----
 # Source: stolon/templates/serviceaccount.yaml
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: stolon
+  name: izel-stolon
   labels:
     app: stolon
-    chart: stolon-1.1.2
-    release: stolon
-    heritage: Tiller
+    chart: stolon-1.5.9
+    release: izel
+    heritage: Helm
+---
+# Source: stolon/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: izel-stolon
+  labels:
+    app: stolon
+    chart: stolon-1.5.9
+    release: izel
+    heritage: Helm
+type: Opaque
+data:
+
+  pg_su_password: "MTk5MjE5OTIxOTky"
+
+
+  pg_repl_password: "cmVwbGljYXRpb24xOTkyMTk5MjE5OTI="
+---
+# Source: stolon/templates/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: izel-stolon
+  labels:
+    app: stolon
+    chart: stolon-1.5.9
+    release: izel
+    heritage: Helm
+data:
+---
+# Source: stolon/templates/hooks/init-db-job.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: izel-stolon-init-scripts
+data:
 ---
 # Source: stolon/templates/role.yaml
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: Role
 metadata:
-  name: stolon
+  name: izel-stolon
   labels:
     app: stolon
-    chart: stolon-1.1.2
-    release: stolon
-    heritage: Tiller
+    chart: stolon-1.5.9
+    release: izel
+    heritage: Helm
 rules:
 - apiGroups:
     - ""
@@ -48,30 +72,30 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: RoleBinding
 metadata:
-  name: stolon
+  name: izel-stolon
   labels:
     app: stolon
-    chart: stolon-1.1.2
-    release: stolon
-    heritage: Tiller
+    chart: stolon-1.5.9
+    release: izel
+    heritage: Helm
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: stolon
+  name: izel-stolon
 subjects:
 - kind: ServiceAccount
-  name: stolon
+  name: izel-stolon
 ---
 # Source: stolon/templates/keeper-headless-service.yaml
 apiVersion: v1
 kind: Service
 metadata:
-  name: stolon-keeper-headless
+  name: izel-stolon-keeper-headless
   labels:
     app: stolon
-    chart: stolon-1.1.2
-    release: stolon
-    heritage: Tiller
+    chart: stolon-1.5.9
+    release: izel
+    heritage: Helm
   annotations:
 spec:
   clusterIP: None
@@ -80,23 +104,40 @@ spec:
       port: 5432
       protocol: TCP
       targetPort: 5432
-      
   selector:
     app: stolon
-    release: stolon
+    release: izel
     component: stolon-keeper
-
+---
+# Source: stolon/templates/metrics-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: izel-stolon-metrics
+  labels:
+    app: stolon
+    chart: stolon-1.5.9
+    release: izel
+    heritage: Helm
+    component: "all"
+spec:
+  ports:
+    - name: metrics
+      port: 8080
+  selector:
+    app: stolon
+    release: izel
 ---
 # Source: stolon/templates/proxy-service.yaml
 apiVersion: v1
 kind: Service
 metadata:
-  name: stolon-proxy
+  name: izel-stolon-proxy
   labels:
     app: stolon
-    chart: stolon-1.1.2
-    release: stolon
-    heritage: Tiller
+    chart: stolon-1.5.9
+    release: izel
+    heritage: Helm
   annotations:
 spec:
   type: ClusterIP
@@ -105,43 +146,41 @@ spec:
       port: 5432
       protocol: TCP
       targetPort: 5432
-      
   selector:
     app: stolon
-    release: stolon
+    release: izel
     component: stolon-proxy
-
 ---
 # Source: stolon/templates/proxy-deployment.yaml
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: stolon-proxy
+  name: izel-stolon-proxy
   labels:
     app: stolon
-    chart: stolon-1.1.2
-    release: stolon
-    heritage: Tiller
+    chart: stolon-1.5.9
+    release: izel
+    heritage: Helm
 spec:
   replicas: 2
   selector:
     matchLabels:
       app: stolon
-      release: stolon
+      release: izel
       component: stolon-proxy
   template:
     metadata:
       labels:
         app: stolon
-        release: stolon
+        release: izel
         component: stolon-proxy
-        stolon-cluster: stolon
+        stolon-cluster: izel-stolon
       annotations:
     spec:
-      serviceAccountName: stolon
+      serviceAccountName: izel-stolon
       containers:
         - name: stolon
-          image: "sorintlab/stolon:v0.13.0-pg10"
+          image: "sorintlab/stolon:v0.16.0-pg12"
           imagePullPolicy: IfNotPresent
           command:
             - "/bin/bash"
@@ -154,7 +193,7 @@ spec:
                 fieldRef:
                   fieldPath: metadata.name
             - name: STPROXY_CLUSTER_NAME
-              value: stolon
+              value: izel-stolon
             - name: STPROXY_STORE_BACKEND
               value: "kubernetes"
             - name: STPROXY_KUBE_RESOURCE_KIND
@@ -168,51 +207,47 @@ spec:
           ports:
             - name: metrics
               containerPort: 8080
-              
             - name: stolon
               containerPort: 5432
-              
           resources:
             {}
-            
           readinessProbe:
             tcpSocket:
               port: 5432
             initialDelaySeconds: 10
             timeoutSeconds: 5
-
 ---
 # Source: stolon/templates/sentinel-deployment.yaml
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: stolon-sentinel
+  name: izel-stolon-sentinel
   labels:
     app: stolon
-    chart: stolon-1.1.2
-    release: stolon
-    heritage: Tiller
+    chart: stolon-1.5.9
+    release: izel
+    heritage: Helm
 spec:
   replicas: 2
   selector:
     matchLabels:
       app: stolon
-      release: stolon
+      release: izel
       component: stolon-sentinel
   template:
     metadata:
       labels:
         app: stolon
-        release: stolon
+        release: izel
         component: stolon-sentinel
-        stolon-cluster: stolon
+        stolon-cluster: izel-stolon
       annotations:
-        checksum/config: f8d8bf365482df99f4ed862e912e7bc1893e0ba450a741685976dbf102e8eb22
+        checksum/config: 3dcacd1e66ff0a272ee2f23e71635e053559bac9dbaf7e81e870c34694e161ae
     spec:
-      serviceAccountName: stolon
+      serviceAccountName: izel-stolon
       containers:
         - name: stolon
-          image: "sorintlab/stolon:v0.13.0-pg10"
+          image: "sorintlab/stolon:v0.16.0-pg12"
           imagePullPolicy: IfNotPresent
           command:
             - "/bin/bash"
@@ -225,7 +260,7 @@ spec:
                 fieldRef:
                   fieldPath: metadata.name
             - name: STSENTINEL_CLUSTER_NAME
-              value: stolon
+              value: izel-stolon
             - name: STSENTINEL_STORE_BACKEND
               value: "kubernetes"
             - name: STSENTINEL_KUBE_RESOURCE_KIND
@@ -237,47 +272,43 @@ spec:
           ports:
             - name: metrics
               containerPort: 8080
-              
             - name: stolon
               containerPort: 5432
-              
           resources:
             {}
-            
-
 ---
 # Source: stolon/templates/keeper-statefulset.yaml
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: stolon-keeper
+  name: izel-stolon-keeper
   labels:
     app: stolon
-    chart: stolon-1.1.2
-    release: stolon
-    heritage: Tiller
+    chart: stolon-1.5.9
+    release: izel
+    heritage: Helm
 spec:
-  serviceName: stolon-keeper-headless
+  serviceName: izel-stolon-keeper-headless
   replicas: 2
   selector:
     matchLabels:
       app: stolon
-      release: stolon
+      release: izel
       component: stolon-keeper
   template:
     metadata:
       labels:
         app: stolon
-        release: stolon
+        release: izel
         component: stolon-keeper
-        stolon-cluster: stolon
+        stolon-cluster: izel-stolon
       annotations:
     spec:
-      serviceAccountName: stolon
+      serviceAccountName: izel-stolon
       terminationGracePeriodSeconds: 10
       containers:
         - name: stolon
-          image: "sorintlab/stolon:v0.13.0-pg10"
+          image: "sorintlab/stolon:v0.16.0-pg12"
           imagePullPolicy: IfNotPresent
           command:
             - "/bin/bash"
@@ -297,32 +328,26 @@ spec:
                 fieldRef:
                   fieldPath: metadata.name
             - name: STKEEPER_CLUSTER_NAME
-              value: stolon
+              value: izel-stolon
             - name: STKEEPER_STORE_BACKEND
               value: "kubernetes"
             - name: STKEEPER_KUBE_RESOURCE_KIND
               value: "configmap"
             - name: STKEEPER_PG_REPL_USERNAME
 
-              valueFrom:
-                secretKeyRef:
-                  name: replicationuser
-                  key: pg_repl_username
+              value: "repluser"
 
             - name: STKEEPER_PG_REPL_PASSWORDFILE
 
-              value: /etc/secrets/stolon-replicationuser/pg_repl_password
+              value: "/etc/secrets/stolon/pg_repl_password"
 
             - name: STKEEPER_PG_SU_USERNAME
 
-              valueFrom:
-                secretKeyRef:
-                  name: superuser
-                  key: pg_su_username
+              value: "stolon"
 
             - name: STKEEPER_PG_SU_PASSWORDFILE
 
-              value: /etc/secrets/stolon-superuser/pg_su_password
+              value: "/etc/secrets/stolon/pg_su_password"
 
             - name: STKEEPER_METRICS_LISTEN_ADDRESS
               value: "0.0.0.0:8080"
@@ -331,39 +356,30 @@ spec:
           ports:
             - name: metrics
               containerPort: 8080
-              
             - name: stolon
               containerPort: 5432
-              
           resources:
             {}
-            
           volumeMounts:
           - name: data
             mountPath: /stolon-data
 
+          - name: stolon-secrets
+            mountPath: /etc/secrets/stolon
 
-          - name: stolon-secret-superuser
-            mountPath: /etc/secrets/stolon-superuser
 
 
-          - name: stolon-secret-replicationuser
-            mountPath: /etc/secrets/stolon-replicationuser
-
+          lifecycle:
       volumes:
         - name: config
           configMap:
-            name: stolon
+            name: izel-stolon
 
-
-        - name: stolon-secret-superuser
+        - name: stolon-secrets
           secret:
-            secretName: superuser
+            secretName: izel-stolon
 
 
-        - name: stolon-secret-replicationuser
-          secret:
-            secretName: replicationuser
 
   volumeClaimTemplates:
     - metadata:
@@ -374,19 +390,42 @@ spec:
         resources:
           requests:
             storage: "10Gi"
-
+---
+# Source: stolon/templates/metrics-servicemonitor.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: izel-stolon
+  labels:
+    app: stolon
+    chart: stolon-1.5.9
+    release: izel
+    heritage: Helm
+  namespace: prometheus
+spec:
+  endpoints:
+    - targetPort: "metrics"
+      interval: 15s
+      scrapeTimeout: 10s
+  namespaceSelector:
+    matchNames:
+      - default
+  selector:
+    matchLabels:
+      app: stolon
+      release: izel
+      component: "all"
 ---
 # Source: stolon/templates/hooks/create-cluster-job.yaml
-
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: stolon-create-cluster
+  name: izel-stolon-create-cluster
   labels:
     app: stolon
-    chart: stolon-1.1.2
-    release: stolon
-    heritage: Tiller
+    chart: stolon-1.5.9
+    release: izel
+    heritage: Helm
   annotations:
     "helm.sh/hook": post-install
     "helm.sh/hook-delete-policy": before-hook-creation
@@ -394,37 +433,34 @@ spec:
   template:
     metadata:
       labels:
-        app: stolon
-        release: stolon
+        app: izel-stolon
+        release: izel
     spec:
       restartPolicy: OnFailure
-      serviceAccountName: stolon
+      serviceAccountName: izel-stolon
       containers:
-        - name: stolon-create-cluster
-          image: "sorintlab/stolon:v0.13.0-pg10"
+        - name: izel-stolon-create-cluster
+          image: "sorintlab/stolon:v0.16.0-pg12"
           imagePullPolicy: IfNotPresent
           command: ["/usr/local/bin/stolonctl"]
           args:
             - init
-            - --cluster-name=stolon
+            - --cluster-name=izel-stolon
             - --store-backend=kubernetes
             - --kube-resource-kind=configmap
             - --yes
-            - '{ "initMode": "new", "pgParameters": {} }'
-
-
+            - '{ "initMode": "new", "pgParameters": {"ssl":"off","ssl_ca_file":null,"ssl_cert_file":null,"ssl_key_file":null}  }'
 ---
 # Source: stolon/templates/hooks/update-cluster-spec-job.yaml
-
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: stolon-update-cluster-spec
+  name: izel-stolon-update-cluster-spec
   labels:
     app: stolon
-    chart: stolon-1.1.2
-    release: stolon
-    heritage: Tiller
+    chart: stolon-1.5.9
+    release: izel
+    heritage: Helm
   annotations:
     "helm.sh/hook": post-upgrade
     "helm.sh/hook-delete-policy": before-hook-creation
@@ -432,38 +468,20 @@ spec:
   template:
     metadata:
       labels:
-        app: stolon
-        release: stolon
+        app: izel-stolon
+        release: izel
     spec:
       restartPolicy: OnFailure
-      serviceAccountName: stolon
+      serviceAccountName: izel-stolon
       containers:
-        - name: stolon-update-cluster-spec
-          image: "sorintlab/stolon:v0.13.0-pg10"
+        - name: izel-stolon-update-cluster-spec
+          image: "sorintlab/stolon:v0.16.0-pg12"
           imagePullPolicy: IfNotPresent
           command: ["/usr/local/bin/stolonctl"]
           args:
             - update
-            - --cluster-name=stolon
+            - --cluster-name=izel-stolon
             - --store-backend=kubernetes
             - --kube-resource-kind=configmap
             - -p
-            - '{ "pgParameters": {} }'
-
-
----
-# Source: stolon/templates/keeper-pdb.yaml
-
-
----
-# Source: stolon/templates/proxy-pdb.yaml
-
-
----
-# Source: stolon/templates/secret.yaml
-
-
----
-# Source: stolon/templates/sentinel-pdb.yaml
-
-
+            - '{ "pgParameters": {"ssl":"off","ssl_ca_file":null,"ssl_cert_file":null,"ssl_key_file":null}}'

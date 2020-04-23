@@ -5,4 +5,5 @@ generatorOptions:
 resources:
   - namespace.yaml
   - frontend-deployment.yaml
+  - issuer.yaml
   - ingress.yaml

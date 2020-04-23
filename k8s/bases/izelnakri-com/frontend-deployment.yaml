@@ -17,11 +17,17 @@ spec:
     spec:
       containers:
         - name: izelnakri-com
-          image: hashicorp/http-echo
-          args:
-            - "-text=setting up k8s."
+          image: inakri/test-express
           ports:
-            - containerPort: 5678
+            - containerPort: 3000
+          command: ["/usr/local/bin/node"]
+          args: ["/code/index.js"]
+
+          # image: hashicorp/http-echo
+          # args:
+          #   - "-text=setting up k8s."
+          # ports:
+          #   - containerPort: 5678
 ---
 apiVersion: v1
 kind: Service
@@ -31,6 +37,6 @@ metadata:
 spec:
   ports:
   - port: 80
-    targetPort: 5678
+    targetPort: 3000
   selector:
     app: izelnakri-com

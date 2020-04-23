@@ -1,25 +1,54 @@
 ---
-# Source: nginx-ingress/templates/serviceaccount.yaml
+# Source: nginx-ingress/templates/controller-serviceaccount.yaml
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   labels:
     app: nginx-ingress
-    chart: nginx-ingress-1.14.0
-    heritage: Tiller
-    release: nginx-ingress
-  name: nginx-ingress
+    chart: nginx-ingress-1.36.2
+    heritage: Helm
+    release: helm-nginx
+  name: helm-nginx-nginx-ingress
+---
+# Source: nginx-ingress/templates/default-backend-serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app: nginx-ingress
+    chart: nginx-ingress-1.36.2
+    heritage: Helm
+    release: helm-nginx
+  name: helm-nginx-nginx-ingress-backend
+---
+# Source: nginx-ingress/templates/controller-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: nginx-ingress
+    chart: nginx-ingress-1.36.2
+    component: "controller"
+    heritage: Helm
+    release: helm-nginx
+  name: helm-nginx-nginx-ingress-controller
+data:
+  body-size: "0"
+  hsts: "false"
+  proxy-body-size: "0"
+  ssl-redirect: "false"
+  use-proxy-protocol: "true"
 ---
 # Source: nginx-ingress/templates/clusterrole.yaml
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   labels:
     app: nginx-ingress
-    chart: nginx-ingress-1.14.0
-    heritage: Tiller
-    release: nginx-ingress
-  name: nginx-ingress
+    chart: nginx-ingress-1.36.2
+    heritage: Helm
+    release: helm-nginx
+  name: helm-nginx-nginx-ingress
 rules:
   - apiGroups:
       - ""
@@ -72,34 +101,34 @@ rules:
       - update
 ---
 # Source: nginx-ingress/templates/clusterrolebinding.yaml
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   labels:
     app: nginx-ingress
-    chart: nginx-ingress-1.14.0
-    heritage: Tiller
-    release: nginx-ingress
-  name: nginx-ingress
+    chart: nginx-ingress-1.36.2
+    heritage: Helm
+    release: helm-nginx
+  name: helm-nginx-nginx-ingress
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: nginx-ingress
+  name: helm-nginx-nginx-ingress
 subjects:
   - kind: ServiceAccount
-    name: nginx-ingress
-    namespace: default
+    name: helm-nginx-nginx-ingress
+    namespace: nginx
 ---
-# Source: nginx-ingress/templates/role.yaml
-apiVersion: rbac.authorization.k8s.io/v1beta1
+# Source: nginx-ingress/templates/controller-role.yaml
+apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   labels:
     app: nginx-ingress
-    chart: nginx-ingress-1.14.0
-    heritage: Tiller
-    release: nginx-ingress
-  name: nginx-ingress
+    chart: nginx-ingress-1.36.2
+    heritage: Helm
+    release: helm-nginx
+  name: helm-nginx-nginx-ingress
 rules:
   - apiGroups:
       - ""
@@ -174,38 +203,40 @@ rules:
       - create
       - patch
 ---
-# Source: nginx-ingress/templates/rolebinding.yaml
-apiVersion: rbac.authorization.k8s.io/v1beta1
+# Source: nginx-ingress/templates/controller-rolebinding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   labels:
     app: nginx-ingress
-    chart: nginx-ingress-1.14.0
-    heritage: Tiller
-    release: nginx-ingress
-  name: nginx-ingress
+    chart: nginx-ingress-1.36.2
+    heritage: Helm
+    release: helm-nginx
+  name: helm-nginx-nginx-ingress
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: nginx-ingress
+  name: helm-nginx-nginx-ingress
 subjects:
   - kind: ServiceAccount
-    name: nginx-ingress
-    namespace: default
+    name: helm-nginx-nginx-ingress
+    namespace: nginx
 ---
 # Source: nginx-ingress/templates/controller-service.yaml
 apiVersion: v1
 kind: Service
 metadata:
+  annotations:
+    service.beta.kubernetes.io/do-loadbalancer-enable-proxy-protocol: "true"
   labels:
     app: nginx-ingress
-    chart: nginx-ingress-1.14.0
+    chart: nginx-ingress-1.36.2
     component: "controller"
-    heritage: Tiller
-    release: nginx-ingress
-  name: nginx-ingress-controller
+    heritage: Helm
+    release: helm-nginx
+  name: helm-nginx-nginx-ingress-controller
 spec:
-  clusterIP: ""
+  externalTrafficPolicy: "Local"
   ports:
     - name: http
       port: 80
@@ -217,25 +248,22 @@ spec:
       targetPort: https
   selector:
     app: nginx-ingress
-    component: "controller"
-    release: nginx-ingress
+    release: helm-nginx
+    app.kubernetes.io/component: controller
   type: "LoadBalancer"
-
 ---
 # Source: nginx-ingress/templates/default-backend-service.yaml
-
 apiVersion: v1
 kind: Service
 metadata:
   labels:
     app: nginx-ingress
-    chart: nginx-ingress-1.14.0
+    chart: nginx-ingress-1.36.2
     component: "default-backend"
-    heritage: Tiller
-    release: nginx-ingress
-  name: nginx-ingress-default-backend
+    heritage: Helm
+    release: helm-nginx
+  name: helm-nginx-nginx-ingress-default-backend
 spec:
-  clusterIP: ""
   ports:
     - name: http
       port: 80
@@ -243,56 +271,59 @@ spec:
       targetPort: http
   selector:
     app: nginx-ingress
-    component: "default-backend"
-    release: nginx-ingress
+    release: helm-nginx
+    app.kubernetes.io/component: default-backend
   type: "ClusterIP"
-
 ---
 # Source: nginx-ingress/templates/controller-deployment.yaml
-
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
     app: nginx-ingress
-    chart: nginx-ingress-1.14.0
-    component: "controller"
-    heritage: Tiller
-    release: nginx-ingress
-  name: nginx-ingress-controller
+    chart: nginx-ingress-1.36.2
+    heritage: Helm
+    release: helm-nginx
+    app.kubernetes.io/component: controller
+  name: helm-nginx-nginx-ingress-controller
+  annotations:
+    {}
 spec:
+  selector:
+    matchLabels:
+      app: nginx-ingress
+      release: helm-nginx
   replicas: 1
   revisionHistoryLimit: 10
   strategy:
     {}
-    
   minReadySeconds: 0
   template:
     metadata:
       labels:
         app: nginx-ingress
+        release: helm-nginx
         component: "controller"
-        release: nginx-ingress
+        app.kubernetes.io/component: controller
     spec:
       dnsPolicy: ClusterFirst
       containers:
         - name: nginx-ingress-controller
-          image: "quay.io/kubernetes-ingress-controller/nginx-ingress-controller:0.25.0"
+          image: "quay.io/kubernetes-ingress-controller/nginx-ingress-controller:0.30.0"
           imagePullPolicy: "IfNotPresent"
           args:
             - /nginx-ingress-controller
-            - --default-backend-service=default/nginx-ingress-default-backend
-            - --publish-service=nginx/nginx-ingress-controller
+            - --default-backend-service=nginx/helm-nginx-nginx-ingress-default-backend
             - --election-id=ingress-controller-leader
             - --ingress-class=nginx
-            - --configmap=nginx/nginx-ingress-controller
+            - --configmap=nginx/helm-nginx-nginx-ingress-controller
           securityContext:
             capabilities:
                 drop:
                 - ALL
                 add:
                 - NET_BIND_SERVICE
-            runAsUser: 33
+            runAsUser: 101
             allowPrivilegeEscalation: true
           env:
             - name: POD_NAME
@@ -332,33 +363,34 @@ spec:
             failureThreshold: 3
           resources:
             {}
-            
       hostNetwork: false
-      serviceAccountName: nginx-ingress
+      serviceAccountName: helm-nginx-nginx-ingress
       terminationGracePeriodSeconds: 60
-
 ---
 # Source: nginx-ingress/templates/default-backend-deployment.yaml
-
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
     app: nginx-ingress
-    chart: nginx-ingress-1.14.0
-    component: "default-backend"
-    heritage: Tiller
-    release: nginx-ingress
-  name: nginx-ingress-default-backend
+    chart: nginx-ingress-1.36.2
+    heritage: Helm
+    release: helm-nginx
+    app.kubernetes.io/component: default-backend
+  name: helm-nginx-nginx-ingress-default-backend
 spec:
+  selector:
+    matchLabels:
+      app: nginx-ingress
+      release: helm-nginx
   replicas: 1
   revisionHistoryLimit: 10
   template:
     metadata:
       labels:
         app: nginx-ingress
-        component: "default-backend"
-        release: nginx-ingress
+        release: helm-nginx
+        app.kubernetes.io/component: default-backend
     spec:
       containers:
         - name: nginx-ingress-default-backend
@@ -393,50 +425,5 @@ spec:
               protocol: TCP
           resources:
             {}
-            
+      serviceAccountName: helm-nginx-nginx-ingress-backend
       terminationGracePeriodSeconds: 60
-
----
-# Source: nginx-ingress/templates/controller-configmap.yaml
-
-
----
-# Source: nginx-ingress/templates/controller-daemonset.yaml
-
-
----
-# Source: nginx-ingress/templates/controller-hpa.yaml
-
-
----
-# Source: nginx-ingress/templates/controller-metrics-service.yaml
-
-
----
-# Source: nginx-ingress/templates/controller-poddisruptionbudget.yaml
-
-
----
-# Source: nginx-ingress/templates/controller-servicemonitor.yaml
-
-
----
-# Source: nginx-ingress/templates/default-backend-poddisruptionbudget.yaml
-
-
----
-# Source: nginx-ingress/templates/headers-configmap.yaml
-
-
----
-# Source: nginx-ingress/templates/podsecuritypolicy.yaml
-
-
----
-# Source: nginx-ingress/templates/tcp-configmap.yaml
-
-
----
-# Source: nginx-ingress/templates/udp-configmap.yaml
-
-

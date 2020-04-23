@@ -1,0 +1,6 @@
+3 ServiceAccounts = cainjector, cert-manager, webhook
+9 ClusterRoles
+7 ClusterRoleBinding
+2 Role
+
+31 Resources
