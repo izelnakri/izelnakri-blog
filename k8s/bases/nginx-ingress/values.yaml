@@ -254,6 +254,7 @@ controller:
     enabled: true
 
     annotations: {
+      service.beta.kubernetes.io/do-loadbalancer-hostname: "izelnakri.com",
       service.beta.kubernetes.io/do-loadbalancer-enable-proxy-protocol: "true"
     }
     labels: {}

@@ -16,5 +16,6 @@
 /backend/priv/repo/seeds.exs
 
 /k8s/bases/helm_charts
+/k8s/bases/scaleway.yaml
 
 old-frontend

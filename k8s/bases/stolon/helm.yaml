@@ -409,7 +409,7 @@ spec:
       scrapeTimeout: 10s
   namespaceSelector:
     matchNames:
-      - default
+      - stolon
   selector:
     matchLabels:
       app: stolon

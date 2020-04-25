@@ -1,4 +1,5 @@
 releaseName: izel
+namespace: stolon
 clusterName: izel-stolon
 # use pg v0.16.0-pg12
 image:
@@ -45,7 +46,7 @@ serviceAccount:
 # superuserSecret:
   # name: "super-user-secret"
   # usernameKey: "stolon"
-  # passwordKey: "199219921992"
+  # passwordKey: "somethingsomething"
 
 # replicationSecret:
   # name: "replication-secret"
@@ -54,11 +55,11 @@ serviceAccount:
 
 superuserUsername: "stolon"
 ## password for the superuser (REQUIRED if superuserSecret is not set)
-superuserPassword: "199219921992"
+superuserPassword: "something"
 
 replicationUsername: "repluser"
 ## password for the replication user (REQUIRED if replicationSecret is not set)
-replicationPassword: "replication199219921992"
+replicationPassword: "replicationsomething"
 
 ## backend could be one of the following: consul, etcdv2, etcdv3 or kubernetes
 store:
@@ -79,9 +80,9 @@ serviceMonitor:
   # When set to true then use a ServiceMonitor to collect metrics
   enabled: true
   # Custom labels to use in the ServiceMonitor to be matched with a specific Prometheus
-  labels: {
+  # labels: {
 
-  }
+  # }
   # Set the namespace the ServiceMonitor should be deployed to
   namespace: prometheus
   # Set how frequently Prometheus should scrape

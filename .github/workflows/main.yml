@@ -2,7 +2,7 @@ on: [push]
 
 jobs:
   my_first_job:
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-18.04
     steps:
       - name: My first step
         uses: docker://alpine:3.8
