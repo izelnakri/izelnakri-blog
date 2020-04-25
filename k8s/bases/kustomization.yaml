@@ -6,4 +6,5 @@ bases:
   - prometheus-operator
   - stolon
   - izelnakri-com
+  - loki-stack
 resources: null

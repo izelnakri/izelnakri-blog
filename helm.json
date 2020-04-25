@@ -1,0 +1,11 @@
+{
+  "name": "izelnakri-blog",
+  "dependencies": {
+    "stable/docker-registry": "1.9.2",
+    "stable/nginx-ingress": "1.36.2",
+    "stable/prometheus-operator": "8.13.0",
+    "stable/stolon": "1.5.9",
+    "jaegertracing/jaeger": "0.27.0",
+    "loki/loki-stack": "0.36.1"
+  }
+}

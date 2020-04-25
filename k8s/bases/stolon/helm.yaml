@@ -23,10 +23,10 @@ metadata:
 type: Opaque
 data:
 
-  pg_su_password: "MTk5MjE5OTIxOTky"
+  pg_su_password: "c29tZXRoaW5n"
 
 
-  pg_repl_password: "cmVwbGljYXRpb24xOTkyMTk5MjE5OTI="
+  pg_repl_password: "cmVwbGljYXRpb25zb21ldGhpbmc="
 ---
 # Source: stolon/templates/configmap.yaml
 apiVersion: v1
