@@ -34,7 +34,7 @@
     "ember-route-action-helper": "^2.0.6",
     "eslint": "^5.4.0",
     "fastclick": "^1.0.6",
-    "jquery": "^3.3.1",
+    "jquery": "^3.5.0",
     "marked": "^0.4.0",
     "mber": "^0.6.2",
     "mber-head": "^0.1.0",
