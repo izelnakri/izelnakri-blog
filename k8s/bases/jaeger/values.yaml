@@ -2,6 +2,9 @@
 # This is a YAML-formatted file.
 # Jaeger values are grouped by component. Cassandra values override subchart values
 
+release: "izel"
+namespace: "jaeger"
+
 provisionDataStore:
   cassandra: true
   elasticsearch: false

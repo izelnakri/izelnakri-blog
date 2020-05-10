@@ -399,14 +399,16 @@ controller:
       type: ClusterIP
 
     serviceMonitor:
-      enabled: false
-      additionalLabels: {}
-      namespace: ""
-      namespaceSelector: {}
+      enabled: true
+      additionalLabels: {
+        release: "izel"
+      }
+      namespace: "prometheus"
+      # namespaceSelector: {}
       # Default: scrape .Release.Namespace only
       # To scrape all, use the following:
-      # namespaceSelector:
-      #   any: true
+      namespaceSelector:
+        any: true
       scrapeInterval: 30s
       # honorLabels: true
 

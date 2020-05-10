@@ -47,7 +47,7 @@ metadata:
   namespace: loki
   labels:
     app: promtail
-    chart: promtail-0.22.1
+    chart: promtail-0.22.2
     heritage: Helm
     release: izel
 spec:
@@ -92,7 +92,7 @@ kind: ServiceAccount
 metadata:
   labels:
     app: promtail
-    chart: promtail-0.22.1
+    chart: promtail-0.22.2
     heritage: Helm
     release: izel
   name: izel-promtail
@@ -120,7 +120,7 @@ metadata:
   namespace: loki
   labels:
     app: promtail
-    chart: promtail-0.22.1
+    chart: promtail-0.22.2
     release: izel
     heritage: Helm
 data:
@@ -396,7 +396,7 @@ metadata:
   namespace: loki
   labels:
     app: loki-stack
-    chart: loki-stack-0.36.1
+    chart: loki-stack-0.36.2
     release: izel
     heritage: Helm
     grafana_datasource: "1"
@@ -417,7 +417,7 @@ metadata:
   name: izel-loki-stack-test
   labels:
     app: loki-stack
-    chart: loki-stack-0.36.1
+    chart: loki-stack-0.36.2
     release: izel
     heritage: Helm
 data:
@@ -469,7 +469,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   labels:
     app: promtail
-    chart: promtail-0.22.1
+    chart: promtail-0.22.2
     release: izel
     heritage: Helm
   name: izel-promtail-clusterrole
@@ -491,7 +491,7 @@ metadata:
   name: izel-promtail-clusterrolebinding
   labels:
     app: promtail
-    chart: promtail-0.22.1
+    chart: promtail-0.22.2
     release: izel
     heritage: Helm
 subjects:
@@ -528,7 +528,7 @@ metadata:
   namespace: loki
   labels:
     app: promtail
-    chart: promtail-0.22.1
+    chart: promtail-0.22.2
     heritage: Helm
     release: izel
 rules:
@@ -564,7 +564,7 @@ metadata:
   namespace: loki
   labels:
     app: promtail
-    chart: promtail-0.22.1
+    chart: promtail-0.22.2
     heritage: Helm
     release: izel
 roleRef:
@@ -630,7 +630,7 @@ metadata:
   namespace: loki
   labels:
     app: promtail
-    chart: promtail-0.22.1
+    chart: promtail-0.22.2
     release: izel
     heritage: Helm
   annotations:
@@ -648,14 +648,14 @@ spec:
         app: promtail
         release: izel          
       annotations:
-        checksum/config: b18b6db022fe3cda7945e66415a04882701c83ac638cc64e50cfc5012f12a80f
+        checksum/config: c4a20dba39e04b59eb53aaa8f326dfd646019d4295c27191c1ccdad41156ea07
         prometheus.io/port: http-metrics
         prometheus.io/scrape: "true"
     spec:
       serviceAccountName: izel-promtail
       containers:
         - name: promtail
-          image: "grafana/promtail:1.4.1"
+          image: "grafana/promtail:1.4.0"
           imagePullPolicy: IfNotPresent
           args:
             - "-config.file=/etc/promtail/promtail.yaml"
@@ -811,7 +811,7 @@ metadata:
     "helm.sh/hook": test-success
   labels:
     app: loki-stack
-    chart: loki-stack-0.36.1
+    chart: loki-stack-0.36.2
     release: izel
     heritage: Helm
   name: izel-loki-stack-test

@@ -6,10 +6,10 @@ metadata:
   name: izel-grafana
   namespace: prometheus
   labels:
-    helm.sh/chart: grafana-5.0.12
+    helm.sh/chart: grafana-5.0.18
     app.kubernetes.io/name: grafana
     app.kubernetes.io/instance: izel
-    app.kubernetes.io/version: "6.7.1"
+    app.kubernetes.io/version: "6.7.3"
     app.kubernetes.io/managed-by: Helm
   annotations:
     seccomp.security.alpha.kubernetes.io/allowedProfileNames: 'docker/default'
@@ -60,10 +60,10 @@ metadata:
   name: izel-grafana-test
   namespace: prometheus
   labels:
-    helm.sh/chart: grafana-5.0.12
+    helm.sh/chart: grafana-5.0.18
     app.kubernetes.io/name: grafana
     app.kubernetes.io/instance: izel
-    app.kubernetes.io/version: "6.7.1"
+    app.kubernetes.io/version: "6.7.3"
     app.kubernetes.io/managed-by: Helm
 spec:
   allowPrivilegeEscalation: true
@@ -93,7 +93,7 @@ metadata:
   name: izel-kube-state-metrics
   labels:
     app.kubernetes.io/name: kube-state-metrics
-    helm.sh/chart: kube-state-metrics-2.8.2
+    helm.sh/chart: kube-state-metrics-2.8.4
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/instance: izel
 spec:
@@ -185,7 +185,7 @@ metadata:
   labels:
     app: prometheus-operator-alertmanager
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 spec:
@@ -236,7 +236,7 @@ metadata:
   labels:
     app: prometheus-operator-operator
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 spec:
@@ -287,7 +287,7 @@ metadata:
   labels:
     app: prometheus-operator-prometheus
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 spec:
@@ -334,10 +334,10 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   labels:
-    helm.sh/chart: grafana-5.0.12
+    helm.sh/chart: grafana-5.0.18
     app.kubernetes.io/name: grafana
     app.kubernetes.io/instance: izel
-    app.kubernetes.io/version: "6.7.1"
+    app.kubernetes.io/version: "6.7.3"
     app.kubernetes.io/managed-by: Helm
   name: izel-grafana
   namespace: prometheus
@@ -347,10 +347,10 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   labels:
-    helm.sh/chart: grafana-5.0.12
+    helm.sh/chart: grafana-5.0.18
     app.kubernetes.io/name: grafana
     app.kubernetes.io/instance: izel
-    app.kubernetes.io/version: "6.7.1"
+    app.kubernetes.io/version: "6.7.3"
     app.kubernetes.io/managed-by: Helm
   name: izel-grafana-test
   namespace: prometheus
@@ -361,7 +361,7 @@ kind: ServiceAccount
 metadata:
   labels:
     app.kubernetes.io/name: kube-state-metrics
-    helm.sh/chart: kube-state-metrics-2.8.2
+    helm.sh/chart: kube-state-metrics-2.8.4
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/instance: izel
   name: izel-kube-state-metrics
@@ -392,7 +392,7 @@ metadata:
   labels:
     app: prometheus-operator-alertmanager
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 imagePullSecrets:
@@ -407,7 +407,7 @@ metadata:
   labels:
     app: prometheus-operator-operator
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 imagePullSecrets:
@@ -422,7 +422,7 @@ metadata:
   labels:
     app: prometheus-operator-prometheus
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 imagePullSecrets:
@@ -435,10 +435,10 @@ metadata:
   name: izel-grafana
   namespace: prometheus
   labels:
-    helm.sh/chart: grafana-5.0.12
+    helm.sh/chart: grafana-5.0.18
     app.kubernetes.io/name: grafana
     app.kubernetes.io/instance: izel
-    app.kubernetes.io/version: "6.7.1"
+    app.kubernetes.io/version: "6.7.3"
     app.kubernetes.io/managed-by: Helm
 type: Opaque
 data:
@@ -455,7 +455,7 @@ metadata:
   labels:
     app: prometheus-operator-alertmanager
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 data:
@@ -466,10 +466,10 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   labels:
-    helm.sh/chart: grafana-5.0.12
+    helm.sh/chart: grafana-5.0.18
     app.kubernetes.io/name: grafana
     app.kubernetes.io/instance: izel
-    app.kubernetes.io/version: "6.7.1"
+    app.kubernetes.io/version: "6.7.3"
     app.kubernetes.io/managed-by: Helm
   name: izel-grafana-config-dashboards
   namespace: prometheus
@@ -493,10 +493,10 @@ metadata:
   name: izel-grafana
   namespace: prometheus
   labels:
-    helm.sh/chart: grafana-5.0.12
+    helm.sh/chart: grafana-5.0.18
     app.kubernetes.io/name: grafana
     app.kubernetes.io/instance: izel
-    app.kubernetes.io/version: "6.7.1"
+    app.kubernetes.io/version: "6.7.3"
     app.kubernetes.io/managed-by: Helm
 data:
   grafana.ini: |
@@ -519,10 +519,10 @@ metadata:
   name: izel-grafana-test
   namespace: prometheus
   labels:
-    helm.sh/chart: grafana-5.0.12
+    helm.sh/chart: grafana-5.0.18
     app.kubernetes.io/name: grafana
     app.kubernetes.io/instance: izel
-    app.kubernetes.io/version: "6.7.1"
+    app.kubernetes.io/version: "6.7.3"
     app.kubernetes.io/managed-by: Helm
 data:
   run.sh: |-
@@ -543,7 +543,7 @@ metadata:
     grafana_datasource: "1"
     app: prometheus-operator-grafana
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 data:
@@ -566,7 +566,7 @@ metadata:
     grafana_dashboard: "1"
     app: prometheus-operator-grafana
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 data:
@@ -2823,7 +2823,7 @@ metadata:
     grafana_dashboard: "1"
     app: prometheus-operator-grafana
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 data:
@@ -4645,7 +4645,7 @@ metadata:
     grafana_dashboard: "1"
     app: prometheus-operator-grafana
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 data:
@@ -5754,39 +5754,38 @@ metadata:
     grafana_dashboard: "1"
     app: prometheus-operator-grafana
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 data:
   k8s-coredns.json: |-
     {
+        "__inputs": [
+
+        ],
+        "__requires": [
+
+        ],
         "annotations": {
             "list": [
-                {
-                    "builtIn": 1,
-                    "datasource": "-- Grafana --",
-                    "enable": true,
-                    "hide": true,
-                    "iconColor": "rgba(0, 211, 255, 1)",
-                    "name": "Annotations & Alerts",
-                    "type": "dashboard"
-                }
+
             ]
         },
-        "description": "A dashboard for the CoreDNS DNS server.",
-        "editable": true,
-        "gnetId": 5926,
+        "editable": false,
+        "gnetId": null,
         "graphTooltip": 0,
-        "id": 9,
-        "iteration": 1539947521873,
-        "links": [],
+        "hideControls": false,
+        "id": null,
+        "links": [
+
+        ],
         "panels": [
             {
                 "aliasColors": {},
                 "bars": false,
                 "dashLength": 10,
                 "dashes": false,
-                "datasource": "Prometheus",
+                "datasource": "$datasource",
                 "editable": true,
                 "error": false,
                 "fill": 1,
@@ -5885,7 +5884,7 @@ data:
                 "bars": false,
                 "dashLength": 10,
                 "dashes": false,
-                "datasource": "Prometheus",
+                "datasource": "$datasource",
                 "editable": true,
                 "error": false,
                 "fill": 1,
@@ -5979,7 +5978,7 @@ data:
                 "bars": false,
                 "dashLength": 10,
                 "dashes": false,
-                "datasource": "Prometheus",
+                "datasource": "$datasource",
                 "editable": true,
                 "error": false,
                 "fill": 1,
@@ -6076,7 +6075,7 @@ data:
                 "bars": false,
                 "dashLength": 10,
                 "dashes": false,
-                "datasource": "Prometheus",
+                "datasource": "$datasource",
                 "editable": true,
                 "error": false,
                 "fill": 1,
@@ -6173,7 +6172,7 @@ data:
                 "bars": false,
                 "dashLength": 10,
                 "dashes": false,
-                "datasource": "Prometheus",
+                "datasource": "$datasource",
                 "editable": true,
                 "error": false,
                 "fill": 1,
@@ -6285,7 +6284,7 @@ data:
                 "bars": false,
                 "dashLength": 10,
                 "dashes": false,
-                "datasource": "Prometheus",
+                "datasource": "$datasource",
                 "editable": true,
                 "error": false,
                 "fill": 1,
@@ -6397,7 +6396,7 @@ data:
                 "bars": false,
                 "dashLength": 10,
                 "dashes": false,
-                "datasource": "Prometheus",
+                "datasource": "$datasource",
                 "editable": true,
                 "error": false,
                 "fill": 1,
@@ -6482,7 +6481,7 @@ data:
                 "bars": false,
                 "dashLength": 10,
                 "dashes": false,
-                "datasource": "Prometheus",
+                "datasource": "$datasource",
                 "editable": true,
                 "error": false,
                 "fill": 1,
@@ -6584,7 +6583,7 @@ data:
                 "bars": false,
                 "dashLength": 10,
                 "dashes": false,
-                "datasource": "Prometheus",
+                "datasource": "$datasource",
                 "editable": true,
                 "error": false,
                 "fill": 1,
@@ -6701,7 +6700,7 @@ data:
                 "bars": false,
                 "dashLength": 10,
                 "dashes": false,
-                "datasource": "Prometheus",
+                "datasource": "$datasource",
                 "editable": true,
                 "error": false,
                 "fill": 1,
@@ -6821,7 +6820,7 @@ data:
                 "bars": false,
                 "dashLength": 10,
                 "dashes": false,
-                "datasource": "Prometheus",
+                "datasource": "$datasource",
                 "editable": true,
                 "error": false,
                 "fill": 1,
@@ -6906,7 +6905,7 @@ data:
                 "bars": false,
                 "dashLength": 10,
                 "dashes": false,
-                "datasource": "Prometheus",
+                "datasource": "$datasource",
                 "editable": true,
                 "error": false,
                 "fill": 1,
@@ -7005,6 +7004,22 @@ data:
         "templating": {
             "list": [
                 {
+                    "current": {
+                        "text": "default",
+                        "value": "default"
+                    },
+                    "hide": 0,
+                    "label": null,
+                    "name": "datasource",
+                    "options": [
+
+                    ],
+                    "query": "prometheus",
+                    "refresh": 1,
+                    "regex": "",
+                    "type": "datasource"
+                },
+                {
                     "allValue": ".*",
                     "current": {
                         "selected": true,
@@ -7012,7 +7027,7 @@ data:
                         "text": "172.16.1.8:9153",
                         "value": "172.16.1.8:9153"
                     },
-                    "datasource": "Prometheus",
+                    "datasource": "$datasource",
                     "hide": 0,
                     "includeAll": true,
                     "label": "Instance",
@@ -7078,7 +7093,7 @@ metadata:
     grafana_dashboard: "1"
     app: prometheus-operator-grafana
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 data:
@@ -9655,7 +9670,7 @@ metadata:
     grafana_dashboard: "1"
     app: prometheus-operator-grafana
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 data:
@@ -11911,7 +11926,7 @@ metadata:
     grafana_dashboard: "1"
     app: prometheus-operator-grafana
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 data:
@@ -12867,7 +12882,7 @@ metadata:
     grafana_dashboard: "1"
     app: prometheus-operator-grafana
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 data:
@@ -14611,7 +14626,7 @@ metadata:
     grafana_dashboard: "1"
     app: prometheus-operator-grafana
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 data:
@@ -16618,7 +16633,7 @@ metadata:
     grafana_dashboard: "1"
     app: prometheus-operator-grafana
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 data:
@@ -18781,7 +18796,7 @@ metadata:
     grafana_dashboard: "1"
     app: prometheus-operator-grafana
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 data:
@@ -21271,7 +21286,7 @@ metadata:
     grafana_dashboard: "1"
     app: prometheus-operator-grafana
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 data:
@@ -22687,7 +22702,7 @@ metadata:
     grafana_dashboard: "1"
     app: prometheus-operator-grafana
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 data:
@@ -24367,7 +24382,7 @@ metadata:
     grafana_dashboard: "1"
     app: prometheus-operator-grafana
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 data:
@@ -25324,7 +25339,7 @@ metadata:
     grafana_dashboard: "1"
     app: prometheus-operator-grafana
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 data:
@@ -26308,7 +26323,7 @@ metadata:
     grafana_dashboard: "1"
     app: prometheus-operator-grafana
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 data:
@@ -27288,7 +27303,7 @@ metadata:
     grafana_dashboard: "1"
     app: prometheus-operator-grafana
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 data:
@@ -27854,7 +27869,7 @@ metadata:
     grafana_dashboard: "1"
     app: prometheus-operator-grafana
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 data:
@@ -29037,7 +29052,7 @@ metadata:
     grafana_dashboard: "1"
     app: prometheus-operator-grafana
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 data:
@@ -30252,7 +30267,7 @@ metadata:
     grafana_dashboard: "1"
     app: prometheus-operator-grafana
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 data:
@@ -31303,7 +31318,7 @@ metadata:
     grafana_dashboard: "1"
     app: prometheus-operator-grafana
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 data:
@@ -32222,7 +32237,7 @@ metadata:
     grafana_dashboard: "1"
     app: prometheus-operator-grafana
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 data:
@@ -33602,10 +33617,10 @@ kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   labels:
-    helm.sh/chart: grafana-5.0.12
+    helm.sh/chart: grafana-5.0.18
     app.kubernetes.io/name: grafana
     app.kubernetes.io/instance: izel
-    app.kubernetes.io/version: "6.7.1"
+    app.kubernetes.io/version: "6.7.3"
     app.kubernetes.io/managed-by: Helm
   name: izel-grafana-clusterrole
 rules:
@@ -33619,7 +33634,7 @@ kind: ClusterRole
 metadata:
   labels:
     app.kubernetes.io/name: kube-state-metrics
-    helm.sh/chart: kube-state-metrics-2.8.2
+    helm.sh/chart: kube-state-metrics-2.8.4
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/instance: izel
   name: izel-kube-state-metrics
@@ -33765,6 +33780,23 @@ rules:
     - verticalpodautoscalers
   verbs: ["list", "watch"]
 ---
+# Source: prometheus-operator/charts/kube-state-metrics/templates/psp-clusterrole.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/name: kube-state-metrics
+    helm.sh/chart: kube-state-metrics-2.8.4
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/instance: izel
+  name: psp-izel-kube-state-metrics
+rules:
+- apiGroups: ['policy']
+  resources: ['podsecuritypolicies']
+  verbs:     ['use']
+  resourceNames:
+  - izel-kube-state-metrics
+---
 # Source: prometheus-operator/charts/prometheus-node-exporter/templates/psp-clusterrole.yaml
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
@@ -33791,7 +33823,7 @@ metadata:
   labels:
     app: prometheus-operator-operator
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 rules:
@@ -33871,7 +33903,7 @@ metadata:
   labels:
     app: prometheus-operator-operator
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 rules:
@@ -33889,7 +33921,7 @@ metadata:
   labels:
     app: prometheus-operator-prometheus
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 rules:
@@ -33928,7 +33960,7 @@ metadata:
   labels:
     app: prometheus-operator-prometheus
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 rules:
@@ -33944,10 +33976,10 @@ apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: izel-grafana-clusterrolebinding
   labels:
-    helm.sh/chart: grafana-5.0.12
+    helm.sh/chart: grafana-5.0.18
     app.kubernetes.io/name: grafana
     app.kubernetes.io/instance: izel
-    app.kubernetes.io/version: "6.7.1"
+    app.kubernetes.io/version: "6.7.3"
     app.kubernetes.io/managed-by: Helm
 subjects:
   - kind: ServiceAccount
@@ -33964,7 +33996,7 @@ kind: ClusterRoleBinding
 metadata:
   labels:
     app.kubernetes.io/name: kube-state-metrics
-    helm.sh/chart: kube-state-metrics-2.8.2
+    helm.sh/chart: kube-state-metrics-2.8.4
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/instance: izel
   name: izel-kube-state-metrics
@@ -33976,6 +34008,25 @@ subjects:
 - kind: ServiceAccount
   name: izel-kube-state-metrics
   namespace: prometheus
+---
+# Source: prometheus-operator/charts/kube-state-metrics/templates/psp-clusterrolebinding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/name: kube-state-metrics
+    helm.sh/chart: kube-state-metrics-2.8.4
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/instance: izel
+  name: psp-izel-kube-state-metrics
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: psp-izel-kube-state-metrics
+subjects:
+  - kind: ServiceAccount
+    name: izel-kube-state-metrics
+    namespace: prometheus
 ---
 # Source: prometheus-operator/charts/prometheus-node-exporter/templates/psp-clusterrolebinding.yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -34005,7 +34056,7 @@ metadata:
   labels:
     app: prometheus-operator-operator
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 roleRef:
@@ -34025,7 +34076,7 @@ metadata:
   labels:
     app: prometheus-operator-operator
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 roleRef:
@@ -34045,7 +34096,7 @@ metadata:
   labels:
     app: prometheus-operator-prometheus
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 roleRef:
@@ -34065,7 +34116,7 @@ metadata:
   labels:
     app: prometheus-operator-prometheus
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 roleRef:
@@ -34084,10 +34135,10 @@ metadata:
   name: izel-grafana
   namespace: prometheus
   labels:
-    helm.sh/chart: grafana-5.0.12
+    helm.sh/chart: grafana-5.0.18
     app.kubernetes.io/name: grafana
     app.kubernetes.io/instance: izel
-    app.kubernetes.io/version: "6.7.1"
+    app.kubernetes.io/version: "6.7.3"
     app.kubernetes.io/managed-by: Helm
 rules:
 - apiGroups:      ['extensions']
@@ -34102,10 +34153,10 @@ metadata:
   name: izel-grafana-test
   namespace: prometheus
   labels:
-    helm.sh/chart: grafana-5.0.12
+    helm.sh/chart: grafana-5.0.18
     app.kubernetes.io/name: grafana
     app.kubernetes.io/instance: izel
-    app.kubernetes.io/version: "6.7.1"
+    app.kubernetes.io/version: "6.7.3"
     app.kubernetes.io/managed-by: Helm
 rules:
 - apiGroups:      ['policy']
@@ -34122,7 +34173,7 @@ metadata:
   labels:
     app: prometheus-operator-alertmanager
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 rules:
@@ -34139,10 +34190,10 @@ metadata:
   name: izel-grafana
   namespace: prometheus
   labels:
-    helm.sh/chart: grafana-5.0.12
+    helm.sh/chart: grafana-5.0.18
     app.kubernetes.io/name: grafana
     app.kubernetes.io/instance: izel
-    app.kubernetes.io/version: "6.7.1"
+    app.kubernetes.io/version: "6.7.3"
     app.kubernetes.io/managed-by: Helm
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -34160,10 +34211,10 @@ metadata:
   name: izel-grafana-test
   namespace: prometheus
   labels:
-    helm.sh/chart: grafana-5.0.12
+    helm.sh/chart: grafana-5.0.18
     app.kubernetes.io/name: grafana
     app.kubernetes.io/instance: izel
-    app.kubernetes.io/version: "6.7.1"
+    app.kubernetes.io/version: "6.7.3"
     app.kubernetes.io/managed-by: Helm
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -34183,7 +34234,7 @@ metadata:
   labels:
     app: prometheus-operator-alertmanager
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 roleRef:
@@ -34202,10 +34253,10 @@ metadata:
   name: izel-grafana
   namespace: prometheus
   labels:
-    helm.sh/chart: grafana-5.0.12
+    helm.sh/chart: grafana-5.0.18
     app.kubernetes.io/name: grafana
     app.kubernetes.io/instance: izel
-    app.kubernetes.io/version: "6.7.1"
+    app.kubernetes.io/version: "6.7.3"
     app.kubernetes.io/managed-by: Helm
 spec:
   type: ClusterIP
@@ -34227,7 +34278,7 @@ metadata:
   namespace: prometheus
   labels:
     app.kubernetes.io/name: kube-state-metrics
-    helm.sh/chart: "kube-state-metrics-2.8.2"
+    helm.sh/chart: "kube-state-metrics-2.8.4"
     app.kubernetes.io/instance: "izel"
     app.kubernetes.io/managed-by: "Helm"
   annotations:
@@ -34278,7 +34329,7 @@ metadata:
     app: prometheus-operator-alertmanager
     self-monitor: "true"
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 spec:
@@ -34301,7 +34352,7 @@ metadata:
     app: prometheus-operator-coredns
     jobLabel: coredns
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
   namespace: kube-system
@@ -34324,7 +34375,7 @@ metadata:
     app: prometheus-operator-kube-etcd
     jobLabel: kube-etcd
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
   namespace: kube-system
@@ -34348,7 +34399,7 @@ metadata:
     app: prometheus-operator-kube-scheduler
     jobLabel: kube-scheduler
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
   namespace: kube-system
@@ -34372,7 +34423,7 @@ metadata:
   labels:
     app: prometheus-operator-operator
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 spec:
@@ -34398,7 +34449,7 @@ metadata:
     app: prometheus-operator-prometheus
     self-monitor: "true"
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 spec:
@@ -34499,10 +34550,10 @@ metadata:
   name: izel-grafana
   namespace: prometheus
   labels:
-    helm.sh/chart: grafana-5.0.12
+    helm.sh/chart: grafana-5.0.18
     app.kubernetes.io/name: grafana
     app.kubernetes.io/instance: izel
-    app.kubernetes.io/version: "6.7.1"
+    app.kubernetes.io/version: "6.7.3"
     app.kubernetes.io/managed-by: Helm
 spec:
   replicas: 1
@@ -34518,10 +34569,10 @@ spec:
         app.kubernetes.io/name: grafana
         app.kubernetes.io/instance: izel
       annotations:
-        checksum/config: a7c0f56a21d1182504b70cf1385cc7cdd3ff1ca4809f1133beffc4d2e1076404
+        checksum/config: 3e79d8109355045a48b2f3fdb8799c4b70bdf25481b96507dc597f4271d20e19
         checksum/dashboards-json-config: 01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b
-        checksum/sc-dashboard-provider-config: 4c66d812baeaaecc5d20a2fba56eb4af1fcc16b4249699cad131797026047a67
-        checksum/secret: 7fb0901dc6855b1e03fc92e4e5662b580a2b6cee2a6eb742b65edd2ad8ee2318
+        checksum/sc-dashboard-provider-config: 3835ffc1300c9bc6b1c96a61a7ea50387944127a9c92393239f951312e4d8c07
+        checksum/secret: 024cb354c9e12dcb71aac3c3da4ab1fbc671e1189993c7f685b1ef8d2e925ed7
     spec:
       
       serviceAccountName: izel-grafana
@@ -34565,7 +34616,7 @@ spec:
             - name: sc-dashboard-volume
               mountPath: "/tmp/dashboards"
         - name: grafana
-          image: "grafana/grafana:6.7.1"
+          image: "grafana/grafana:6.7.3"
           imagePullPolicy: IfNotPresent
           volumeMounts:
             - name: config
@@ -34634,7 +34685,7 @@ metadata:
   namespace: prometheus
   labels:
     app.kubernetes.io/name: kube-state-metrics
-    helm.sh/chart: "kube-state-metrics-2.8.2"
+    helm.sh/chart: "kube-state-metrics-2.8.4"
     app.kubernetes.io/instance: "izel"
     app.kubernetes.io/managed-by: "Helm"
 spec:
@@ -34768,7 +34819,7 @@ metadata:
   labels:
     app: prometheus-operator-operator
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 spec:
@@ -34782,7 +34833,7 @@ spec:
       labels:
         app: prometheus-operator-operator
         
-        chart: prometheus-operator-8.13.0
+        chart: prometheus-operator-8.13.7
         release: "izel"
         heritage: "Helm"
     spec:
@@ -34846,15 +34897,15 @@ metadata:
   name: izel-grafana
   namespace: prometheus
   labels:
-    helm.sh/chart: grafana-5.0.12
+    helm.sh/chart: grafana-5.0.18
     app.kubernetes.io/name: grafana
     app.kubernetes.io/instance: izel
-    app.kubernetes.io/version: "6.7.1"
+    app.kubernetes.io/version: "6.7.3"
     app.kubernetes.io/managed-by: Helm
   annotations:
-    certmanager.k8s.io/acme-challenge-type: http01
-    certmanager.k8s.io/cluster-issuer: grafana-issuer
-    kubernetes.io/ingress.class: nginx
+    certmanager.k8s.io/acme-challenge-type: "http01"
+    certmanager.k8s.io/cluster-issuer: "grafana-issuer"
+    kubernetes.io/ingress.class: "nginx"
 spec:
   tls:
     - hosts:
@@ -34871,7 +34922,7 @@ spec:
               servicePort: 80
 ---
 # Source: prometheus-operator/templates/alertmanager/ingress.yaml
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
   name: izel-prometheus-operator-alertmanager
@@ -34883,7 +34934,7 @@ metadata:
   labels:
     app: prometheus-operator-alertmanager
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 spec:
@@ -34901,7 +34952,7 @@ spec:
       secretName: alertmanager-tls
 ---
 # Source: prometheus-operator/templates/prometheus/ingress.yaml
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
   annotations:
@@ -34913,7 +34964,7 @@ metadata:
   labels:
     app: prometheus-operator-prometheus
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 spec:
@@ -34939,7 +34990,7 @@ metadata:
   labels:
     app: prometheus-operator-alertmanager
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 spec:
@@ -34967,7 +35018,7 @@ metadata:
   name:  izel-prometheus-operator-admission
   labels:
     app: prometheus-operator-admission    
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 webhooks:
@@ -34998,7 +35049,7 @@ metadata:
   labels:
     app: prometheus-operator-prometheus
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 spec:
@@ -35052,7 +35103,7 @@ metadata:
   labels:
     app: prometheus-operator
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 spec:
@@ -35093,7 +35144,7 @@ metadata:
   labels:
     app: prometheus-operator
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 spec:
@@ -35223,7 +35274,7 @@ metadata:
   labels:
     app: prometheus-operator
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 spec:
@@ -35263,7 +35314,7 @@ metadata:
   labels:
     app: prometheus-operator
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 spec:
@@ -35374,7 +35425,7 @@ metadata:
   labels:
     app: prometheus-operator
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 spec:
@@ -35435,7 +35486,7 @@ metadata:
   labels:
     app: prometheus-operator
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 spec:
@@ -35818,7 +35869,7 @@ metadata:
   labels:
     app: prometheus-operator
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 spec:
@@ -35839,7 +35890,7 @@ metadata:
   labels:
     app: prometheus-operator
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 spec:
@@ -35870,7 +35921,7 @@ metadata:
   labels:
     app: prometheus-operator
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 spec:
@@ -35923,7 +35974,7 @@ metadata:
   labels:
     app: prometheus-operator
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 spec:
@@ -35964,7 +36015,7 @@ metadata:
   labels:
     app: prometheus-operator
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 spec:
@@ -35993,7 +36044,7 @@ metadata:
   labels:
     app: prometheus-operator
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 spec:
@@ -36187,7 +36238,7 @@ metadata:
   labels:
     app: prometheus-operator
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 spec:
@@ -36280,7 +36331,7 @@ metadata:
   labels:
     app: prometheus-operator
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 spec:
@@ -36332,7 +36383,7 @@ metadata:
   labels:
     app: prometheus-operator
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 spec:
@@ -36420,7 +36471,7 @@ metadata:
   labels:
     app: prometheus-operator
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 spec:
@@ -36493,7 +36544,7 @@ metadata:
   labels:
     app: prometheus-operator
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 spec:
@@ -36518,7 +36569,7 @@ metadata:
   labels:
     app: prometheus-operator
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 spec:
@@ -36555,7 +36606,7 @@ metadata:
   labels:
     app: prometheus-operator
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 spec:
@@ -36624,7 +36675,7 @@ metadata:
   labels:
     app: prometheus-operator
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 spec:
@@ -36816,7 +36867,7 @@ metadata:
   labels:
     app: prometheus-operator
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 spec:
@@ -36840,7 +36891,7 @@ metadata:
   labels:
     app: prometheus-operator
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 spec:
@@ -36883,7 +36934,7 @@ metadata:
   labels:
     app: prometheus-operator
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 spec:
@@ -36914,7 +36965,7 @@ metadata:
   labels:
     app: prometheus-operator
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 spec:
@@ -37104,7 +37155,7 @@ metadata:
   labels:
     app: prometheus-operator-alertmanager
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 spec:
@@ -37129,7 +37180,7 @@ metadata:
   labels:
     app: prometheus-operator-coredns
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 spec:
@@ -37154,7 +37205,7 @@ metadata:
   labels:
     app: prometheus-operator-apiserver
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 spec:
@@ -37184,7 +37235,7 @@ metadata:
   labels:
     app: prometheus-operator-kube-etcd
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 spec:
@@ -37209,7 +37260,7 @@ metadata:
   labels:
     app: prometheus-operator-kube-scheduler
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 spec:
@@ -37234,7 +37285,7 @@ metadata:
   labels:
     app: prometheus-operator-kube-state-metrics
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 spec:
@@ -37256,7 +37307,7 @@ metadata:
   labels:
     app: prometheus-operator-kubelet
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 spec:
@@ -37301,7 +37352,7 @@ metadata:
   labels:
     app: prometheus-operator-node-exporter
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 spec:
@@ -37322,7 +37373,7 @@ metadata:
   labels:
     app: prometheus-operator-grafana
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 spec:
@@ -37346,7 +37397,7 @@ metadata:
   labels:
     app: prometheus-operator-operator
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 spec:
@@ -37370,7 +37421,7 @@ metadata:
   labels:
     app: prometheus-operator-prometheus
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 spec:
@@ -37393,7 +37444,7 @@ metadata:
   name:  izel-prometheus-operator-admission
   labels:
     app: prometheus-operator-admission    
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 webhooks:
@@ -37421,10 +37472,10 @@ kind: Pod
 metadata:
   name: izel-grafana-test
   labels:
-    helm.sh/chart: grafana-5.0.12
+    helm.sh/chart: grafana-5.0.18
     app.kubernetes.io/name: grafana
     app.kubernetes.io/instance: izel
-    app.kubernetes.io/version: "6.7.1"
+    app.kubernetes.io/version: "6.7.3"
     app.kubernetes.io/managed-by: Helm
   annotations:
     "helm.sh/hook": test-success
@@ -37456,7 +37507,7 @@ metadata:
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
   labels:
     app: prometheus-operator-admission    
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 rules:
@@ -37485,7 +37536,7 @@ metadata:
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
   labels:
     app: prometheus-operator-admission    
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 roleRef:
@@ -37508,7 +37559,7 @@ metadata:
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
   labels:
     app: prometheus-operator-admission-create    
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 spec:
@@ -37517,7 +37568,7 @@ spec:
       name:  izel-prometheus-operator-admission-create
       labels:
         app: prometheus-operator-admission-create        
-        chart: prometheus-operator-8.13.0
+        chart: prometheus-operator-8.13.7
         release: "izel"
         heritage: "Helm"
     spec:
@@ -37549,7 +37600,7 @@ metadata:
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
   labels:
     app: prometheus-operator-admission-patch    
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 spec:
@@ -37558,7 +37609,7 @@ spec:
       name:  izel-prometheus-operator-admission-patch
       labels:
         app: prometheus-operator-admission-patch        
-        chart: prometheus-operator-8.13.0
+        chart: prometheus-operator-8.13.7
         release: "izel"
         heritage: "Helm"
     spec:
@@ -37592,7 +37643,7 @@ metadata:
   labels:
     app: prometheus-operator-admission
     
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 spec:
@@ -37645,7 +37696,7 @@ metadata:
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
   labels:
     app: prometheus-operator-admission    
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 rules:
@@ -37668,7 +37719,7 @@ metadata:
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
   labels:
     app: prometheus-operator-admission    
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 roleRef:
@@ -37691,7 +37742,7 @@ metadata:
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
   labels:
     app: prometheus-operator-admission    
-    chart: prometheus-operator-8.13.0
+    chart: prometheus-operator-8.13.7
     release: "izel"
     heritage: "Helm"
 imagePullSecrets:
