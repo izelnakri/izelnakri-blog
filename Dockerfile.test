@@ -1,13 +1,14 @@
-FROM "node:13.12-slim"
+FROM "node:14.2-slim"
 
 ENV PORT=8080
 
 WORKDIR /code/
 
+ADD ["maps", "/code/maps"]
 ADD ["package-lock.json", "package.json", "/code/"]
 
 RUN npm install
 
-ADD ["index.js", "/code/"]
+ADD ["index.js", "paint.js", "painting.html", "/code/"]
 
 CMD ["/bin/sh"]
