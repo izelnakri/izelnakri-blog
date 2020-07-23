@@ -7,3 +7,11 @@ resources:
   - namespace.yaml
   - helm.yaml
   # - nginx-ingress-chart.yaml
+
+patchesJson6902:
+- target:
+    group: monitoring.coreos.com
+    version: v1
+    kind: ServiceMonitor
+    name: helm-nginx-nginx-ingress-controller
+  path: service-monitor-patch.yaml

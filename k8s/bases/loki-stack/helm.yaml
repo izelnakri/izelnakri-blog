@@ -3,11 +3,10 @@
 apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
-  name: izel-loki
-  namespace: loki
+  name: loki
   labels:
     app: loki
-    chart: loki-0.28.1
+    chart: loki-0.30.2
     heritage: Helm
     release: izel
 spec:
@@ -18,6 +17,8 @@ spec:
     - 'emptyDir'
     - 'persistentVolumeClaim'
     - 'secret'
+    - 'projected'
+    - 'downwardAPI'
   hostNetwork: false
   hostIPC: false
   hostPID: false
@@ -44,10 +45,9 @@ apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
   name: izel-promtail
-  namespace: loki
   labels:
     app: promtail
-    chart: promtail-0.22.2
+    chart: promtail-0.23.3
     heritage: Helm
     release: izel
 spec:
@@ -57,6 +57,8 @@ spec:
     - 'secret'
     - 'configMap'
     - 'hostPath'
+    - 'projected'
+    - 'downwardAPI'
   hostNetwork: false
   hostIPC: false
   hostPID: false
@@ -78,12 +80,12 @@ kind: ServiceAccount
 metadata:
   labels:
     app: loki
-    chart: loki-0.28.1
+    chart: loki-0.30.2
     heritage: Helm
     release: izel
   annotations:
     {}
-  name: izel-loki
+  name: loki
   namespace: loki
 ---
 # Source: loki-stack/charts/promtail/templates/serviceaccount.yaml
@@ -92,7 +94,7 @@ kind: ServiceAccount
 metadata:
   labels:
     app: promtail
-    chart: promtail-0.22.2
+    chart: promtail-0.23.3
     heritage: Helm
     release: izel
   name: izel-promtail
@@ -102,15 +104,15 @@ metadata:
 apiVersion: v1
 kind: Secret
 metadata:
-  name: izel-loki
+  name: loki
   namespace: loki
   labels:
     app: loki
-    chart: loki-0.28.1
+    chart: loki-0.30.2
     release: izel
     heritage: Helm
 data:
-  loki.yaml: YXV0aF9lbmFibGVkOiBmYWxzZQpjaHVua19zdG9yZV9jb25maWc6CiAgbWF4X2xvb2tfYmFja19wZXJpb2Q6IDAKaW5nZXN0ZXI6CiAgY2h1bmtfYmxvY2tfc2l6ZTogMjYyMTQ0CiAgY2h1bmtfaWRsZV9wZXJpb2Q6IDNtCiAgY2h1bmtfcmV0YWluX3BlcmlvZDogMW0KICBsaWZlY3ljbGVyOgogICAgcmluZzoKICAgICAga3ZzdG9yZToKICAgICAgICBzdG9yZTogaW5tZW1vcnkKICAgICAgcmVwbGljYXRpb25fZmFjdG9yOiAxCiAgbWF4X3RyYW5zZmVyX3JldHJpZXM6IDAKbGltaXRzX2NvbmZpZzoKICBlbmZvcmNlX21ldHJpY19uYW1lOiBmYWxzZQogIHJlamVjdF9vbGRfc2FtcGxlczogdHJ1ZQogIHJlamVjdF9vbGRfc2FtcGxlc19tYXhfYWdlOiAxNjhoCnNjaGVtYV9jb25maWc6CiAgY29uZmlnczoKICAtIGZyb206ICIyMDE4LTA0LTE1IgogICAgaW5kZXg6CiAgICAgIHBlcmlvZDogMTY4aAogICAgICBwcmVmaXg6IGluZGV4XwogICAgb2JqZWN0X3N0b3JlOiBmaWxlc3lzdGVtCiAgICBzY2hlbWE6IHY5CiAgICBzdG9yZTogYm9sdGRiCnNlcnZlcjoKICBodHRwX2xpc3Rlbl9wb3J0OiAzMTAwCnN0b3JhZ2VfY29uZmlnOgogIGJvbHRkYjoKICAgIGRpcmVjdG9yeTogL2RhdGEvbG9raS9pbmRleAogIGZpbGVzeXN0ZW06CiAgICBkaXJlY3Rvcnk6IC9kYXRhL2xva2kvY2h1bmtzCnRhYmxlX21hbmFnZXI6CiAgcmV0ZW50aW9uX2RlbGV0ZXNfZW5hYmxlZDogZmFsc2UKICByZXRlbnRpb25fcGVyaW9kOiAwcw==
+  loki.yaml: YXV0aF9lbmFibGVkOiBmYWxzZQpjaHVua19zdG9yZV9jb25maWc6CiAgbWF4X2xvb2tfYmFja19wZXJpb2Q6IDBzCmluZ2VzdGVyOgogIGNodW5rX2Jsb2NrX3NpemU6IDI2MjE0NAogIGNodW5rX2lkbGVfcGVyaW9kOiAzbQogIGNodW5rX3JldGFpbl9wZXJpb2Q6IDFtCiAgbGlmZWN5Y2xlcjoKICAgIHJpbmc6CiAgICAgIGt2c3RvcmU6CiAgICAgICAgc3RvcmU6IGlubWVtb3J5CiAgICAgIHJlcGxpY2F0aW9uX2ZhY3RvcjogMQogIG1heF90cmFuc2Zlcl9yZXRyaWVzOiAwCmxpbWl0c19jb25maWc6CiAgZW5mb3JjZV9tZXRyaWNfbmFtZTogZmFsc2UKICByZWplY3Rfb2xkX3NhbXBsZXM6IHRydWUKICByZWplY3Rfb2xkX3NhbXBsZXNfbWF4X2FnZTogMTY4aApzY2hlbWFfY29uZmlnOgogIGNvbmZpZ3M6CiAgLSBmcm9tOiAiMjAxOC0wNC0xNSIKICAgIGluZGV4OgogICAgICBwZXJpb2Q6IDE2OGgKICAgICAgcHJlZml4OiBpbmRleF8KICAgIG9iamVjdF9zdG9yZTogZmlsZXN5c3RlbQogICAgc2NoZW1hOiB2OQogICAgc3RvcmU6IGJvbHRkYgpzZXJ2ZXI6CiAgaHR0cF9saXN0ZW5fcG9ydDogMzEwMApzdG9yYWdlX2NvbmZpZzoKICBib2x0ZGI6CiAgICBkaXJlY3Rvcnk6IC9kYXRhL2xva2kvaW5kZXgKICBmaWxlc3lzdGVtOgogICAgZGlyZWN0b3J5OiAvZGF0YS9sb2tpL2NodW5rcwp0YWJsZV9tYW5hZ2VyOgogIHJldGVudGlvbl9kZWxldGVzX2VuYWJsZWQ6IGZhbHNlCiAgcmV0ZW50aW9uX3BlcmlvZDogMHM=
 ---
 # Source: loki-stack/charts/promtail/templates/configmap.yaml
 apiVersion: v1
@@ -120,16 +122,16 @@ metadata:
   namespace: loki
   labels:
     app: promtail
-    chart: promtail-0.22.2
+    chart: promtail-0.23.3
     release: izel
     heritage: Helm
 data:
   promtail.yaml: |
     client:
       backoff_config:
-        maxbackoff: 5s
-        maxretries: 20
-        minbackoff: 100ms
+        max_period: 5s
+        max_retries: 20
+        min_period: 100ms
       batchsize: 102400
       batchwait: 1s
       external_labels: {}
@@ -173,11 +175,11 @@ data:
       - action: replace
         source_labels:
         - __meta_kubernetes_pod_name
-        target_label: instance
+        target_label: pod
       - action: replace
         source_labels:
         - __meta_kubernetes_pod_container_name
-        target_label: container_name
+        target_label: container
       - replacement: /var/log/pods/*$1/*.log
         separator: /
         source_labels:
@@ -220,11 +222,11 @@ data:
       - action: replace
         source_labels:
         - __meta_kubernetes_pod_name
-        target_label: instance
+        target_label: pod
       - action: replace
         source_labels:
         - __meta_kubernetes_pod_container_name
-        target_label: container_name
+        target_label: container
       - replacement: /var/log/pods/*$1/*.log
         separator: /
         source_labels:
@@ -273,11 +275,11 @@ data:
       - action: replace
         source_labels:
         - __meta_kubernetes_pod_name
-        target_label: instance
+        target_label: pod
       - action: replace
         source_labels:
         - __meta_kubernetes_pod_container_name
-        target_label: container_name
+        target_label: container
       - replacement: /var/log/pods/*$1/*.log
         separator: /
         source_labels:
@@ -328,11 +330,11 @@ data:
       - action: replace
         source_labels:
         - __meta_kubernetes_pod_name
-        target_label: instance
+        target_label: pod
       - action: replace
         source_labels:
         - __meta_kubernetes_pod_container_name
-        target_label: container_name
+        target_label: container
       - replacement: /var/log/pods/*$1/*.log
         separator: /
         source_labels:
@@ -376,11 +378,11 @@ data:
       - action: replace
         source_labels:
         - __meta_kubernetes_pod_name
-        target_label: instance
+        target_label: pod
       - action: replace
         source_labels:
         - __meta_kubernetes_pod_container_name
-        target_label: container_name
+        target_label: container
       - replacement: /var/log/pods/*$1/*.log
         separator: /
         source_labels:
@@ -396,7 +398,7 @@ metadata:
   namespace: loki
   labels:
     app: loki-stack
-    chart: loki-stack-0.36.2
+    chart: loki-stack-0.38.2
     release: izel
     heritage: Helm
     grafana_datasource: "1"
@@ -407,7 +409,7 @@ data:
     - name: Loki
       type: loki
       access: proxy
-      url: http://izel-loki:3100
+      url: http://loki:3100
       version: 1
 ---
 # Source: loki-stack/templates/tests/loki-test-configmap.yaml
@@ -417,7 +419,7 @@ metadata:
   name: izel-loki-stack-test
   labels:
     app: loki-stack
-    chart: loki-stack-0.36.2
+    chart: loki-stack-0.38.2
     release: izel
     heritage: Helm
 data:
@@ -469,11 +471,10 @@ apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   labels:
     app: promtail
-    chart: promtail-0.22.2
+    chart: promtail-0.23.3
     release: izel
     heritage: Helm
   name: izel-promtail-clusterrole
-  namespace: loki
 rules:
 - apiGroups: [""] # "" indicates the core API group
   resources:
@@ -491,7 +492,7 @@ metadata:
   name: izel-promtail-clusterrolebinding
   labels:
     app: promtail
-    chart: promtail-0.22.2
+    chart: promtail-0.23.3
     release: izel
     heritage: Helm
 subjects:
@@ -507,18 +508,18 @@ roleRef:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: izel-loki
+  name: loki
   namespace: loki
   labels:
     app: loki
-    chart: loki-0.28.1
+    chart: loki-0.30.2
     heritage: Helm
     release: izel
 rules:
 - apiGroups:      ['extensions']
   resources:      ['podsecuritypolicies']
   verbs:          ['use']
-  resourceNames:  [izel-loki]
+  resourceNames:  [loki]
 ---
 # Source: loki-stack/charts/promtail/templates/role.yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -528,7 +529,7 @@ metadata:
   namespace: loki
   labels:
     app: promtail
-    chart: promtail-0.22.2
+    chart: promtail-0.23.3
     heritage: Helm
     release: izel
 rules:
@@ -541,20 +542,20 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: izel-loki
+  name: loki
   namespace: loki
   labels:
     app: loki
-    chart: loki-0.28.1
+    chart: loki-0.30.2
     heritage: Helm
     release: izel
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: izel-loki
+  name: loki
 subjects:
 - kind: ServiceAccount
-  name: izel-loki
+  name: loki
 ---
 # Source: loki-stack/charts/promtail/templates/rolebinding.yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -564,7 +565,7 @@ metadata:
   namespace: loki
   labels:
     app: promtail
-    chart: promtail-0.22.2
+    chart: promtail-0.23.3
     heritage: Helm
     release: izel
 roleRef:
@@ -579,11 +580,11 @@ subjects:
 apiVersion: v1
 kind: Service
 metadata:
-  name: izel-loki-headless
+  name: loki-headless
   namespace: loki
   labels:
     app: loki
-    chart: loki-0.28.1
+    chart: loki-0.30.2
     release: izel
     heritage: Helm
     variant: headless
@@ -602,11 +603,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: izel-loki
+  name: loki
   namespace: loki
   labels:
     app: loki
-    chart: loki-0.28.1
+    chart: loki-0.30.2
     release: izel
     heritage: Helm
   annotations:
@@ -630,7 +631,7 @@ metadata:
   namespace: loki
   labels:
     app: promtail
-    chart: promtail-0.22.2
+    chart: promtail-0.23.3
     release: izel
     heritage: Helm
   annotations:
@@ -646,20 +647,20 @@ spec:
     metadata:
       labels:
         app: promtail
-        release: izel          
+        release: izel
       annotations:
-        checksum/config: c4a20dba39e04b59eb53aaa8f326dfd646019d4295c27191c1ccdad41156ea07
+        checksum/config: 4799cba3493adfeb18daacfc869aeb4487e2978757165e4daa5e4b755ca58e1a
         prometheus.io/port: http-metrics
         prometheus.io/scrape: "true"
     spec:
       serviceAccountName: izel-promtail
       containers:
         - name: promtail
-          image: "grafana/promtail:1.4.0"
+          image: "grafana/promtail:1.5.0"
           imagePullPolicy: IfNotPresent
           args:
             - "-config.file=/etc/promtail/promtail.yaml"
-            - "-client.url=http://izel-loki:3100/loki/api/v1/push"
+            - "-client.url=http://loki:3100/loki/api/v1/push"
           volumeMounts:
             - name: config
               mountPath: /etc/promtail
@@ -720,11 +721,11 @@ spec:
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: izel-loki
+  name: loki
   namespace: loki
   labels:
     app: loki
-    chart: loki-0.28.1
+    chart: loki-0.30.2
     release: izel
     heritage: Helm
   annotations:
@@ -736,7 +737,7 @@ spec:
     matchLabels:
       app: loki
       release: izel
-  serviceName: izel-loki-headless
+  serviceName: loki-headless
   updateStrategy:
     type: RollingUpdate
   template:
@@ -746,11 +747,11 @@ spec:
         name: loki
         release: izel
       annotations:
-        checksum/config: c41fc9da913357d920c0eead2287fcf9035eb5e08119b279f4aa8ecced1f1331
+        checksum/config: 180a5b57a00073608253db41ad297bb96ca1dc636f6b070ca76b8fa75eb64bd8
         prometheus.io/port: http-metrics
         prometheus.io/scrape: "true"
     spec:
-      serviceAccountName: izel-loki
+      serviceAccountName: loki
       securityContext:
         fsGroup: 10001
         runAsGroup: 10001
@@ -760,7 +761,7 @@ spec:
         []
       containers:
         - name: loki
-          image: "grafana/loki:1.4.1"
+          image: "grafana/loki:1.5.0"
           imagePullPolicy: IfNotPresent
           args:
             - "-config.file=/etc/loki/loki.yaml"
@@ -799,7 +800,7 @@ spec:
       volumes:
         - name: config
           secret:
-            secretName: izel-loki
+            secretName: loki
         - name: storage
           emptyDir: {}
 ---
@@ -811,7 +812,7 @@ metadata:
     "helm.sh/hook": test-success
   labels:
     app: loki-stack
-    chart: loki-stack-0.36.2
+    chart: loki-stack-0.38.2
     release: izel
     heritage: Helm
   name: izel-loki-stack-test
@@ -823,7 +824,7 @@ spec:
     - /var/lib/loki/test.sh
     env:
     - name: LOKI_SERVICE
-      value: izel-loki
+      value: loki
     - name: LOKI_PORT
       value: "3100"
     volumeMounts:

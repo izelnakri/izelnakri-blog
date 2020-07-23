@@ -1,34 +1,79 @@
 ---
-# Source: gitea/templates/db-secret.yaml
-
+# Source: gitea/charts/mariadb/templates/secrets.yaml
 apiVersion: v1
 kind: Secret
 metadata:
-  name: gitea-helm-chart-db
+  name: izel-mariadb
   labels:
-    app: postgres
-    chart: gitea-helm-chart-gitea
-    release: gitea-helm-chart
-    heritage: Tiller
+    app: "mariadb"
+    chart: "mariadb-7.3.0"
+    release: "izel"
+    heritage: "Helm"
 type: Opaque
 data:
- 
-  
-  dbPassword: "aTdJR2pESHlNdA=="
-  
- 
-
+  mariadb-root-password: "dGVzdGluZ3Bhc3N3b3Jk"
+  mariadb-password: "dGVzdGluZ3Bhc3N3b3Jk"
+---
+# Source: gitea/charts/mariadb/templates/master-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: izel-mariadb
+  labels:
+    app: "mariadb"
+    component: "master"
+    chart: "mariadb-7.3.0"
+    release: "izel"
+    heritage: "Helm"
+data:
+  my.cnf: |-
+    [mysqld]
+    skip-name-resolve
+    explicit_defaults_for_timestamp
+    basedir=/opt/bitnami/mariadb
+    plugin_dir=/opt/bitnami/mariadb/plugin
+    port=3306
+    socket=/opt/bitnami/mariadb/tmp/mysql.sock
+    tmpdir=/opt/bitnami/mariadb/tmp
+    max_allowed_packet=16M
+    bind-address=0.0.0.0
+    pid-file=/opt/bitnami/mariadb/tmp/mysqld.pid
+    log-error=/opt/bitnami/mariadb/logs/mysqld.log
+    character-set-server=UTF8
+    collation-server=utf8_general_ci
+    
+    [client]
+    port=3306
+    socket=/opt/bitnami/mariadb/tmp/mysql.sock
+    default-character-set=UTF8
+    plugin_dir=/opt/bitnami/mariadb/plugin
+    
+    [manager]
+    port=3306
+    socket=/opt/bitnami/mariadb/tmp/mysql.sock
+    pid-file=/opt/bitnami/mariadb/tmp/mysqld.pid
+---
+# Source: gitea/charts/mariadb/templates/tests.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: izel-mariadb-tests
+data:
+  run.sh: |-
+    @test "Testing MariaDB is accessible" {
+      mysql -h izel-mariadb -uroot -p$MARIADB_ROOT_PASSWORD -e 'show databases;'
+    }
 ---
 # Source: gitea/templates/gitea/gitea-config.yaml
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: gitea-helm-chart-gitea
+  name: izel-gitea
   labels:
-    app: gitea-helm-chart-gitea
-    chart: "gitea-1.6.1"
-    release: "gitea-helm-chart"
-    heritage: "Tiller"
+    app: izel-gitea
+    chart: "gitea-1.3.3"
+    release: "izel"
+    heritage: "Helm"
 data:
   app.ini: |-
     ; This file lists the default values used by Gitea
@@ -154,8 +199,8 @@ data:
 
     ; PROTOCOL hardcoded to http since tls is delegated to ingress
     PROTOCOL = http
-    DOMAIN = git.example.com
-    ROOT_URL = http://git.example.com:8280/; The address to listen on. Either a IPv4/IPv6 address or the path to a unix socket.
+    DOMAIN = git.izelnakri.com
+    ROOT_URL = %(PROTOCOL)s://%(DOMAIN)s; The address to listen on. Either a IPv4/IPv6 address or the path to a unix socket.
     HTTP_ADDR = 0.0.0.0
     HTTP_PORT = 3000
     ; If REDIRECT_OTHER_PORT is true, and PROTOCOL is set to https an http server
@@ -178,11 +223,11 @@ data:
     ; Username to use for the builtin SSH server. If blank, then it is the value of RUN_USER.
     BUILTIN_SSH_SERVER_USER =
     ; Domain name to be exposed in clone URL
-    SSH_DOMAIN = gitea-helm-chart-gitea-ssh.default.svc.cluster.local
+    SSH_DOMAIN = gitea.local
     ; THe network interface the builtin SSH server should listen on
     SSH_LISTEN_HOST =
     ; Port number to be exposed in clone URL
-    SSH_PORT = 22
+    SSH_PORT = 8022
     ; The port number the builtin SSH server should listen on
     SSH_LISTEN_PORT = 22
     ; Root path of SSH directory, default is '~/.ssh', but you have to use '/home/git/.ssh'.
@@ -257,12 +302,14 @@ data:
     [database]
     
     ; Either "mysql", "postgres", "mssql" or "sqlite3", it's your choice
-    DB_TYPE = postgres
-    HOST = 127.0.0.1:5432
+    DB_TYPE = mysql
+    HOST = izel-mariadb:3306
     NAME = gitea
-    USER = postgres
+    USER = gitea
     ; Use PASSWD = `your password` for quoting if you use special characters in the password.
-    PASSWD = POSTGRES_PASSWORD
+    
+    PASSWD = MARIADB_PASSWORD
+    
     
     ; For "postgres" only, either "disable", "require" or "verify-full"
     SSL_MODE = disable
@@ -292,7 +339,7 @@ data:
     INSTALL_LOCK = false
     ; !!CHANGE THIS TO KEEP YOUR USER DATA SAFE!!
     
-    SECRET_KEY = "sp8x2kqjo4sVLPqwhe1c6kTBhre1xjsuIm9CXFXVuJ693Lx3GmPY285zBJeZwaq8"
+    SECRET_KEY = "ARZDSNm5vtk9aPeDi2R5l87JSh80eTSY7MS482tSVb1mvuJqk4khXcVxMYxhmHlo"
     
 
 
@@ -704,18 +751,59 @@ data:
     ENABLED = false
     ; If you want to add authorization, specify a token here
     TOKEN =
+---
+# Source: gitea/templates/gitea/gitea-pvc.yaml
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: izel-gitea
+  labels:
+    app: izel-gitea
+    chart: gitea
+    release: izel
+    heritage: Helm
+  annotations:
+    helm.sh/resource-policy: keep
 
+spec:
+  accessModes:
+    - "ReadWriteOnce"
+  resources:
+    requests:
+      storage: "10Gi"
+---
+# Source: gitea/charts/mariadb/templates/master-svc.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: izel-mariadb
+  labels:
+    app: "mariadb"
+    component: "master"
+    chart: "mariadb-7.3.0"
+    release: "izel"
+    heritage: "Helm"
+spec:
+  type: ClusterIP
+  ports:
+  - name: mysql
+    port: 3306
+    targetPort: mysql
+  selector:
+    app: "mariadb"
+    component: "master"
+    release: "izel"
 ---
 # Source: gitea/templates/gitea/gitea-http-svc.yaml
 apiVersion: v1
 kind: Service
 metadata:
-  name: gitea-helm-chart-gitea-http
+  name: izel-gitea-http
   labels:
-    app: gitea-helm-chart-gitea
-    chart: "gitea-1.6.1"
-    release: "gitea-helm-chart"
-    heritage: "Tiller"
+    app: izel-gitea
+    chart: "gitea-1.3.3"
+    release: "izel"
+    heritage: "Helm"
 spec:
   type: ClusterIP
   ports:
@@ -723,116 +811,58 @@ spec:
     port: 3000
     targetPort: 3000
   selector:
-    app: gitea-helm-chart-gitea
-
+    app: izel-gitea
 ---
 # Source: gitea/templates/gitea/gitea-ssh-svc.yaml
 apiVersion: v1
 kind: Service
 metadata:
-  name: gitea-helm-chart-gitea-ssh
+  name: izel-gitea-ssh
   labels:
-    app: gitea-helm-chart-gitea
-    chart: "gitea-1.6.1"
-    release: "gitea-helm-chart"
-    heritage: "Tiller"
+    app: izel-gitea
+    chart: "gitea-1.3.3"
+    release: "izel"
+    heritage: "Helm"
 spec:
-  type: ClusterIP
+  type: LoadBalancer
   ports:
   - name: ssh
     port: 22
     targetPort: ssh
   selector:
-    app: gitea-helm-chart-gitea
-
+    app: izel-gitea
 ---
 # Source: gitea/templates/deployment.yaml
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: gitea-helm-chart-gitea
+  name: izel-gitea
   labels:
-    app: gitea-helm-chart-gitea
-    chart: "gitea-1.6.1"
-    release: "gitea-helm-chart"
-    heritage: "Tiller"
+    app: izel-gitea
+    chart: "gitea-1.3.3"
+    release: "izel"
+    heritage: "Helm"
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: gitea-helm-chart-gitea
-  template:
+      app: izel-gitea
+  template: 
     metadata:
       labels:
-        app: gitea-helm-chart-gitea
+        app: izel-gitea
     spec:
       containers:
             
-      - name: postgres
-        image: "postgres:11"
-        imagePullPolicy: "Always"
-        args:
-        env:
-        - name: POSTGRES_USER
-          value: "postgres"
-        # Required for pg_isready in the health probes.
-        - name: PGUSER
-          value: "postgres"
-        - name: POSTGRES_DB
-          value: "gitea"
-        - name: POSTGRES_INITDB_ARGS
-          value: ""
-        - name: PGDATA
-          value: /var/lib/postgresql/data/pgdata
-        - name: POSTGRES_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: gitea-helm-chart-db
-              key: dbPassword
-        - name: POD_IP
-          valueFrom: { fieldRef: { fieldPath: status.podIP } }
-        ports:
-        - name: postgresql
-          containerPort: 5432
-        livenessProbe:
-          exec:
-            command:
-            - sh
-            - -c
-            - exec pg_isready --host $POD_IP
-          initialDelaySeconds: 120
-          timeoutSeconds: 5
-          failureThreshold: 6
-        readinessProbe:
-          exec:
-            command:
-            - sh
-            - -c
-            - exec pg_isready --host $POD_IP
-          initialDelaySeconds: 5
-          timeoutSeconds: 3
-          periodSeconds: 5
-        resources:
-                limits:
-                  cpu: 1
-                  memory: 2Gi
-                requests:
-                  cpu: 200m
-                  memory: 200Mi
-                
-        volumeMounts:
-        - name: postgres-data
-          mountPath: /var/lib/postgresql/data/pgdata
-          subPath: postgresql-db      
       - name: gitea
-        image: gitea/gitea:1.6.1
-        imagePullPolicy: 
+        image: gitea/gitea:1.10.1
+        imagePullPolicy: IfNotPresent
         env:
-        - name: POSTGRES_PASSWORD
+        - name: DATABASE_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: gitea-helm-chart-db
-              key: dbPassword
+              name: izel-mariadb
+              key: mariadb-password
         ports:
         - name: ssh
           containerPort: 22
@@ -856,11 +886,10 @@ spec:
         resources:
                 limits:
                   cpu: 1
-                  memory: 2Gi
+                  memory: 1Gi
                 requests:
-                  cpu: 1000m
+                  cpu: 300m
                   memory: 500Mi
-                
         volumeMounts:
         - name: gitea-data
           mountPath: /data
@@ -868,8 +897,8 @@ spec:
           mountPath: /etc/gitea
             
       - name: memcached
-        image: memcached:1.5.6-alpine
-        imagePullPolicy: 
+        image: memcached:1.5.19-alpine
+        imagePullPolicy: IfNotPresent
         command:
           - memcached
           - -m 64
@@ -895,49 +924,230 @@ spec:
                 requests:
                   cpu: 50m
                   memory: 64Mi
-                
       initContainers:
             
       - name: init
-        image: gitea/gitea:1.6.1
-        imagePullPolicy: 
+        image: gitea/gitea:1.10.1
+        imagePullPolicy: IfNotPresent
         env:
-        - name: POSTGRES_PASSWORD
+        - name: MARIADB_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: gitea-helm-chart-db
-              key: dbPassword
+              name: izel-mariadb
+              key: mariadb-password
         - name: SCRIPT
           value: &script |-
             mkdir -p /datatmp/gitea/conf
-            #if [ ! -f /datatmp/gitea/conf/app.ini ]; then
-              sed "s/POSTGRES_PASSWORD/${POSTGRES_PASSWORD}/g" < /etc/gitea/app.ini > /datatmp/gitea/conf/app.ini
-            #fi
+            if [ ! -f /datatmp/gitea/conf/app.ini ]; then
+              sed "s/MARIADB_PASSWORD/${MARIADB_PASSWORD}/g" < /etc/gitea/app.ini > /datatmp/gitea/conf/app.ini
+            fi
         command: ["/bin/sh",'-c', *script]
         volumeMounts:
         - name: gitea-data
           mountPath: /datatmp
         - name: gitea-config
           mountPath: /etc/gitea
-            
-      
       volumes:
       - name: gitea-data
-        emptyDir: {}
-      
-      - name: postgres-data
-        emptyDir: {}
+        persistentVolumeClaim:
+         claimName: izel-gitea
       - name: gitea-config
         configMap:
-          name: gitea-helm-chart-gitea
-
+          name: izel-gitea
 ---
-# Source: gitea/templates/gitea/gitea-pvc.yaml
-
-
+# Source: gitea/charts/mariadb/templates/master-statefulset.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: izel-mariadb
+  labels:
+    app: mariadb
+    chart: mariadb-7.3.0
+    release: izel
+    heritage: Helm
+    component: master
+spec:
+  selector:
+    matchLabels:
+      app: mariadb
+      release: izel
+      component: master
+  serviceName: izel-mariadb
+  replicas: 1
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: mariadb
+        chart: mariadb-7.3.0
+        release: izel
+        component: master
+    spec:
+      serviceAccountName: default
+      securityContext:
+        fsGroup: 1001
+        runAsUser: 1001
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              podAffinityTerm:
+                topologyKey: kubernetes.io/hostname
+                labelSelector:
+                  matchLabels:
+                    app: mariadb
+                    release: izel      
+      initContainers:
+      containers:
+        - name: "mariadb"
+          image: docker.io/bitnami/mariadb:10.3.20-debian-9-r19
+          imagePullPolicy: "IfNotPresent"
+          env:
+            - name: MARIADB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: izel-mariadb
+                  key: mariadb-root-password
+            - name: MARIADB_USER
+              value: "gitea"
+            - name: MARIADB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: izel-mariadb
+                  key: mariadb-password
+            - name: MARIADB_DATABASE
+              value: "gitea"
+          ports:
+            - name: mysql
+              containerPort: 3306
+          livenessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - |
+                  password_aux="${MARIADB_ROOT_PASSWORD:-}"
+                  if [ -f "${MARIADB_ROOT_PASSWORD_FILE:-}" ]; then
+                      password_aux=$(cat $MARIADB_ROOT_PASSWORD_FILE)
+                  fi
+                  mysqladmin status -uroot -p$password_aux
+            initialDelaySeconds: 120
+            periodSeconds: 10
+            timeoutSeconds: 1
+            successThreshold: 1
+            failureThreshold: 3
+          readinessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - |
+                  password_aux="${MARIADB_ROOT_PASSWORD:-}"
+                  if [ -f "${MARIADB_ROOT_PASSWORD_FILE:-}" ]; then
+                      password_aux=$(cat $MARIADB_ROOT_PASSWORD_FILE)
+                  fi
+                  mysqladmin status -uroot -p$password_aux
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 1
+            successThreshold: 1
+            failureThreshold: 3
+          volumeMounts:
+            - name: data
+              mountPath: /bitnami/mariadb
+            - name: config
+              mountPath: /opt/bitnami/mariadb/conf/my.cnf
+              subPath: my.cnf
+      volumes:
+        - name: config
+          configMap:
+            name: izel-mariadb
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+        labels:
+          app: "mariadb"
+          component: "master"
+          release: "izel"
+          heritage: "Helm"
+      spec:
+        accessModes:
+          - "ReadWriteOnce"
+        resources:
+          requests:
+            storage: "8Gi"
 ---
 # Source: gitea/templates/ingress.yaml
-
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: izel-gitea
+  labels:
+    app: "izel-gitea"
+    chart: "gitea-1.3.3"
+    release: "izel"
+    heritage: "Helm"
+  annotations:
+    certmanager.k8s.io/acme-challenge-type: "http01"
+    certmanager.k8s.io/cluster-issuer: "gitea-issuer"
+    kubernetes.io/ingress.class: "nginx"
+spec:
+  rules:
+  - host: git.izelnakri.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: izel-gitea-http
+          servicePort: 3000
+  tls:
+    - hosts:
+      - git.izelnakri.com
+      secretName: gitea-tls
 ---
-# Source: gitea/templates/postgres/postgres-pvc.yaml
-
+# Source: gitea/charts/mariadb/templates/test-runner.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "izel-mariadb-test-8zci9"
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  initContainers:
+    - name: "test-framework"
+      image: docker.io/dduportal/bats:0.4.0
+      command:
+        - "bash"
+        - "-c"
+        - |
+          set -ex
+          # copy bats to tools dir
+          cp -R /usr/local/libexec/ /tools/bats/
+      volumeMounts:
+      - mountPath: /tools
+        name: tools
+  containers:
+    - name: mariadb-test
+      image: docker.io/bitnami/mariadb:10.3.20-debian-9-r19
+      imagePullPolicy: "IfNotPresent"
+      command: ["/tools/bats/bats", "-t", "/tests/run.sh"]
+      env:
+        - name: MARIADB_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: izel-mariadb
+              key: mariadb-root-password
+      volumeMounts:
+      - mountPath: /tests
+        name: tests
+        readOnly: true
+      - mountPath: /tools
+        name: tools
+  volumes:
+  - name: tests
+    configMap:
+      name: izel-mariadb-tests
+  - name: tools
+    emptyDir: {}
+  restartPolicy: Never

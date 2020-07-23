@@ -1,0 +1,12 @@
+# remake values.yaml
+kind: Kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+
+namespace: harbor
+
+resources:
+  - namespace.yaml
+  - issuer.yaml
+  - helm.yaml
+
+# TODO: make secretNames only a single secret with hosts

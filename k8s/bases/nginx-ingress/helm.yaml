@@ -5,7 +5,7 @@ kind: ServiceAccount
 metadata:
   labels:
     app: nginx-ingress
-    chart: nginx-ingress-1.36.3
+    chart: nginx-ingress-1.41.0
     heritage: Helm
     release: helm-nginx
   name: helm-nginx-nginx-ingress
@@ -16,7 +16,7 @@ kind: ServiceAccount
 metadata:
   labels:
     app: nginx-ingress
-    chart: nginx-ingress-1.36.3
+    chart: nginx-ingress-1.41.0
     heritage: Helm
     release: helm-nginx
   name: helm-nginx-nginx-ingress-backend
@@ -27,7 +27,7 @@ kind: ConfigMap
 metadata:
   labels:
     app: nginx-ingress
-    chart: nginx-ingress-1.36.3
+    chart: nginx-ingress-1.41.0
     component: "controller"
     heritage: Helm
     release: helm-nginx
@@ -45,7 +45,7 @@ kind: ClusterRole
 metadata:
   labels:
     app: nginx-ingress
-    chart: nginx-ingress-1.36.3
+    chart: nginx-ingress-1.41.0
     heritage: Helm
     release: helm-nginx
   name: helm-nginx-nginx-ingress
@@ -106,7 +106,7 @@ kind: ClusterRoleBinding
 metadata:
   labels:
     app: nginx-ingress
-    chart: nginx-ingress-1.36.3
+    chart: nginx-ingress-1.41.0
     heritage: Helm
     release: helm-nginx
   name: helm-nginx-nginx-ingress
@@ -125,7 +125,7 @@ kind: Role
 metadata:
   labels:
     app: nginx-ingress
-    chart: nginx-ingress-1.36.3
+    chart: nginx-ingress-1.41.0
     heritage: Helm
     release: helm-nginx
   name: helm-nginx-nginx-ingress
@@ -209,7 +209,7 @@ kind: RoleBinding
 metadata:
   labels:
     app: nginx-ingress
-    chart: nginx-ingress-1.36.3
+    chart: nginx-ingress-1.41.0
     heritage: Helm
     release: helm-nginx
   name: helm-nginx-nginx-ingress
@@ -228,7 +228,7 @@ kind: Service
 metadata:
   labels:
     app: nginx-ingress
-    chart: nginx-ingress-1.36.3
+    chart: nginx-ingress-1.41.0
     component: "controller"
     heritage: Helm
     release: helm-nginx
@@ -253,7 +253,7 @@ metadata:
     service.beta.kubernetes.io/do-loadbalancer-hostname: "izelnakri.com"
   labels:
     app: nginx-ingress
-    chart: nginx-ingress-1.36.3
+    chart: nginx-ingress-1.41.0
     component: "controller"
     heritage: Helm
     release: helm-nginx
@@ -281,7 +281,7 @@ kind: Service
 metadata:
   labels:
     app: nginx-ingress
-    chart: nginx-ingress-1.36.3
+    chart: nginx-ingress-1.41.0
     component: "default-backend"
     heritage: Helm
     release: helm-nginx
@@ -304,7 +304,7 @@ kind: Deployment
 metadata:
   labels:
     app: nginx-ingress
-    chart: nginx-ingress-1.36.3
+    chart: nginx-ingress-1.41.0
     heritage: Helm
     release: helm-nginx
     app.kubernetes.io/component: controller
@@ -332,7 +332,7 @@ spec:
       dnsPolicy: ClusterFirst
       containers:
         - name: nginx-ingress-controller
-          image: "quay.io/kubernetes-ingress-controller/nginx-ingress-controller:0.30.0"
+          image: "us.gcr.io/quay.io/kubernetes-ingress-controller/nginx-ingress-controller:0.30.0"
           imagePullPolicy: "IfNotPresent"
           args:
             - /nginx-ingress-controller
@@ -399,7 +399,7 @@ kind: Deployment
 metadata:
   labels:
     app: nginx-ingress
-    chart: nginx-ingress-1.36.3
+    chart: nginx-ingress-1.41.0
     heritage: Helm
     release: helm-nginx
     app.kubernetes.io/component: default-backend
@@ -462,7 +462,7 @@ metadata:
   namespace: prometheus
   labels:
     app: nginx-ingress
-    chart: nginx-ingress-1.36.3
+    chart: nginx-ingress-1.41.0
     component: "controller"
     heritage: Helm
     release: helm-nginx

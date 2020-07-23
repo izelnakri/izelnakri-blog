@@ -1,0 +1,311 @@
+---
+# Source: argo-ci/charts/argo/templates/ui-sa.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: argo-ui
+  namspace: argo
+---
+# Source: argo-ci/charts/argo/templates/workflow-controller-sa.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: argo
+  namespace: argo
+---
+# Source: argo-ci/charts/argo/templates/workflow-controller-config-map.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: izel-workflow-controller-configmap
+  labels:
+    chart: argo-0.2.1
+    release: izel
+    heritage: Helm
+    namespace: argo
+data:
+  config: |
+    artifactRepository:
+    executorImage: "argoproj/argoexec:v2.1.1"
+---
+# Source: argo-ci/charts/argo/templates/ui-cluster-role.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: izel-ui-cluster-role
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  - pods/exec
+  - pods/log
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  verbs:
+  - get
+- apiGroups:
+  - argoproj.io
+  resources:
+  - workflows
+  verbs:
+  - get
+  - list
+  - watch
+---
+# Source: argo-ci/charts/argo/templates/workflow-controller-clusterrole.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: izel-workflow-controller-cluster-role
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  - pods/exec
+  verbs:
+  - create
+  - get
+  - list
+  - watch
+  - update
+  - patch
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  verbs:
+  - get
+  - watch
+  - list
+- apiGroups:
+  - ""
+  resources:
+  - persistentvolumeclaims
+  verbs:
+  - create
+  - delete
+- apiGroups:
+  - argoproj.io
+  resources:
+  - workflows
+  verbs:
+  - get
+  - list
+  - watch
+  - update
+  - patch
+---
+# Source: argo-ci/charts/argo/templates/ui-crb.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: izel-ui-crb
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: izel-ui-cluster-role
+subjects:
+- kind: ServiceAccount
+  name: argo-ui
+  namespace: argo
+---
+# Source: argo-ci/charts/argo/templates/workflow-controller-crb.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: izel-workflow-controller-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: izel-workflow-controller-cluster-role
+subjects:
+  - kind: ServiceAccount
+    name: argo
+    namespace: argo
+  - kind: ServiceAccount
+    name: argo
+    namespace: default
+---
+# Source: argo-ci/charts/argo/templates/ui-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: izel-ui
+  labels:
+    chart: argo-0.2.1
+    release: izel
+    heritage: Helm
+    namspace: argo
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 8001
+  selector:
+    app: izel-ui
+  sessionAffinity: None
+  type: ClusterIP
+---
+# Source: argo-ci/templates/ci-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: izel-ci
+  labels:
+    chart: argo-ci-0.1.6
+    release: izel
+    heritage: Helm
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 8001
+  selector:
+    app: izel-ci
+  sessionAffinity: None
+  type: LoadBalancer
+---
+# Source: argo-ci/charts/argo/templates/ui-deployment.yaml
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: izel-ui
+  labels:
+    chart: argo-0.2.1
+    release: izel
+    heritage: Helm
+    namspace: argo
+spec:
+  template:
+    metadata:
+      labels:
+        app: izel-ui
+        release: izel
+    spec:
+      serviceAccountName: "argo-ui"
+      containers:
+        - name: ui
+          image: "argoproj/argoui:v2.1.1"
+          env:
+          - name: IN_CLUSTER
+            value: "true"
+---
+# Source: argo-ci/charts/argo/templates/workflow-controller-deployment.yaml
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: izel-workflow-controller
+  labels:
+    app: izel-workflow-controller
+    chart: argo-0.2.1
+    release: izel
+    namespace: argo
+    heritage: Helm
+spec:
+  template:
+    metadata:
+      labels:
+        app: izel-workflow-controller
+        release: izel
+    spec:
+      serviceAccountName: "argo"
+      containers:
+        - name: controller
+          image: "argoproj/workflow-controller:v2.1.1"
+          command: [ "workflow-controller" ]
+          args:
+          - "--configmap"
+          - "izel-workflow-controller-configmap"
+          - "--loglevel"
+          - "info"
+          - "--gloglevel"
+          - "0"
+          env:
+          - name: ARGO_NAMESPACE
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+---
+# Source: argo-ci/templates/ci-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: izel-ci
+  labels:
+    chart: argo-ci-0.1.6
+    release: izel
+    heritage: Helm
+spec:
+  selector:
+    matchLabels:
+      app: izel-ci
+      release: izel
+  template:
+    metadata:
+      labels:
+        app: izel-ci
+        release: izel
+    spec:
+      containers:
+        - name: ci
+          image: "argoproj/argoci:v1.0.0-alpha2"
+          imagePullPolicy: Always
+          env:
+          - name: IN_CLUSTER
+            value: "true"
+          - name: NAMESPACE
+            value: argo
+          - name: ARGO_CI_IMAGE
+            value: "argoproj/argoci:v1.0.0-alpha2"
+          - name: CONTROLLER_INSTANCE_ID
+            value: izel
+          ports:
+          - containerPort: 8001
+          - containerPort: 8002
+---
+# Source: argo-ci/charts/argo/templates/apply-workflow-crd-job.yaml
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: izel-apply-workflow-crd
+  annotations:
+    helm.sh/hook: pre-install
+    helm.sh/hook-delete-policy: hook-succeeded
+spec:
+  backoffLimit: 5
+  activeDeadlineSeconds: 100
+  template:
+    spec:
+      serviceAccountName: ""
+      containers:
+      - name: kubectl-apply
+        image: lachlanevenson/k8s-kubectl
+        command: ["/bin/sh"]
+        args: ["-c", 'echo ''
+{
+  "apiVersion": "apiextensions.k8s.io/v1beta1",
+  "kind": "CustomResourceDefinition",
+  "metadata": {
+    "name": "workflows.argoproj.io"
+  },
+  "spec": {
+    "group": "argoproj.io",
+    "names": {
+      "kind": "Workflow",
+      "plural": "workflows",
+      "shortNames": ["wf"]
+    },
+    "scope": "Namespaced",
+    "version": "v1alpha1"
+  }
+}'' | kubectl apply -f -']
+      restartPolicy: Never

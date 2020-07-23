@@ -254,6 +254,9 @@ controller:
     enabled: true
 
     annotations: {
+      # service.beta.kubernetes.io/scw-loadbalancer-proxy-protocol-v2: "*",
+      # service.beta.kubernetes.io/scw-loadbalancer-use-hostname: "true"
+
       service.beta.kubernetes.io/do-loadbalancer-hostname: "izelnakri.com",
       service.beta.kubernetes.io/do-loadbalancer-enable-proxy-protocol: "true"
     }
@@ -377,12 +380,11 @@ controller:
   metrics:
     port: 10254
     # if this port is changed, change healthz-port: in extraArgs: accordingly
-    enabled: false
+    enabled: true
 
     service:
-      annotations: {}
-      # prometheus.io/scrape: "true"
-      # prometheus.io/port: "10254"
+      prometheus.io/scrape: "true"
+      prometheus.io/port: "10254"
 
       ## Deprecated, instead simply do not provide a clusterIP value
       omitClusterIP: false

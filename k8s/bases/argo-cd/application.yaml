@@ -1,0 +1,12 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: izelnakri-com
+spec:
+  project: default
+  source:
+    repoURL: https://git.izelnakri.com/izelnakri/website
+    targetRevision: HEAD
+    path: k8s/izelnakri-com
+    kustomize:
+      version: v3.5.4

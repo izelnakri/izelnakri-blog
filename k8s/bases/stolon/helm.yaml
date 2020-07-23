@@ -6,7 +6,7 @@ metadata:
   name: izel-stolon
   labels:
     app: stolon
-    chart: stolon-1.6.0
+    chart: stolon-1.6.1
     release: izel
     heritage: Helm
 ---
@@ -17,7 +17,7 @@ metadata:
   name: izel-stolon
   labels:
     app: stolon
-    chart: stolon-1.6.0
+    chart: stolon-1.6.1
     release: izel
     heritage: Helm
 type: Opaque
@@ -35,7 +35,7 @@ metadata:
   name: izel-stolon
   labels:
     app: stolon
-    chart: stolon-1.6.0
+    chart: stolon-1.6.1
     release: izel
     heritage: Helm
 data:
@@ -54,7 +54,7 @@ metadata:
   name: izel-stolon
   labels:
     app: stolon
-    chart: stolon-1.6.0
+    chart: stolon-1.6.1
     release: izel
     heritage: Helm
 rules:
@@ -75,7 +75,7 @@ metadata:
   name: izel-stolon
   labels:
     app: stolon
-    chart: stolon-1.6.0
+    chart: stolon-1.6.1
     release: izel
     heritage: Helm
 roleRef:
@@ -93,7 +93,7 @@ metadata:
   name: izel-stolon-keeper-headless
   labels:
     app: stolon
-    chart: stolon-1.6.0
+    chart: stolon-1.6.1
     release: izel
     heritage: Helm
   annotations:
@@ -116,7 +116,7 @@ metadata:
   name: izel-stolon-metrics
   labels:
     app: stolon
-    chart: stolon-1.6.0
+    chart: stolon-1.6.1
     release: izel
     heritage: Helm
     component: "all"
@@ -135,7 +135,7 @@ metadata:
   name: izel-stolon-proxy
   labels:
     app: stolon
-    chart: stolon-1.6.0
+    chart: stolon-1.6.1
     release: izel
     heritage: Helm
   annotations:
@@ -158,7 +158,7 @@ metadata:
   name: izel-stolon-proxy
   labels:
     app: stolon
-    chart: stolon-1.6.0
+    chart: stolon-1.6.1
     release: izel
     heritage: Helm
 spec:
@@ -224,7 +224,7 @@ metadata:
   name: izel-stolon-sentinel
   labels:
     app: stolon
-    chart: stolon-1.6.0
+    chart: stolon-1.6.1
     release: izel
     heritage: Helm
 spec:
@@ -242,7 +242,7 @@ spec:
         component: stolon-sentinel
         stolon-cluster: izel-stolon
       annotations:
-        checksum/config: a77eafbb6d07f8d68cee8a3a4693a8bd8622f8da8918c8d83cf466da3dbc0386
+        checksum/config: 122d8845bb9d8f6db1d0b0ea2b756e485d3612098a1f567876ba0bd0a939bb7c
     spec:
       serviceAccountName: izel-stolon
       containers:
@@ -284,7 +284,7 @@ metadata:
   name: izel-stolon-keeper
   labels:
     app: stolon
-    chart: stolon-1.6.0
+    chart: stolon-1.6.1
     release: izel
     heritage: Helm
 spec:
@@ -398,7 +398,7 @@ metadata:
   name: izel-stolon
   labels:
     app: stolon
-    chart: stolon-1.6.0
+    chart: stolon-1.6.1
     release: izel
     heritage: Helm
   namespace: prometheus
@@ -423,7 +423,7 @@ metadata:
   name: izel-stolon-create-cluster
   labels:
     app: stolon
-    chart: stolon-1.6.0
+    chart: stolon-1.6.1
     release: izel
     heritage: Helm
   annotations:
@@ -458,7 +458,7 @@ metadata:
   name: izel-stolon-update-cluster-spec
   labels:
     app: stolon
-    chart: stolon-1.6.0
+    chart: stolon-1.6.1
     release: izel
     heritage: Helm
   annotations:
