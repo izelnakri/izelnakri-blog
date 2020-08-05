@@ -15,7 +15,7 @@ spec:
     container:
       image: docker/whalesay:latest
       command: [cowsay]
-      args: ["{{input.parameters.branch}}"]
+      args: ["{{inputs.parameters.branch}}"]
     # container:
     #   image: inakri/base-slim
     #   command: [sh, -c]
