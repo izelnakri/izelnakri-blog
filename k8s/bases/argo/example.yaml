@@ -1,13 +1,51 @@
+# tasks(dag) vs steps
 # checkout the git code
 apiVersion: argoproj.io/v1alpha1
 kind: Workflow
 metadata:
-  generateName: hello-world-
+  name: default-workflow
+  namespace: argo
+  generateName: default-workflow
 spec:
-  entrypoint: whalesay
+  entrypoint: ci
+  serviceAccountName: argo
+  onExit: on-exit
   templates:
-  - name: whalesay
+  - name: test-frontend
     container:
-      image: docker/whalesay:latest
-      command: [cowsay]
-      args: ["hello world"]
+      image: inakri/base-slim
+      command: [sh, -c]
+      args: ["git clone --single-branch --branch {{workflow.labels.workflows.argoproj.io/branch}} https://git.izelnakri.com/izelnakri/website && cd website && ls -lah"]
+  - name: ci
+    dag:
+      tasks:
+        - name: test-frontend
+          template: test-frontend
+      # - name: test-backend
+      #     image: docker/whalesay:latest
+      # - name: tag-and-push-backend
+      #   container:
+      #     image: docker/whalesay:latest
+      # - name: tag-and-push-frontend
+      #   container:
+      #     image: docker/whalesay:latest
+  - name: on-exit
+    container:
+      image: appropriate/curl
+      command: [sh, -c]
+      args: ["curl --header 'Content-Type: application/json' \
+  --request POST \
+  --data '{\"workflowName\":\"{{workflow.name}}\",\"workflowStatus\":\"{{workflow.status}}\"}' \
+  http://a0dd6e3ab11a.ngrok.io/submit-workflow-result"]
+
+  # curl --header 'Content-Type: application/json' \
+  # --request POST \
+  # --data '{"username":"xyz","password":"xyz"}' \
+  # http://b3d3905423c2.ngrok.io/submit-workflow-result
+
+  # on master do complex deployment logic
+  # - name: whalesay
+  #   container:
+  #     image: docker/whalesay:latest
+  #     command: [cowsay]
+  #     args: ["hello world"]
