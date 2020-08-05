@@ -10,10 +10,10 @@ metadata:
 spec:
   tls:
   - hosts:
-    - ci.izelnakri.com
+    - argo.izelnakri.com
     secretName: argo-ci-tls
   rules:
-  - host: ci.izelnakri.com
+  - host: argo.izelnakri.com
     http:
       paths:
       - backend:
