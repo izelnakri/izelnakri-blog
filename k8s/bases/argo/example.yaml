@@ -13,9 +13,13 @@ spec:
   templates:
   - name: test-frontend
     container:
-      image: inakri/base-slim
-      command: [sh, -c]
-      args: ["git clone --single-branch --branch {{workflow.labels.workflows.argoproj.io/branch}} https://git.izelnakri.com/izelnakri/website && cd website && ls -lah"]
+      image: docker/whalesay:latest
+      command: [cowsay]
+      args: ["{{labels.branch}}"]
+    # container:
+    #   image: inakri/base-slim
+    #   command: [sh, -c]
+    #   args: ["git clone --single-branch --branch", "{{labels.branch}}", "https://git.izelnakri.com/izelnakri/website && cd website && ls -lah"]
   - name: ci
     dag:
       tasks:
