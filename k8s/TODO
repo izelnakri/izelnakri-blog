@@ -1,3 +1,9 @@
+Gitea webhooks: I need to build a custom server in node.js to re-route gitea webhooks to argo
+
+helm minio for artifact repository
+
+starting argo in client auth mode
+
 make loki inside grafana automatically
 make dashboard immediately available
 cpu & memory management
