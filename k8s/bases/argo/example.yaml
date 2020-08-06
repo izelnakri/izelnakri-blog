@@ -1,5 +1,3 @@
-# tasks(dag) vs steps
-# checkout the git code
 apiVersion: argoproj.io/v1alpha1
 kind: Workflow
 metadata:
@@ -10,21 +8,67 @@ spec:
   entrypoint: ci
   serviceAccountName: argo
   onExit: on-exit
+  arguments:
+    parameters:
+    - name: branch
+      value: master
+    - name: sender
+      value: admin
+    - name: project
+      value: placeholder
+    - name: commitHash
+      value: 0000000000000000000000000000000000000000
+    - name: event
+      value: something
   templates:
-  - name: test-frontend
+  - name: build-frontend-branch-image
     container:
-      image: docker/whalesay:latest
-      command: [cowsay]
-      args: ["{{inputs.parameters.branch}}"]
-    # container:
-    #   image: inakri/base-slim
-    #   command: [sh, -c]
-    #   args: ["git clone --single-branch --branch", "{{labels.branch}}", "https://git.izelnakri.com/izelnakri/website && cd website && ls -lah"]
+      image: docker:stable-git
+      command: [sh, -c]
+      args:
+        - git clone --single-branch --branch {{workflow.parameters.branch}} https://git.izelnakri.com/izelnakri/website &&
+          cd website && cd frontend &&
+          docker build . -t core.harbor.izelnakri.com/library/izelnakri/website:{{workflow.parameters.branch}}
+      env:
+      - name: DOCKER_HOST               # the docker daemon can be access on the standard port on localhost
+        value: 127.0.0.1
+    sidecars:
+    - name: dind
+      image: docker:17.10-dind          # Docker already provides an image for running a Docker daemon
+      securityContext:
+        privileged: true                # the Docker daemon can only run in a privileged container
+      # mirrorVolumeMounts will mount the same volumes specified in the main container
+      # to the sidecar (including artifacts), at the same mountPaths. This enables
+      # dind daemon to (partially) see the same filesystem as the main container in
+      # order to use features such as docker volume binding.
+      mirrorVolumeMounts: true
+  # - name: test-frontend
+  #   container:
+  #     image: inakri/base-slim
+  #     command: [sh, -c]
+  #     args: [
+  #       "git clone --single-branch --branch {{workflow.parameters.branch}} https://git.izelnakri.com/izelnakri/website",
+  #       "&& cd website && cd frontend",
+  #       "&& npm install",
+  #       "&& node_modules/.bin/mber test"
+  #     ]
+  # - name: test-backend
+  #   container:
+  #     image: inakri/base-slim
+  #     command: [sh, -c]
+  #     args: [
+  #       "git clone --single-branch --branch {{workflow.parameters.branch}} https://git.izelnakri.com/izelnakri/website",
+  #       "&& cd website && cd backend",
+  #       "&& echo 'y' | mix local.hex --if-missing && echo 'y' | mix local.rebar --if-missing",
+  #       "&& mix deps.get && mix deps.compile && mix compile",
+  #       "&& mix test"
+  #     ]
+    # needs db container
   - name: ci
     dag:
       tasks:
-        - name: test-frontend
-          template: test-frontend
+        - name: build-frontend-branch-image
+          template: build-frontend-branch-image
       # - name: test-backend
       #     image: docker/whalesay:latest
       # - name: tag-and-push-backend
