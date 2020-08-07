@@ -14,8 +14,9 @@ config :bcrypt_elixir, :log_rounds, 4
 # Configure your database
 config :backend, Repo,
   adapter: Ecto.Adapters.Postgres,
-  username: System.get_env("PGUSER"),
-  password: System.get_env("PGPASSWORD"),
+  username: System.get_env("POSTGRES_USER"),
+  password: System.get_env("POSTGRES_PASSWORD"),
   database: "izelnakri_test",
-  hostname: System.get_env("PGHOST"),
+  hostname: System.get_env("PG_HOST"),
+  show_sensitive_data_on_connection_error: true,
   pool: Ecto.Adapters.SQL.Sandbox
