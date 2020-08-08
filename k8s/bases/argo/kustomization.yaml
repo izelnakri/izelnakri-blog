@@ -7,3 +7,13 @@ resources:
   - issuer.yaml
   - ingress.yaml
   - role.yaml
+  - artifact-repositories-configmap.yaml
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+secretGenerator:
+- name: do-spaces-keys
+  files:
+    - secrets/do-spaces/access-key
+    - secrets/do-spaces/secret-key

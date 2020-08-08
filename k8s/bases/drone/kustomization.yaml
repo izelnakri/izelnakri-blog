@@ -1,8 +1,0 @@
-kind: Kustomization
-apiversion: kustomize.config.k8s.io/v1beta1
-
-namespace: drone
-
-resources:
-  - ./namespace.yaml
-  - drone-chart.yaml
