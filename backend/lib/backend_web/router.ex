@@ -9,7 +9,7 @@ defmodule Backend.Router do
   scope "/", Backend do
     pipe_through :api
 
-    get "/", StaticController, :index
+    # get "/", StaticController, :index
     get "/me", UserController, :show
     post "/login", UserController, :login
 

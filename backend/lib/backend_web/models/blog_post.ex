@@ -12,7 +12,7 @@ defmodule Backend.BlogPost do
     field :meta_title, :string
     field :meta_description, :string
     field :image_url, :string
-    field :published_at, Ecto.DateTime
+    field :published_at, :utc_datetime
 
     belongs_to :user, Backend.User, on_replace: :update
     belongs_to :first_version, PaperTrail.Version
@@ -61,6 +61,7 @@ defmodule Backend.BlogPost do
     ])
     |> foreign_key_constraint(:user_id)
     |> tag_changeset(params)
+    # |> cast_assoc(:tags, with: &Backend.Tag.changeset/2)
   end
 
   def tag_changeset(changeset, params) do

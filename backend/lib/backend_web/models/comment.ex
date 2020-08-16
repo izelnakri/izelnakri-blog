@@ -9,6 +9,8 @@ defmodule Backend.Comment do
 
     belongs_to :email, Backend.Email
     belongs_to :blog_post, Backend.BlogPost
+    belongs_to :first_version, PaperTrail.Version
+    belongs_to :current_version, PaperTrail.Version
 
     has_one :person, through: [:email, :person]
 
@@ -67,6 +69,6 @@ defmodule Backend.Comment do
   end
 
   def confirm(comment) do
-    comment |> change(confirmed_at: DateTime.utc_now())
+    comment |> change(confirmed_at: DateTime.truncate(DateTime.utc_now(), :second))
   end
 end

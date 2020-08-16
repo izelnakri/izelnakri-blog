@@ -17,7 +17,7 @@ defmodule Backend.Web.ConnUtils do
   end
 
   def not_authorized(conn) do
-    encoder = Application.get_env(:phoenix, :format_encoders) |> Keyword.get(:json, Poison)
+    encoder = Application.get_env(:phoenix, :format_encoders) |> Keyword.get(:json, Jason)
 
     conn
     |> put_resp_content_type("application/json")

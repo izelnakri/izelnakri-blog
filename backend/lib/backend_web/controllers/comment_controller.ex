@@ -4,6 +4,7 @@ defmodule Backend.CommentController do
   plug Backend.Plugs.UserAuthentication when action in [:update, :delete]
 
   alias Backend.Comment
+  alias Backend.ControllerError
   # def index(conn, %{"filter" => "latest"}) do
   #   comments = Comment.query() |> Repo.all
   #
@@ -21,7 +22,7 @@ defmodule Backend.CommentController do
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
-        |> render(Backend.ChangesetView, "error.json", changeset: changeset)
+        |> ControllerError.render(changeset: changeset)
     end
   end
 
@@ -41,7 +42,7 @@ defmodule Backend.CommentController do
         {:error, changeset} ->
           conn
           |> put_status(:unprocessable_entity)
-          |> render(Backend.ChangesetView, "error.json", changeset: changeset)
+          |> ControllerError.render(changeset: changeset)
       end
     else
       not_authorized(conn)

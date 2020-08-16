@@ -6,6 +6,8 @@ defmodule Backend.Email do
   schema "emails" do
     field :address, :string
     field :confirmed_at, :utc_datetime
+    field :confirmation_token, :string
+    field :confirmation_token_sent_at, :utc_datetime
 
     belongs_to :person, Backend.Person
     belongs_to :first_version, PaperTrail.Version
@@ -76,13 +78,18 @@ defmodule Backend.Email do
   def generate_confirmation_token(email) do
     email
     |> change(%{
-      confirmation_token: random_string(60), confirmation_token_sent_at: DateTime.utc_now()
+      confirmation_token: random_string(60), confirmation_token_sent_at: utc_now()
     })
   end
 
   def confirm(email, options \\ [origin: "unknown"]) do
     email
-    |> change(%{confirmation_token: nil, confirmed_at: DateTime.utc_now()})
+    |> change(%{confirmation_token: nil, confirmed_at: utc_now()})
     |> PaperTrail.update!(options)
+  end
+
+  defp utc_now() do
+    DateTime.utc_now()
+    |> DateTime.truncate(:second)
   end
 end

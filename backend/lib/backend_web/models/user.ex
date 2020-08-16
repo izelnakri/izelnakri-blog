@@ -4,7 +4,6 @@ defmodule Backend.User do
   alias Backend.Email
   alias Backend.Person
   alias Ecto.Multi
-  alias Comeonin.Bcrypt
 
   schema "users" do
     field :password, :string, virtual: true
@@ -82,7 +81,7 @@ defmodule Backend.User do
 
   def login_changeset(struct, params \\ :empty) do
     cast(struct, params, [:last_login_user_agent, :last_login_ip, :last_login_type])
-    |> change(%{last_login_at: DateTime.utc_now()})
+    |> change(%{last_login_at: utc_now()})
   end
 
   def password_changeset(struct, params \\ %{}) do
@@ -97,7 +96,7 @@ defmodule Backend.User do
   def register(params = %{email: email}) do
     found_email = Email.query() |> where(address: ^email) |> Repo.one
     result = Multi.new()
-      |> Multi.run(:person, fn %{} ->
+      |> Multi.run(:person, fn Repo, %{} ->
         cond do
           found_email && found_email.person ->
             Person.changeset(found_email.person, params)
@@ -107,7 +106,7 @@ defmodule Backend.User do
             |> PaperTrail.insert(origin: "password_registration") |> hide_version()
         end
       end)
-      |> Multi.run(:email, fn %{person: person} ->
+      |> Multi.run(:email, fn Repo, %{person: person} ->
         email_params = Map.merge(params, %{person_id: person.id, address: email})
         cond do
           is_nil(found_email)->
@@ -122,7 +121,7 @@ defmodule Backend.User do
             |> PaperTrail.update(origin: "password_registration") |> hide_version()
         end
       end)
-      |> Multi.run(:user, fn %{person: person, email: email} ->
+      |> Multi.run(:user, fn Repo, %{person: person, email: email} ->
         user_params = Map.merge(params, %{person_id: person.id, primary_email_id: email.id})
         registration_changeset(%__MODULE__{}, user_params)
         |> PaperTrail.insert(origin: "password_registration") |> hide_version()
@@ -139,7 +138,7 @@ defmodule Backend.User do
   def login(%{email: email, password: password}) when email == "" or password == "", do: nil
   def login(params = %{email: email, password: password}) do
     user = query() |> where([user, person, email], email.address == ^email) |> Repo.one()
-    if user && Bcrypt.checkpw(password, user.password_digest) do
+    if user && Bcrypt.verify_pass(password, user.password_digest) do
       login_changeset(user, params) |> Repo.update!
     end
   end
@@ -163,7 +162,7 @@ defmodule Backend.User do
 
   defp generate_password_digest(changeset = %{changes: %{password: password}}) do
     changeset
-    |> change(%{password_digest: Bcrypt.hashpwsalt(password), password: nil})
+    |> change(%{password_digest: Bcrypt.hash_pwd_salt(password), password: nil})
   end
   defp generate_password_digest(changeset), do: changeset
 
@@ -176,4 +175,8 @@ defmodule Backend.User do
 
   defp hide_version({:error, changeset}), do: {:error, changeset}
   defp hide_version({:ok, %{model: model, version: _version}}), do: {:ok, model}
+  defp utc_now() do
+    DateTime.utc_now()
+    |> DateTime.truncate(:second)
+  end
 end

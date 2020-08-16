@@ -4,6 +4,7 @@ defmodule Backend.BlogPostController do
   plug Backend.Plugs.AdminAuthentication when action in [:create, :update, :delete]
 
   alias Backend.BlogPost
+  alias Backend.ControllerError
 
   def index(conn, %{"filter" => "latest"}) do
     blog_posts = BlogPost.query() |> Repo.all
@@ -31,7 +32,7 @@ defmodule Backend.BlogPostController do
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
-        |> render(Backend.ChangesetView, "error.json", changeset: changeset)
+        |> ControllerError.render(changeset: changeset)
     end
   end
 
@@ -40,13 +41,13 @@ defmodule Backend.BlogPostController do
     blog_post = BlogPost.query() |> where([post], post.id == ^id) |> Repo.one
 
     case BlogPost.update(blog_post, blog_post_params, origin: "user", user: current_user) do
-      {:ok, model} ->
+      {:ok, model}  ->
         blog_post = BlogPost.query() |> where(id: ^model.id) |> Repo.one()
         json conn, %{blog_post: BlogPost.serializer(blog_post)}
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
-        |> render(Backend.ChangesetView, "error.json", changeset: changeset)
+        |> ControllerError.render(changeset: changeset)
     end
   end
 
