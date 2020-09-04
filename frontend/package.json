@@ -35,7 +35,7 @@
     "eslint": "^5.4.0",
     "fastclick": "^1.0.6",
     "jquery": "^3.3.1",
-    "marked": "^0.4.0",
+    "marked": "^0.7.0",
     "mber": "^0.6.2",
     "mber-head": "^0.1.0",
     "mber-i18n": "^5.2.2",
