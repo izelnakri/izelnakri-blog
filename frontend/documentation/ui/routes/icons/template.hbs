@@ -2,4 +2,44 @@
 
 <h2>Font Awesome Icons</h2>
 
+<DocsDemo as |demo|>
+  <demo.example>
+    <FaIcon @icon="check"/>
+    <FaIcon @icon="check" @size="2x" @fixedWidth={{true}}/>
+    <FaIcon @icon="spinner" @size="3x" @spin={{true}}/>
+  </demo.example>
+
+  <demo.snippet @code='
+  <FaIcon @icon="check"/>
+  <FaIcon @icon="check" @size="2x" @fixedWidth={{true}}/>
+  <FaIcon @icon="spinner" @size="3x" @spin={{true}}/>
+  '/>
+</DocsDemo>
+
 <h2>Custom Icons</h2>
+
+<DocsDemo as |demo|>
+  <demo.example>
+    <Icon @icon="github"/>
+    <Icon @icon="github" @size="2x"/>
+  </demo.example>
+
+  <demo.snippet @code='
+  <Icon @icon="github"/>
+  <Icon @icon="github" @size="2x"/>
+  '/>
+</DocsDemo>
+
+<h2>Tooltips</h2>
+
+<DocsDemo as |demo|>
+  <demo.example>
+    <FaIcon @icon="circle" @size="3x" @tooltip="Example tooltip" @tooltipPlacement="top"/>
+    <FaIcon @icon="spinner" @size="2x" @spin={{true}} @tooltip="loading"/>
+  </demo.example>
+
+  <demo.snippet @code='
+  <FaIcon @icon="circle" @size="3x" @tooltip="Example tooltip" @tooltipPlacement="top"/>
+  <FaIcon @icon="spinner" @size="2x" @spin={{true}} @tooltip="loading"/>
+  '/>
+</DocsDemo>

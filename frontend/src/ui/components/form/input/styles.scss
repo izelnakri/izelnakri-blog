@@ -1,0 +1,67 @@
+// TODO: move these to bootstrap folder + variables
+.form-group {
+  position: relative;
+}
+
+.form-group.has-placeholder .form-control {
+  padding-top: 1px;
+  margin: 0;
+}
+
+.form-group .form-control {
+  height: 55px;
+  border: 1px solid #d9d9dd;
+  // transition: all .15s ease-out;
+  transition: all .0s ease-out;
+  padding-top: 18px;
+  padding-bottom: 0 !important;
+
+  &::placeholder {
+    opacity: 0.9;
+    font-size: 1.3em;
+  }
+
+  &:active, &:focus { // NOTE: also make input addons #00d3a0
+    padding-top: 19px;
+    border: 1px solid #00d3a0;
+    box-shadow: 0 0 3px 0 #00d3a0;
+  }
+}
+
+.input-group {
+  height: 55px; // 2.75em
+  // border-radius: 4px;
+  border: none;
+
+  .input-group-btn button {
+    height: 55px; // 2.75em
+    min-width: 60px;
+    max-width: 150px;
+    white-space: normal;
+    border: none;
+    border: 1px solid #d9d9dd;
+  }
+
+  .input-group-btn .btn-outline-secondary:hover {
+    background-color: transparent;
+    color: inherit;
+  }
+}
+
+.form-group label {
+  position: absolute;
+  color: #ababab; // NOTE: change color
+  top: 5px;
+  left: 12px;
+  font-size: 0.9em;
+  z-index: 4;
+  pointer-events: none;
+
+  &.is-active { // NOTE: make this text-success
+    color: #00d3a0;
+  }
+}
+
+.form-group.has-addon-left label {
+  left: 72px;
+}

@@ -1,27 +1,24 @@
-/* eslint-env node */
-'use strict';
-
-module.exports = function(environment) {
+export default function (environment) {
   let ENV = {
     'ember-resolver': {
       features: {
-        EMBER_RESOLVER_MODULE_UNIFICATION: true
-      }
+        EMBER_RESOLVER_MODULE_UNIFICATION: true,
+      },
     },
     modulePrefix: 'frontend',
     environment,
     rootURL: '/',
     locationType: 'auto',
     fastboot: {
-      hostWhitelist: ['localhost:1234', 'localhost:3000', /^localhost:\d+$/]
+      hostWhitelist: ['localhost:1234', 'localhost:3000', /^localhost:\d+$/],
     },
     'ember-devtools': {
       global: true,
-      enabled: ['development', 'memserver', 'test'].includes(environment)
+      enabled: ['development', 'memserver', 'test'].includes(environment),
     },
     memserver: {
       minify: ['demo', 'production'].includes(environment),
-      enabled: ['demo', 'test', 'memserver'].includes(environment)
+      enabled: ['demo', 'test', 'memserver'].includes(environment),
     },
     documentation: {
       path: '/styleguide',
@@ -34,8 +31,8 @@ module.exports = function(environment) {
     flashMessageDefaults: {
       // flash message defaults
       // timeout: environment === 'test' ? 50 : 3500,
-      timeout: 40000,
-      preventDuplicates: true
+      timeout: 3500,
+      preventDuplicates: false,
       // extendedTimeout: 200,
       // priority: 200,
       // sticky: false,
@@ -46,18 +43,18 @@ module.exports = function(environment) {
       FEATURES: {
         // Here you can enable experimental features on an ember canary build
         // e.g. 'with-controller': true
-        'ember-module-unification': true
+        'ember-module-unification': true,
       },
       EXTEND_PROTOTYPES: {
         // Prevent Ember Data from overriding Date.parse.
-        Date: false
-      }
+        Date: false,
+      },
     },
 
     APP: {
       // Here you can pass flags/options to your application instance
       // when it is created
-    }
+    },
   };
 
   ENV.APP.API_HOST = 'http://localhost:3000';
@@ -83,4 +80,4 @@ module.exports = function(environment) {
   }
 
   return ENV;
-};
+}

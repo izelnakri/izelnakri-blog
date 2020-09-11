@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>new-frontend Tests</title>
+    <title>Frontend Tests</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -18,11 +18,13 @@
       <div id="ember-testing"></div>
     </div>
 
+    <script type="text/javascript">
+      window.runningTests = true; // NOTE: important to run the tests
+    </script>
     <script src="/assets/vendor.js"></script>
     <script src="/assets/test-support.js"></script>
     <script src="/assets/application.js"></script>
     <script src="/assets/tests.js"></script>
-
     <script type="text/javascript">
       $(document).on('keydown', function(event) {
         event.keyCode === 80 ? $('#qunit-abort-tests-button').click() : null;

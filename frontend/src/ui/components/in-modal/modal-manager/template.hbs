@@ -1,3 +1,0 @@
-{{#each modals.model as |modal|}}
-  {{component modal.componentName modal.context modalName=(concat "in-" modal.name) model=modal.model onClose=(action "close")}}
-{{/each}}

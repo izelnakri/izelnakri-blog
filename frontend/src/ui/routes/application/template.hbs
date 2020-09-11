@@ -1,15 +1,17 @@
-{{head-layout}}
+<HeadLayout/>
 
-{{#each flashMessages.queue as |flash|}}
-  {{#flash-message flash=flash as |component flash|}}
-    <button type="button" class="alert close text-{{flash.type}}" data-dismiss="alert" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
-    <strong data-test-flash-message>{{flash.message}}</strong>
-
-  {{/flash-message}}
+{{#each this.flashMessages.queue as |flash flashMessageIndex|}}
+  {{!--  {{#if (is-equal flashMessageIndex (subtract this.flashMessages.queue.length 1))}}  --}}
+    <FlashMessage @flash={{flash}} as |Component flash|>
+      <strong data-test-flash-message="{{flashMessageIndex}}">{{flash.message}}</strong>
+    </FlashMessage>
+  {{!--  {{/if}}  --}}
 {{/each}}
 
 {{outlet}}
 
-{{#in-modal/modal-manager}}{{/in-modal/modal-manager}}
+{{#each this.modals.model as |modal|}}
+  {{#if (is-equal this.modals.model.lastObject modal)}}
+    {{component modal.componentName modal.context modalName=(concat "in-" modal.name) model=modal.model close=this.modals.close confirm=this.modals.confirm}}
+  {{/if}}
+{{/each}}

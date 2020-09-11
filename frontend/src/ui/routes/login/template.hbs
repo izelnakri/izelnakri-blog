@@ -1,13 +1,16 @@
-{{in-header}}
+<AppHeader/>
 
 <div class="container" style="padding-top: 58px">
   <div class="col-12 col-sm-6 offset-sm-3 card card-block">
-    {{#in-form model=model submitHandler=false beforeSubmit=(route-action "login" model) as |form|}}
-      {{form.input attribute="primaryEmail.address" type="email" addonLeft="fa-envelope" autofocus="true"}}
+    <Form @model={{this.model}} @submitHandler={{false}} @beforeSubmit={{fn this.login this.model}} as |form|>
+      <form.input @attribute="primaryEmail.address" type="email" @addonLeft="fas-envelope" @autofocus="true" />
 
-      {{form.inputpassword attribute="password"}}
+      <form.password @attribute="password" />
       <hr />
-      {{#form.button "primary" size="lg" block=true type="submit"}}Submit{{/form.button}}
-    {{/in-form}}
+
+      <form.button @style="primary" @size="lg" @block={{true}} @type="submit">
+        Submit
+      </form.button>
+    </Form>
   </div>
 </div>

@@ -1,0 +1,41 @@
+<Form::Wrapper @inputId={{this.inputId}} @name={{this.name}} @model={{this.model}} @attribute={{this.attribute}}
+  @placeholder={{this.placeholder}} @label={{this.label}} @hint={{@hint}} @inputGroup={{this.inputGroup}}
+  @addonLeft={{@addonLeft}}>
+
+  {{#if @addonLeft}}
+    <div class="input-group-btn">
+      <button class="btn btn-outline-secondary" type="button" tabindex="-1" data-test-input-left-addon="{{this.inputId}}"
+       {{on "click" this.addonClick}}>
+
+        {{#if this.addonLeftIsIcon}}
+          <FaIcon @icon={{this.addonLeftIcon}}/>
+        {{else if this.addonLeftIsCustomIcon}}
+          <Icon @icon={{@addonLeft}}/>
+        {{else}}
+          {{@addonLeft}}
+        {{/if}}
+      </button>
+    </div>
+  {{/if}}
+
+  <input id={{this.inputId}} type={{@type}} name={{this.name}} data-test-input="{{this.inputId}}"
+    class="form-control {{this.inputClass}}" value={{this.value}} step="{{this.step}}" required={{this.required}}
+    placeholder={{this.placeholder}} autofocus={{this.autofocus}} {{did-insert this.autofocusOnlyOnMobile}}
+    {{on "change" this.changeValue}} {{on "keyup" this.changeValue}} ...attributes>
+
+  {{#if @addonRight}}
+    <div class="input-group-btn">
+      <button class="btn btn-outline-secondary" type="button" tabindex="-1" data-test-input-right-addon="{{this.inputId}}"
+       {{on "click" this.addonClick}}>
+
+        {{#if this.addonRightIsIcon}}
+          <FaIcon @icon={{this.addonRightIcon}}/>
+        {{else if this.addonRightIsCustomIcon}}
+          <Icon @icon={{@addonRight}}/>
+        {{else}}
+          {{@addonRight}}
+        {{/if}}
+      </button>
+    </div>
+  {{/if}}
+</Form::Wrapper>

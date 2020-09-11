@@ -1,0 +1,4 @@
+{{!-- TODO: implement labelRef! --}}
+<Form::Wrapper @model={{this.model}} @attribute={{this.attribute}} @label={{this.label}} @hint={{@hint}}>
+  <input type="text" id={{this.inputId}} placeholder={{@placeholder}} {{did-insert this.selectizeInputElement}} />
+</Form::Wrapper>

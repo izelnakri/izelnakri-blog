@@ -1,0 +1,93 @@
+<Form @model={{@model.blogPost}} @onSuccess={{fn @visitBlogPost @model.blogPost.slug}} as |form|>
+  <div class="row no-gutters">
+    <div class="col-9 in-panel">
+      <div class="col-12">
+        <div class="row">
+          <div class="col-12">
+            <form.input @attribute="title"/>
+          </div>
+        </div>
+        <div class="row no-gutters">
+          <div class="col-11">
+            <form.input @label=false @attribute="slug" @addonLeft={{concat @model.domain "/"}}/>
+          </div>
+          <div class="col-1">
+            {{#if @model.blogPost.insertedAt}}
+              <LinkTo @route="public.blog-post" @params={{@model.blogPost.slug}}>
+                <Button @style="secondary" @icon="globe-americas" @block={{true}} type="button" />
+              </LinkTo>
+            {{else}}
+              <Button @style="secondary" @icon="globe-americas" @block={{true}} type="button" />
+            {{/if}}
+          </div>
+        </div>
+
+        <form.posteditor @attribute="markdownContent" />
+
+        <form.input @attribute="metaTitle"/>
+        <form.textarea @attribute="metaDescription"/>
+
+        <form.input @attribute="imageUrl" @addonRight="upload" @addonIsIcon={{true}} @addonClick={{@uploadBlogPostImage}}/>
+      </div>
+    </div>
+
+    <div class="col-3">
+      <div class="card card-block">
+        {{#if @model.blogPost.publishedAt}}
+          <Button @style="success" @blog={{true}} @size="lg" type="submit">
+            Update
+          </Button>
+          <Button @style="warning" @block={{true}} @size="lg" @onClick={{fn @unpublish @model.blogPost}}>
+            Unpublish
+          </Button>
+          <Button @style="danger" @block={{true}} @size="lg">
+            Delete
+          </Button>
+        {{else}}
+          <Button @style="success" @block={{true}} @size="lg" @onClick={{fn @setPublishedAt @model.blogPost}} type="submit">
+            Publish
+          </Button>
+
+          <Button @style="success" @block={{true}} @size="lg" type="submit">
+            Save
+          </Button>
+        {{/if}}
+
+        <form.multitagselect @attribute="tags" @itemLabel="name" @placeholder="ah text here"/>
+
+        <h5>
+          Author:
+        </h5>
+        <span>
+          {{#if @model.blogPost.user.fullName}}
+            {{@model.blogPost.user.person.fullName}}
+          {{else}}
+            {{this.session.currentUser.person.fullName}}
+          {{/if}}
+        </span>
+        {{#if @model.blogPost.publishedAt}}
+          <h5 class="mt-3">
+            Published at:
+          </h5>
+          <span>
+            {{datetime @model.blogPost.publishedAt}}
+          </span>
+        {{/if}}
+        {{#if @model.blogPost.insertedAt}}
+          <h5 class="mt-3">
+            Created at:
+          </h5>
+          <span>
+            {{datetime @model.blogPost.insertedAt}}
+          </span>
+          <h5 class="mt-3">
+            Last updated at:
+          </h5>
+          <span>
+            {{datetime @model.blogPost.updatedAt}}
+          </span>
+        {{/if}}
+      </div>
+    </div>
+  </div>
+</Form>

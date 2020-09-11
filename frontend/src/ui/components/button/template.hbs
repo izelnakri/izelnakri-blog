@@ -1,0 +1,11 @@
+<button type={{this.type}} class="btn {{styleClass}} {{sizeClass}} {{blockClass}} {{circleClass}}" disabled={{@disabled}} {{on "click" this.clickHandler}} data-test-button ...attributes>
+  {{#if @icon}}
+    <FaIcon @icon={{@icon}} />
+  {{/if}}
+
+  {{#if @loading}}
+    <FaIcon @icon="spinner" @spin={{true}} class="saving" />
+  {{/if}}
+
+  {{yield}}
+</button>

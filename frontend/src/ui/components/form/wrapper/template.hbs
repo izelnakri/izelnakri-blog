@@ -1,0 +1,24 @@
+<div class="form-group {{if this.hasPlaceholder 'has-placeholder'}} {{if this.hasAddonLeft 'has-addon-left'}}"
+  {{did-insert this.registerActions}} {{will-destroy this.deregisterActions}} ...attributes>
+  {{#if @label}}
+    {{#if this.errorMessage}}
+      <label for={{@name}} class="text-danger {{this.labelClass}}" data-test-input-label="{{@name}}">{{@label}} {{this.errorMessage}}:</label>
+    {{else}}
+      {{#if this.displayLabel}}
+        <label for={{@name}} class="{{this.labelClass}}" data-test-input-label="{{@name}}">{{@label}}:</label>
+      {{/if}}
+    {{/if}}
+  {{/if}}
+
+  {{#if @inputGroup}}
+    <div class="input-group">
+      {{yield}}
+    </div>
+  {{else}}
+    {{yield}}
+  {{/if}}
+
+  {{#if @hint}}
+    <p class="text-muted" data-test-input-hint="{{@name}}">{{@hint}}</p>
+  {{/if}}
+</div>
