@@ -23,3 +23,15 @@ Learn about canary deployments
 loki customization(limit the log space by persisting x per day) -> backup to s3 targeted apps
 
 https://github.com/coreos/prometheus-operator/issues/2996 - How can I add my custom grafana dashboard?
+
+
+SECRETS TO REWRITE:
+
+k8s/bases/gitea/helm.yaml [SECRET_KEY]
+k8s/bases/harbor/helm.yaml [secret, CSRF_KEY, JOBSERVICE_SECRET, REGISTRY_HTTP_SECRET, checksum/secret-core, checksum/secret]
+k8s/bases/harbor/values.yaml [credentials, middleware, htpasswd: "harbor_registry_user:$2y$10$9L4Tc0DJbFFMB6RdSCunrOpTHdwhid4ktBJmLD00bYgqkkGOvll3m"
+argo-cd, argo secrets!?!
+
+k8s/bases/prometheus-operator/helm.yaml ?
+
+nginx and prometheus-postgres-exporter deprecated

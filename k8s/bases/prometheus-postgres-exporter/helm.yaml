@@ -1,3 +1,4 @@
+WARNING: This chart is deprecated
 ---
 # Source: prometheus-postgres-exporter/templates/podsecuritypolicy.yaml
 apiVersion: policy/v1beta1
@@ -6,7 +7,7 @@ metadata:
   name: izel-prometheus-postgres-exporter
   labels:
     app: prometheus-postgres-exporter
-    chart: prometheus-postgres-exporter-1.3.0
+    chart: prometheus-postgres-exporter-1.3.1
     heritage: Helm
     release: izel
   annotations:
@@ -45,7 +46,7 @@ metadata:
   name: izel-prometheus-postgres-exporter
   labels:
     app: prometheus-postgres-exporter
-    chart: prometheus-postgres-exporter-1.3.0    
+    chart: prometheus-postgres-exporter-1.3.1    
     release: "izel"
     heritage: "Helm"
 ---
@@ -56,7 +57,7 @@ metadata:
   name: izel-prometheus-postgres-exporter
   labels:
     app: prometheus-postgres-exporter
-    chart: prometheus-postgres-exporter-1.3.0
+    chart: prometheus-postgres-exporter-1.3.1
     heritage: Helm
     release: izel
 type: Opaque
@@ -70,7 +71,7 @@ metadata:
   name: izel-prometheus-postgres-exporter
   labels:
     app: prometheus-postgres-exporter
-    chart: prometheus-postgres-exporter-1.3.0
+    chart: prometheus-postgres-exporter-1.3.1
     release: izel
     heritage: Helm
 data:
@@ -288,7 +289,7 @@ metadata:
   name: izel-prometheus-postgres-exporter
   labels:
     app: prometheus-postgres-exporter
-    chart: prometheus-postgres-exporter-1.3.0
+    chart: prometheus-postgres-exporter-1.3.1
     heritage: Helm
     release: izel
 rules:
@@ -304,7 +305,7 @@ metadata:
   name: izel-prometheus-postgres-exporter
   labels:
     app: prometheus-postgres-exporter
-    chart: prometheus-postgres-exporter-1.3.0
+    chart: prometheus-postgres-exporter-1.3.1
     heritage: Helm
     release: izel
 roleRef:
@@ -322,7 +323,7 @@ metadata:
   name: izel-prometheus-postgres-exporter
   labels:
     app: prometheus-postgres-exporter
-    chart: prometheus-postgres-exporter-1.3.0
+    chart: prometheus-postgres-exporter-1.3.1
     release: izel
     heritage: Helm
 spec:
@@ -343,7 +344,7 @@ metadata:
   name: izel-prometheus-postgres-exporter
   labels:
     app: prometheus-postgres-exporter
-    chart: prometheus-postgres-exporter-1.3.0
+    chart: prometheus-postgres-exporter-1.3.1
     release: izel
     heritage: Helm
 spec:
@@ -358,7 +359,7 @@ spec:
         app: prometheus-postgres-exporter
         release: izel
       annotations:
-        checksum/config: f4c4f20162b2f83587c5f6a3ca8e33f5b01ca6e2785fdc9f60475472c5943e79
+        checksum/config: 3c3f0f5c2bb79e453bc32003bbe482fb50f21f94261611dd3c4e8c30e21aff0b
     spec:
       serviceAccountName: izel-prometheus-postgres-exporter
       containers:

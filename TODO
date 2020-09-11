@@ -1,9 +1,13 @@
 For scaleway use these annotations: service.beta.kubernetes.io/scw-loadbalancer-proxy-protocol-v2, service.beta.kubernetes.io/scw-loadbalancer-use-hostname
-Learn Vault more for User + Secret management + association
+Learn Vault more for User + Secret management + association (vault sidecar does key storage, key lease based on ttl and on the fly encryption/decryption)
+
+Read:
+https://kubernetes.io/docs/tasks/administer-cluster/encrypt-data/
+
+utilize git diff via this maybe:
+https://gitimmersion.com/lab_22.html
 
 move DNS to digitalocean or smt
-
-add CI email notifier
 
 also make github + actions + deploy workflow
 otherwise have to implement a k8s gitea + CI system

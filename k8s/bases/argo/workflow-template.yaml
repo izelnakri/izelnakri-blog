@@ -11,8 +11,15 @@ metadata:
   namespace: argo
   generateName: default-workflow
 spec:
+  hostNetwork: true
   artifactRepositoryRef:
     key: digitalocean
+  parallelism: 3
+  synchronization:
+    semaphore:
+      configMapKeyRef:
+        name: semaphore-config
+        key: workflow
   entrypoint: ci
   serviceAccountName: argo
   onExit: on-exit
@@ -59,7 +66,7 @@ spec:
       image: docker:stable-git
       command: [sh, -c]
       args: # if check if directory exists otherwise clone
-        - ls -lah && cd /src && echo "moved to /src" && ls -lah && git rev-parse --short HEAD
+        - ls -lah && cd /src && echo "moved to /src" && ls -lah && echo "Git is on $(git rev-parse --short HEAD)"
   - name: build-frontend-branch-image
     inputs:
       artifacts:
@@ -78,7 +85,7 @@ spec:
         value: 127.0.0.1
       - name: REGISTRY_PASSWORD
         value: "{{workflow.parameters.registry-password}}"
-      - naem: REGISTRY_USERNAME
+      - name: REGISTRY_USERNAME
         value: "{{workflow.parameters.registry-username}}"
     sidecars:
     - name: dind

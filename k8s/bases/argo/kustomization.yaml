@@ -8,6 +8,8 @@ resources:
   - ingress.yaml
   - role.yaml
   - artifact-repositories-configmap.yaml
+  - workflow-controller-configmap.yaml
+  - semaphore-configmap.yaml
 
 generatorOptions:
   disableNameSuffixHash: true

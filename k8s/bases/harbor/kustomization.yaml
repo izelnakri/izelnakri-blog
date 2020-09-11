@@ -9,4 +9,19 @@ resources:
   - issuer.yaml
   - helm.yaml
 
-# TODO: make secretNames only a single secret with hosts
+patchesJson6902:
+- target:
+    group: extensions
+    version: v1beta1
+    kind: Ingress
+    name: izel-harbor-ingress-notary
+  path: notary-ingress-patch.yaml
+
+# # TODO: make secretNames only a single secret with hosts
+
+
+
+# apiVersion: extensions/v1beta1
+# kind: Ingress
+# metadata:
+#   name: "izel-harbor-ingress"

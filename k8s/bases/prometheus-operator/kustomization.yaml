@@ -10,5 +10,5 @@ resources:
   # - crd-thanosrulers.yaml
   - namespace.yaml
   - helm.yaml
-  - issuers.yaml
-  - ingress.yaml
+  # - issuers.yaml
+  # - ingress.yaml

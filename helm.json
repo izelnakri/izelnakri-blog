@@ -1,15 +1,23 @@
 {
   "name": "izelnakri-blog",
+  "repos": {
+    "argo": "https://argoproj.github.io/argo-helm",
+    "gitea": "https://charts.k8s.land",
+    "hashicorp": "https://helm.releases.hashicorp.com",
+    "harbor": "https://helm.goharbor.io",
+    "jaegertracing": "https://jaegertracing.github.io/helm-charts",
+    "loki": "https://grafana.github.io/loki/charts"
+  },
   "dependencies": {
-    "stable/nginx-ingress": "1.41.0",
-    "stable/prometheus-operator": "9.1.0",
-    "stable/stolon": "1.6.1",
+    "argo/argo-cd": "2.6.3",
+    "harbor/harbor": "1.4.2",
+    "hashicorp/vault": "0.7.0",
     "jaegertracing/jaeger-operator": "2.15.1",
-    "loki/loki-stack": "0.38.2",
-    "stable/prometheus-postgres-exporter": "1.3.0",
-    "harbor/harbor": "1.4.1",
     "k8s-land/gitea": "1.3.3",
-    "argo/argo-ci": "0.1.6",
-    "argo/argo-cd": "2.5.4"
+    "loki/loki-stack": "0.40.0",
+    "stable/nginx-ingress": "1.41.3",
+    "stable/prometheus-operator": "9.3.1",
+    "stable/prometheus-postgres-exporter": "1.3.1",
+    "stable/stolon": "1.6.2"
   }
 }

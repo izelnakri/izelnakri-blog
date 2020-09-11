@@ -1,3 +1,4 @@
+WARNING: This chart is deprecated
 ---
 # Source: nginx-ingress/templates/controller-serviceaccount.yaml
 apiVersion: v1
@@ -5,7 +6,7 @@ kind: ServiceAccount
 metadata:
   labels:
     app: nginx-ingress
-    chart: nginx-ingress-1.41.0
+    chart: nginx-ingress-1.41.3
     heritage: Helm
     release: helm-nginx
   name: helm-nginx-nginx-ingress
@@ -16,7 +17,7 @@ kind: ServiceAccount
 metadata:
   labels:
     app: nginx-ingress
-    chart: nginx-ingress-1.41.0
+    chart: nginx-ingress-1.41.3
     heritage: Helm
     release: helm-nginx
   name: helm-nginx-nginx-ingress-backend
@@ -27,7 +28,7 @@ kind: ConfigMap
 metadata:
   labels:
     app: nginx-ingress
-    chart: nginx-ingress-1.41.0
+    chart: nginx-ingress-1.41.3
     component: "controller"
     heritage: Helm
     release: helm-nginx
@@ -45,7 +46,7 @@ kind: ClusterRole
 metadata:
   labels:
     app: nginx-ingress
-    chart: nginx-ingress-1.41.0
+    chart: nginx-ingress-1.41.3
     heritage: Helm
     release: helm-nginx
   name: helm-nginx-nginx-ingress
@@ -106,7 +107,7 @@ kind: ClusterRoleBinding
 metadata:
   labels:
     app: nginx-ingress
-    chart: nginx-ingress-1.41.0
+    chart: nginx-ingress-1.41.3
     heritage: Helm
     release: helm-nginx
   name: helm-nginx-nginx-ingress
@@ -125,7 +126,7 @@ kind: Role
 metadata:
   labels:
     app: nginx-ingress
-    chart: nginx-ingress-1.41.0
+    chart: nginx-ingress-1.41.3
     heritage: Helm
     release: helm-nginx
   name: helm-nginx-nginx-ingress
@@ -209,7 +210,7 @@ kind: RoleBinding
 metadata:
   labels:
     app: nginx-ingress
-    chart: nginx-ingress-1.41.0
+    chart: nginx-ingress-1.41.3
     heritage: Helm
     release: helm-nginx
   name: helm-nginx-nginx-ingress
@@ -228,7 +229,7 @@ kind: Service
 metadata:
   labels:
     app: nginx-ingress
-    chart: nginx-ingress-1.41.0
+    chart: nginx-ingress-1.41.3
     component: "controller"
     heritage: Helm
     release: helm-nginx
@@ -249,11 +250,11 @@ apiVersion: v1
 kind: Service
 metadata:
   annotations:
-    service.beta.kubernetes.io/do-loadbalancer-enable-proxy-protocol: "true"
-    service.beta.kubernetes.io/do-loadbalancer-hostname: "izelnakri.com"
+    service.beta.kubernetes.io/scw-loadbalancer-proxy-protocol-v2: "*"
+    service.beta.kubernetes.io/scw-loadbalancer-use-hostname: "true"
   labels:
     app: nginx-ingress
-    chart: nginx-ingress-1.41.0
+    chart: nginx-ingress-1.41.3
     component: "controller"
     heritage: Helm
     release: helm-nginx
@@ -279,9 +280,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  annotations:
+    service.beta.kubernetes.io/scw-loadbalancer-proxy-protocol-v2: "*"
+    service.beta.kubernetes.io/scw-loadbalancer-use-hostname: "true"
   labels:
     app: nginx-ingress
-    chart: nginx-ingress-1.41.0
+    chart: nginx-ingress-1.41.3
     component: "default-backend"
     heritage: Helm
     release: helm-nginx
@@ -304,7 +308,7 @@ kind: Deployment
 metadata:
   labels:
     app: nginx-ingress
-    chart: nginx-ingress-1.41.0
+    chart: nginx-ingress-1.41.3
     heritage: Helm
     release: helm-nginx
     app.kubernetes.io/component: controller
@@ -332,7 +336,7 @@ spec:
       dnsPolicy: ClusterFirst
       containers:
         - name: nginx-ingress-controller
-          image: "us.gcr.io/quay.io/kubernetes-ingress-controller/nginx-ingress-controller:0.30.0"
+          image: "us.gcr.io/k8s-artifacts-prod/ingress-nginx/controller:v0.34.1"
           imagePullPolicy: "IfNotPresent"
           args:
             - /nginx-ingress-controller
@@ -399,7 +403,7 @@ kind: Deployment
 metadata:
   labels:
     app: nginx-ingress
-    chart: nginx-ingress-1.41.0
+    chart: nginx-ingress-1.41.3
     heritage: Helm
     release: helm-nginx
     app.kubernetes.io/component: default-backend
@@ -459,20 +463,19 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: helm-nginx-nginx-ingress-controller
-  namespace: prometheus
   labels:
     app: nginx-ingress
-    chart: nginx-ingress-1.41.0
+    chart: nginx-ingress-1.41.3
     component: "controller"
     heritage: Helm
     release: helm-nginx
-    release: izel
 spec:
   endpoints:
     - port: metrics
       interval: 30s
   namespaceSelector:
-    any: true
+    matchNames:
+      - nginx
   selector:
     matchLabels:
       app: nginx-ingress

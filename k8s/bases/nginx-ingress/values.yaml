@@ -6,8 +6,14 @@ namespace: nginx
 controller:
   name: controller
   image:
-    repository: quay.io/kubernetes-ingress-controller/nginx-ingress-controller
-    tag: "0.30.0"
+    # registry value can be any of the following:
+    #  us.gcr.io
+    #  eu.gcr.io
+    #  asia.gcr.io
+    registry: us.gcr.io
+    repository: k8s-artifacts-prod/ingress-nginx/controller
+    tag: "v0.34.1"
+    # digest: sha256:0e072dddd1f7f8fc8909a2ca6f65e76c5f0d2fcfb8be47935ae3457e8bbceb20
     pullPolicy: IfNotPresent
     # www-data -> uid 101
     runAsUser: 101
@@ -17,6 +23,9 @@ controller:
   # Note that if you enable it for existing deployments, it won't work as the labels are immutable.
   # We recommend setting this to true for new deployments.
   useComponentLabel: false
+
+  # Override component label key
+  # componentLabelKeyOverride:
 
   # Configures the ports the nginx-controller listens on
   containerPort:
@@ -30,10 +39,6 @@ controller:
     "ssl-redirect": "false",
     use-proxy-protocol: "true",
     proxy-body-size: "0",
-    # service.beta.kubernetes.io/do-loadbalancer-enable-proxy-protocol: "true"
-    # proxy-real-ip-cidr: "true",
-    # "ingress.kubernetes.io/proxy-body-size": "0"
-    # proxy-body-size: "0",
   }
 
   # Maxmind license key to download GeoLite2 Databases
@@ -74,7 +79,7 @@ controller:
   ## Required only if defaultBackend.enabled = false
   ## Must be <namespace>/<service_name>
   ##
-  defaultBackendService: "nginx/izel-ingress-default-backend"
+  defaultBackendService: ""
 
   ## Election ID to use for status update
   ##
@@ -83,6 +88,9 @@ controller:
   ## Name of the ingress class to route through this controller
   ##
   ingressClass: nginx
+
+  # labels to add to the deployment metadata
+  deploymentLabels: {}
 
   # labels to add to the pod container metadata
   podLabels: {}
@@ -226,6 +234,10 @@ controller:
   ##
   podAnnotations: {}
 
+  # Add Config Checksum to pod Annotations
+  # This will trigger Rolling Updates on configuration changes
+  podAnnotationConfigChecksum: false
+
   replicaCount: 1
 
   minAvailable: 1
@@ -254,12 +266,10 @@ controller:
     enabled: true
 
     annotations: {
-      # service.beta.kubernetes.io/scw-loadbalancer-proxy-protocol-v2: "*",
-      # service.beta.kubernetes.io/scw-loadbalancer-use-hostname: "true"
-
-      service.beta.kubernetes.io/do-loadbalancer-hostname: "izelnakri.com",
-      service.beta.kubernetes.io/do-loadbalancer-enable-proxy-protocol: "true"
+      service.beta.kubernetes.io/scw-loadbalancer-use-hostname: true,
+      service.beta.kubernetes.io/scw-loadbalancer-proxy-protocol-v2: "*"
     }
+
     labels: {}
     ## Deprecated, instead simply do not provide a clusterIP value
     omitClusterIP: false
@@ -308,6 +318,13 @@ controller:
       https: ""
       tcp: {}
       udp: {}
+
+    ## Enables an additional internal load balancer (besides the external one).
+    ## Annotations are mandatory for the load balancer to come up. Varies with the cloud service.
+    #
+    internal:
+      enabled: false
+      annotations: {}
 
   extraContainers: []
   ## Additional containers to be added to the controller pod.
@@ -376,6 +393,7 @@ controller:
       priorityClassName: ""
       podAnnotations: {}
       nodeSelector: {}
+      resources: {}
 
   metrics:
     port: 10254
@@ -383,8 +401,9 @@ controller:
     enabled: true
 
     service:
-      prometheus.io/scrape: "true"
-      prometheus.io/port: "10254"
+      annotations: {}
+      # prometheus.io/scrape: "true"
+      # prometheus.io/port: "10254"
 
       ## Deprecated, instead simply do not provide a clusterIP value
       omitClusterIP: false
@@ -402,15 +421,13 @@ controller:
 
     serviceMonitor:
       enabled: true
-      additionalLabels: {
-        release: "izel"
-      }
-      namespace: "prometheus"
-      # namespaceSelector: {}
+      additionalLabels: {}
+      namespace: ""
+      namespaceSelector: {}
       # Default: scrape .Release.Namespace only
       # To scrape all, use the following:
-      namespaceSelector:
-        any: true
+      # namespaceSelector:
+      #   any: true
       scrapeInterval: 30s
       # honorLabels: true
 
@@ -467,6 +484,9 @@ defaultBackend:
   # We recommend setting this to true for new deployments.
   useComponentLabel: false
 
+  # Override component label key
+  # componentLabelKeyOverride:
+
   extraArgs: {}
 
   serviceAccount:
@@ -510,6 +530,9 @@ defaultBackend:
   ##
   podSecurityContext: {}
 
+  # labels to add to the deployment metadata
+  deploymentLabels: {}
+
   # labels to add to the pod container metadata
   podLabels: {}
   #  key: value
@@ -535,8 +558,21 @@ defaultBackend:
   #   cpu: 10m
   #   memory: 20Mi
 
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 2
+    targetCPUUtilizationPercentage: 50
+    targetMemoryUtilizationPercentage: 50
+
   service:
-    annotations: {}
+    annotations: {
+      service.beta.kubernetes.io/scw-loadbalancer-use-hostname: true,
+      service.beta.kubernetes.io/scw-loadbalancer-proxy-protocol-v2: "*"
+
+      # service.beta.kubernetes.io/do-loadbalancer-hostname: "izelnakri.com",
+      # service.beta.kubernetes.io/do-loadbalancer-enable-proxy-protocol: "true"
+    }
     ## Deprecated, instead simply do not provide a clusterIP value
     omitClusterIP: false
     # clusterIP: ""
@@ -553,6 +589,9 @@ defaultBackend:
 
   priorityClassName: ""
 
+# If provided, the value will be used as the `release` label instead of .Release.Name
+releaseLabelOverride: ""
+
 ## Enable RBAC as per https://github.com/kubernetes/ingress/tree/master/examples/rbac/nginx and https://github.com/kubernetes/ingress/issues/266
 rbac:
   create: true
@@ -566,6 +605,7 @@ podSecurityPolicy:
 serviceAccount:
   create: true
   name:
+  annotations: {}
 
 ## Optional array of imagePullSecrets containing private registry credentials
 ## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/

@@ -339,7 +339,7 @@ data:
     INSTALL_LOCK = false
     ; !!CHANGE THIS TO KEEP YOUR USER DATA SAFE!!
     
-    SECRET_KEY = "ARZDSNm5vtk9aPeDi2R5l87JSh80eTSY7MS482tSVb1mvuJqk4khXcVxMYxhmHlo"
+    SECRET_KEY = "NiSZcW0Wk5vOE2XOPFuAehgiRjbQWz0box8SM26Dlad3M6UacjSP9IqGIspo5GVA"
     
 
 
@@ -1110,7 +1110,7 @@ spec:
 apiVersion: v1
 kind: Pod
 metadata:
-  name: "izel-mariadb-test-8zci9"
+  name: "izel-mariadb-test-q2fq1"
   annotations:
     "helm.sh/hook": test-success
 spec:

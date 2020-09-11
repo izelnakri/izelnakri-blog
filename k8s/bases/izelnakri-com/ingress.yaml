@@ -5,13 +5,13 @@ metadata:
   namespace: izelnakri-com
   annotations:
     kubernetes.io/ingress.class: nginx
-    certmanager.k8s.io/cluster-issuer: jaeger-issuer
+    certmanager.k8s.io/cluster-issuer: izelnakri-com-issuer
     certmanager.k8s.io/acme-challenge-type: http01
 spec:
   tls:
   - hosts:
     - izelnakri.com
-    secretName: jaeger-tls
+    secretName: izelnakri-com-tls
   rules:
   - host: izelnakri.com
     http:
