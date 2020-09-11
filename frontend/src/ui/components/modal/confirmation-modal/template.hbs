@@ -1,0 +1,16 @@
+<Modal @title={{this.model.title}} @onClose={{this.cancel}}>
+  <div class="modal-body">
+    <p>
+      {{this.model.text}}
+    </p>
+  </div>
+
+  <div class="modal-footer">
+    <Button @style="danger" @onClick={{this.cancel}}>
+      Cancel
+    </Button>
+    <Button @style="success" @onClick={{this.confirm}}>
+      Confirm
+    </Button>
+  </div>
+</Modal>

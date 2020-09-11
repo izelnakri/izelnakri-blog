@@ -1,12 +1,18 @@
-{{in-header}}
+<AppHeader/>
 
 <div class="container" style="padding-top: 58px">
   <div class="row no-gutters">
     <div class="col-2">
       <ul class="list-group">
-        {{link-to "New Post" "posts.new" class="list-group-item list-group-item-action justify-content-center"}}
-        {{link-to "Content" "admin.content" class="list-group-item list-group-item-action justify-content-center"}}
-        {{link-to "Settings" "admin.settings" class="list-group-item list-group-item-action justify-content-center"}}
+        <LinkTo @route="posts.new" class="list-group-item list-group-item-action justify-content-center">
+          New Post
+        </LinkTo>
+        <LinkTo @route="admin.content" class="list-group-item list-group-item-action justify-content-center">
+          Content
+        </LinkTo>
+        <LinkTo @route="admin.settings" class="list-group-item list-group-item-action justify-content-center">
+          Settings
+        </LinkTo>
       </ul>
     </div>
 

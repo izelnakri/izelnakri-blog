@@ -5,8 +5,10 @@
         <div class="card-header">
           Last Comments
         </div>
-        {{#each model.lastComments as |comment|}}
-          <span>{{comment.content}}</span>
+        {{#each this.model.lastComments as |comment|}}
+          <span>
+            {{comment.content}}
+          </span>
           <!-- TODO: add APPROVE comment / delete -->
         {{/each}}
       </div>
@@ -17,10 +19,12 @@
         <div class="card-header">
           Last Blog Posts
         </div>
-        {{#each model.lastBlogPosts as |blogPost|}}
-          {{#link-to "posts.post" blogPost.slug class="card card-body"}}
-            <h5 class="card-title">{{blogPost.title}}</h5>
-          {{/link-to}}
+        {{#each this.model.lastBlogPosts as |blogPost|}}
+          <LinkTo @route="posts.post" @params={{blogPost.slug}} class="card card-body">
+            <h5 class="card-title">
+              {{blogPost.title}}
+            </h5>
+          </LinkTo>
         {{/each}}
       </div>
     </div>

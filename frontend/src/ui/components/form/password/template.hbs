@@ -1,0 +1,24 @@
+<Form::Wrapper @name={{this.name}} @model={{this.model}} @attribute={{this.attribute}} @placeholder={{this.placeholder}}
+  @label={{this.label}} @hint={{@hint}} @inputGroup={{true}} @hasAddonLeft={{true}}>
+  <span class="input-group-btn" {{on "click" this.addonClick}}>
+    <button class="btn btn-outline-secondary" type="button">
+      <FaIcon @icon="lock" @fixedWidth={{true}}/>
+    </button>
+  </span>
+
+  <input type="{{this.inputType}}" id="{{this.name}}" name="{{this.name}}" class="form-control"
+    required={{this.required}} value={{this.value}} autofocus={{@autofocus}}
+    placeholder={{this.placeholder}} data-test-input="{{this.name}}" {{on "change" this.changeValue}} {{on "keyup" this.changeValue}}>
+
+  <span class="input-group-btn">
+    {{#if (is-equal this.inputType "password")}}
+      <button class="btn btn-outline-secondary" type="button" {{on "click" this.changeInputType}}>
+        <FaIcon @icon="eye" @fixedWidth={{true}}/>
+      </button>
+    {{else}}
+      <button class="btn btn-danger" type="button" {{on "click" this.changeInputType}}>
+        <FaIcon @icon="eye-slash" @fixedWidth={{true}}/>
+      </button>
+    {{/if}}
+  </span>
+</Form::Wrapper>

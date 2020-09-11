@@ -1,0 +1,17 @@
+<div class="ml-modal modal" aria-labelledby="{{@title}}" role="dialog" tabindex="-1" {{did-insert this.registerEvents}} {{will-destroy this.deregisterEvents}} ...attributes>
+  <div class="modal-dialog {{this.sizeClassName}}" role="document">
+    <div class="modal-content">
+      {{#if @title}}
+        <div class="modal-header">
+          <h5 class="modal-title text-info" data-test-modal-title>{{@title}}</h5>
+
+          <button class="close" aria-label="Close" data-dismiss="modal" type="button" {{on "click" this.close}} data-test-modal-close-button>
+            <FaIcon @icon="times" @size="lg"/>
+          </button>
+        </div>
+      {{/if}}
+
+      {{yield}}
+    </div>
+  </div>
+</div>

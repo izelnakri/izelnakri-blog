@@ -13,12 +13,18 @@ export default {
       'meta_title': 'Blog post meta title',
       'meta_description': 'Blog post meta description',
       'image_url': 'Blog post image URL'
+    },
+    'email': {
+      'address': 'Email address'
     }
   },
   'components': {
-    'in-form': {
+    'form': {
       'failure': 'An error occured: {{error}}',
-      'success': 'Saved successfully'
+      'success': 'Saved successfully',
+      'password': {
+        placeholder: 'Enter your password'
+      }
     }
   },
   'helpers': {

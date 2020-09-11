@@ -1,4 +1,6 @@
-<title>{{headData.title}}</title>
+<title>
+  {{headData.title}}
+</title>
 <meta property="description" content={{headData.description}} />
 
 <meta property="og:type" content="website" />
@@ -14,22 +16,22 @@
   <meta property="og:description" content={{headData.description}} />
 {{/if}}
 
-<meta property="og:image" content="{{headData.ogImage}}">
-<meta property="og:url" content="{{headData.url}}">
+<meta property="og:image" content="{{headData.ogImage}}" />
+<meta property="og:url" content="{{headData.url}}" />
 
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:site" content="@izelnakri">
-<meta name="twitter:creator" content="@izelnakri">
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:site" content="@izelnakri" />
+<meta name="twitter:creator" content="@izelnakri" />
 
 {{#if headData.twitterTitle}}
-  <meta name="twitter:title" content="{{headData.twitterTitle}}">
+  <meta name="twitter:title" content="{{headData.twitterTitle}}" />
 {{else}}
-  <meta name="twitter:title" content="{{headData.title}}">
+  <meta name="twitter:title" content="{{headData.title}}" />
 {{/if}}
 
 {{#if headData.twitterDescription}}
-  <meta name="twitter:description" content="{{headData.twitterDescription}}">
+  <meta name="twitter:description" content="{{headData.twitterDescription}}" />
 {{else}}
-  <meta name="twitter:description" content="{{headData.description}}">
+  <meta name="twitter:description" content="{{headData.description}}" />
 {{/if}}
-<meta name="twitter:image" content="{{headData.twitterImage}}">
+<meta name="twitter:image" content="{{headData.twitterImage}}" />

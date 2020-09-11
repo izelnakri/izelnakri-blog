@@ -1,0 +1,6 @@
+<Form::Wrapper @inputId={{this.inputId}} @name={{this.name}} @model={{this.model}} @attribute={{this.attribute}}
+  class="{{this.class}}" @placeholder={{this.placeholder}} @label={{this.label}} @hint={{@hint}}>
+  <textarea id={{this.inputId}} name={{this.name}} data-test-input="{{this.inputId}}"
+    class="form-control {{this.inputClass}}" rows="{{this.rows}}" value={{this.value}} required={{this.required}}
+    placeholder={{this.placeholder}} style="{{this.actualStyle}}" {{on "change" this.changeValue}} {{on "keyup" this.changeValue}} ...attributes/>
+</Form::Wrapper>

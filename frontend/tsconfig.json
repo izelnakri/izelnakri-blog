@@ -1,0 +1,55 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "typeRoots" : ["./node_modules/@types"],
+    "allowJs": true,
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "noImplicitAny": false,
+    "noImplicitThis": false,
+    "alwaysStrict": false,
+    "strictNullChecks": false,
+    "strictPropertyInitialization": false,
+    "noFallthroughCasesInSwitch": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noImplicitReturns": false,
+    "noEmitOnError": false,
+    "noEmit": false,
+    "inlineSourceMap": false,
+    "inlineSources": false,
+    "baseUrl": ".",
+    "module": "es6",
+    "experimentalDecorators": true,
+    "skipLibCheck": true,
+    "paths": {
+      "frontend/tests/*": [
+        "tests/*"
+      ],
+      "frontend/config/*": [
+        "config/*"
+      ],
+      "frontend/src/*": [
+        "src/*"
+      ],
+      "frontend/memserver/*": [
+        "memserver/*"
+      ],
+      "frontend/documentation/*": [
+        "documentation/*"
+      ],
+      "@glimmer": ["node_modules/@glimmer/component/dist/types/src/*"]
+    }
+  },
+  "include": [
+    "src/**/*",
+    "tests/**/*",
+    "memserver/**/*",
+    "documentation/**/*",
+    "types/**/*"
+  ],
+  "exclude": [
+    "node_modules/bip39",
+    "src/utils/decorators/**/*"
+  ]
+}

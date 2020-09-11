@@ -1,0 +1,15 @@
+<form class="ml-form" {{on "submit" (fn this.handleSubmit)}} ...attributes>
+  {{yield
+    (hash
+      isLoading=isLoading
+      model=model
+      showErrors=showErrors
+      button=(component "button" form=this)
+      input=(component "form/input" form=this)
+      password=(component "form/password" form=this)
+      multitagselect=(component "form/multitag-select" form=this)
+      textarea=(component "form/textarea" form=this)
+      posteditor=(component "form/post-editor" form=this)
+    )
+  }}
+</form>

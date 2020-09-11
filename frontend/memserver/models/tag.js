@@ -1,4 +1,3 @@
 import Model from 'memserver/model';
 
-export default Model({
-});
+export default class Tag extends Model {}

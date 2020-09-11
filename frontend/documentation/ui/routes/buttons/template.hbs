@@ -1,93 +1,107 @@
 <h1>Buttons</h1>
 
-{{#docs-demo as |demo|}}
-  {{#demo.example}}
-    {{#ml-button "primary"}}Primary{{/ml-button}}
-    {{#ml-button "secondary"}}Secondary{{/ml-button}}
-    {{#ml-button "success"}}Success{{/ml-button}}
-    {{#ml-button "danger"}}Danger{{/ml-button}}
-    {{#ml-button "warning"}}Warning{{/ml-button}}
-    {{#ml-button "info"}}Info{{/ml-button}}
-    {{#ml-button "light"}}Light{{/ml-button}}
-    {{#ml-button "dark"}}Dark{{/ml-button}}
-    {{#ml-button "link"}}Link{{/ml-button}}
-  {{/demo.example}}
+<DocsDemo as |demo|>
+  <demo.example>
+    <Button @style="primary">Primary</Button>
+    <Button @style="secondary">Secondary</Button>
+    <Button @style="success">Success</Button>
+    <Button @style="danger">Danger</Button>
+    <Button @style="warning">Warning</Button>
+    <Button @style="info">Info</Button>
+    <Button @style="light">Light</Button>
+    <Button @style="dark">Dark</Button>
+    <Button @style="link">Link</Button>
+  </demo.example>
 
-  {{demo.snippet title="Button colors" code='
-  {{#ml-button "primary"}}Primary{{/ml-button}}
-  {{#ml-button "secondary"}}Secondary{{/ml-button}}
-  {{#ml-button "success"}}Success{{/ml-button}}
-  {{#ml-button "danger"}}Danger{{/ml-button}}
-  {{#ml-button "warning"}}Warning{{/ml-button}}
-  {{#ml-button "info"}}Info{{/ml-button}}
-  {{#ml-button "light"}}Light{{/ml-button}}
-  {{#ml-button "dark"}}Dark{{/ml-button}}
-  {{#ml-button "link"}}Link{{/ml-button}}
-  '}}
-{{/docs-demo}}
+  <demo.snippet @title="Button colors" @code='
+  <Button @style="primary">Primary</Button>
+  <Button @style="secondary">Secondary</Button>
+  <Button @style="success">Success</Button>
+  <Button @style="danger">Danger</Button>
+  <Button @style="warning">Warning</Button>
+  <Button @style="info">Info</Button>
+  <Button @style="light">Light</Button>
+  <Button @style="dark">Dark</Button>
+  <Button @style="link">Link</Button>
+  '/>
+</DocsDemo>
 
 <h2>Outline Buttons</h2>
 
-{{#docs-demo as |demo|}}
-  {{#demo.example}}
-  {{#ml-button "primary" outline=true}}Primary{{/ml-button}}
-  {{#ml-button "secondary" outline=true}}Secondary{{/ml-button}}
-  {{#ml-button "success" outline=true}}Success{{/ml-button}}
-  {{#ml-button "danger" outline=true}}Danger{{/ml-button}}
-  {{#ml-button "warning" outline=true}}Warning{{/ml-button}}
-  {{#ml-button "info" outline=true}}Info{{/ml-button}}
-  {{#ml-button "light" outline=true}}Light{{/ml-button}}
-  {{#ml-button "dark" outline=true}}Dark{{/ml-button}}
-  {{#ml-button "link" outline=true}}Link{{/ml-button}}
-  {{/demo.example}}
+<DocsDemo as |demo|>
+  <demo.example>
+    <Button @style="primary" @outline={{true}}>Primary</Button>
+    <Button @style="secondary" @outline={{true}}>Secondary</Button>
+    <Button @style="success" @outline={{true}}>Success</Button>
+    <Button @style="danger" @outline={{true}}>Danger</Button>
+    <Button @style="warning" @outline={{true}}>Warning</Button>
+    <Button @style="info" @outline={{true}}>Info</Button>
+    <Button @style="light" @outline={{true}}>Light</Button>
+    <Button @style="dark" @outline={{true}}>Dark</Button>
+    <Button @style="link" @outline={{true}}>Link</Button>
+  </demo.example>
 
-  {{demo.snippet title="Outline buttons" code='
-  {{#ml-button "primary" outline=true}}Primary{{/ml-button}}
-  {{#ml-button "secondary" outline=true}}Secondary{{/ml-button}}
-  {{#ml-button "success" outline=true}}Success{{/ml-button}}
-  {{#ml-button "danger" outline=true}}Danger{{/ml-button}}
-  {{#ml-button "warning" outline=true}}Warning{{/ml-button}}
-  {{#ml-button "info" outline=true}}Info{{/ml-button}}
-  {{#ml-button "light" outline=true}}Light{{/ml-button}}
-  {{#ml-button "dark" outline=true}}Dark{{/ml-button}}
-  {{#ml-button "link" outline=true}}Link{{/ml-button}}
-  '}}
-{{/docs-demo}}
+  <demo.snippet @title="Button colors" @code='
+  <Button @style="primary" @outline={{true}}>Primary</Button>
+  <Button @style="secondary" @outline={{true}}>Secondary</Button>
+  <Button @style="success" @outline={{true}}>Success</Button>
+  <Button @style="danger" @outline={{true}}>Danger</Button>
+  <Button @style="warning" @outline={{true}}>Warning</Button>
+  <Button @style="info" @outline={{true}}>Info</Button>
+  <Button @style="light" @outline={{true}}>Light</Button>
+  <Button @style="dark" @outline={{true}}>Dark</Button>
+  <Button @style="link" @outline={{true}}>Link</Button>
+  '/>
+</DocsDemo>
 
 <h2>Button Sizes</h2>
 
-{{#docs-demo as |demo|}}
-  {{#demo.example}}
-    {{#ml-button "primary" size="xs"}}XS button{{/ml-button}}
-    {{#ml-button "primary" size="sm"}}Small button{{/ml-button}}
-    {{#ml-button "primary"}}Normal button{{/ml-button}}
-    {{#ml-button "primary" size="lg"}}Large button{{/ml-button}}
-    {{#ml-button "primary" size="lg" block=true}}Large block button{{/ml-button}}
-  {{/demo.example}}
+<DocsDemo as |demo|>
+  <demo.example>
+    <Button @style="primary" @size="xs">XS button</Button>
+    <Button @style="primary" @size="sm">Small button</Button>
+    <Button @style="primary">Normal button</Button>
+    <Button @style="primary" @size="lg">Large button</Button>
+    <Button @style="primary" @size="lg" @block={{true}}>Large button button</Button>
+  </demo.example>
 
-  {{demo.snippet title="Button sizes" code='
-  {{#ml-button "primary" size="xs"}}XS button{{/ml-button}}
-  {{#ml-button "primary" size="sm"}}Small button{{/ml-button}}
-  {{#ml-button "primary"}}Normal button{{/ml-button}}
-  {{#ml-button "primary" size="lg"}}Large button{{/ml-button}}
-  {{#ml-button "primary" size="lg"}}Large block button{{/ml-button}}
-  '}}
-{{/docs-demo}}
+  <demo.snippet @title="Button colors" @code='
+  <Button @style="primary" @size="xs">XS button</Button>
+  <Button @style="primary" @size="sm">Small button</Button>
+  <Button @style="primary">Normal button</Button>
+  <Button @style="primary" @size="lg">Large button</Button>
+  <Button @style="primary" @size="lg" @block={{true}}>Large button button</Button>
+  '/>
+</DocsDemo>
 
 <h2>Other Button States</h2>
 
-{{#docs-demo as |demo|}}
-  {{#demo.example}}
-    {{#ml-button "primary" size="lg" disabled=true}}Disabled button{{/ml-button}}
-    {{#ml-button "primary" size="lg" loading=true}}Loading button{{/ml-button}}
-    {{#ml-button "danger" size="lg" muted=true}}Muted button{{/ml-button}}
-    {{#ml-button "primary" circle=true}}{{fa-icon "check"}}{{/ml-button}}
-  {{/demo.example}}
+<DocsDemo as |demo|>
+  <demo.example>
+    <Button @style="primary" @size="lg" @disabled={{true}}>Disabled button</Button>
+    <Button @style="primary" @size="lg" @loading={{true}}>Loading button</Button>
+    <Button @style="danger" @size="lg" @muted={{true}}>Muted button</Button>
+    <Button @style="primary" @circle={{true}}><FaIcon @icon="check"/></Button>
+  </demo.example>
 
-  {{demo.snippet title="States" code='
-  {{#ml-button "primary" size="lg" disabled=true}}Disabled button{{/ml-button}}
-  {{#ml-button "primary" size="lg" loading=true}}Loading button{{/ml-button}}
-  {{#ml-button "danger" size="lg" muted=true}}Muted button{{/ml-button}}
-  {{#ml-button "primary" circle=true}}{{fa-icon "check"}}{{/ml-button}}
-  '}}
-{{/docs-demo}}
+  <demo.snippet @title="Button colors" @code='
+  <Button @style="primary" @size="lg" @disabled={{true}}>Disabled button</Button>
+  <Button @style="primary" @size="lg" @loading={{true}}>Loading button</Button>
+  <Button @style="danger" @size="lg" @muted={{true}}>Muted button</Button>
+  <Button @style="primary" @circle={{true}}><FaIcon @icon="check"/></Button>
+  '/>
+</DocsDemo>
+
+<h2>Button tooltips</h2>
+
+<DocsDemo as |demo|>
+  <demo.example>
+    <Button @style="primary" @tooltip="Example tooltip">Primary</Button>
+    <Button @style="warning" @size="lg" @tooltip="Another tooltip" @tooltipPlacement="left">Warning</Button>
+  </demo.example>
+
+  <demo.snippet @title="Button colors" @code='
+  <Button @style="primary" @tooltip="Example tooltip">Primary</Button>
+  <Button @style="warning" @size="lg" @tooltip="Another tooltip" @tooltipPlacement="left">Warning</Button>
+  '/>
+</DocsDemo>

@@ -2,7 +2,103 @@
 
 <h2>Basic usage</h2>
 
+<DocsDemo as |demo|>
+  <demo.example>
+    <Table @model={{this.model.people}} as |table|>
+      <thead>
+        <tr>
+          <table.th @title="First Name"/>
+          <table.th @title="Last Name"/>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each table.model as |person|}}
+          <tr>
+            <td>{{person.firstName}}</td>
+            <td>{{person.lastName}}</td>
+          </tr>
+        {{/each}}
+      </tbody>
+    </Table>
+  </demo.example>
+
+  <demo.snippet @title="Basic template" @code='
+    <Table @model=this.model.people as |table|>
+      <thead>
+        <tr>
+          <table.th @title="First Name"/>
+          <table.th @title="Last Name"/>
+        </tr>
+      </thead>
+      <tbody>
+        // each table.model as |person|
+          <tr>
+            <td>person.firstName</td>
+            <td>person.lastName</td>
+          </tr>
+        // each end
+      </tbody>
+    </Table>
+  '/>
+</DocsDemo>
+
 <h2>Frontend sort</h2>
+
+<DocsDemo as |demo|>
+  <demo.example>
+    <Table @sortableResults={{this.model.people}} as |table|>
+      <thead>
+        <tr>
+          <table.th @attribute="firstName" @frontendSort={{true}}/>
+          <table.th @attribute="birthdate" @frontendSort={{true}}/>
+          {{#if (not this.browser.isMobile)}}
+            <table.th @attribute="lastName"/>
+            <table.th @attribute="hometown" @frontendSort={{true}}/>
+          {{/if}}
+        </tr>
+      </thead>
+      <tbody>
+        {{#each table.sortedResults as |person|}}
+          <tr>
+            <td>{{person.firstName}}</td>
+            <td>{{date person.birthdate "YYYY.MM.DD"}}</td>
+            {{#if (not this.browser.isMobile)}}
+              <td>{{person.lastName}}</td>
+              <td>{{person.hometown}}</td>
+            {{/if}}
+          </tr>
+        {{/each}}
+      </tbody>
+    </Table>
+  </demo.example>
+
+  <demo.snippet @title="Basic template" @code='
+    <Table @sortableResults={{this.model.people}} as |table|>
+      <thead>
+        <tr>
+          <table.th @attribute="firstName" @frontendSort={{true}}/>
+          <table.th @attribute="birthdate" @frontendSort={{true}}/>
+          // if (not this.browser.isMobile)
+            <table.th @attribute="lastName"/>
+            <table.th @attribute="hometown" @frontendSort={{true}}/>
+          // if end
+        </tr>
+      </thead>
+      <tbody>
+        // each table.sortedResults as |person|
+          <tr>
+            <td>{{person.firstName}}</td>
+            <td>{{date person.birthdate "YYYY.MM.DD"}}</td>
+            // if (not this.browser.isMobile)
+              <td>{{person.lastName}}</td>
+              <td>{{person.hometown}}</td>
+            // if end
+          </tr>
+        // each end
+      </tbody>
+    </Table>
+  '/>
+</DocsDemo>
 
 <h2>Server sort</h2>
 

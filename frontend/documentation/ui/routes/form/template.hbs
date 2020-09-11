@@ -1,33 +1,97 @@
 <h2>Forms</h2>
 
-{{#docs-demo as |demo|}}
-  {{#demo.example}}
-    {{#ml-form model=model.user as |form|}}
-      {{form.input attribute="username" label="Username"}}
+<DocsDemo as |demo|>
+  <demo.example>
+    <Form @model={{this.model.user}} as |form|>
+      <form.input @attribute="username" @label="Username"/>
 
-      {{#form.button block=true size="lg"}}Submit{{/form.button}}
-    {{/ml-form}}
-  {{/demo.example}}
+      <form.button @block={{true}} @size="lg">Submit</form.button>
+    </Form>
+  </demo.example>
 
-  {{demo.snippet title="Basic template" code='
-  {{#ml-form model=model.user as |form|}}
-    {{form.input attribute="username" label="Username"}}
+  <demo.snippet @title="Basic template" @code='
+  <Form @model={{this.model.user}} as |form|>
+    <form.input @attribute="username" @label="Username"/>
 
-    {{#form.button block=true size="lg"}}Submit{{/form.button}}
-  {{/ml-form}}
-  '}}
-{{/docs-demo}}
+    <form.button @block={{true}} @size="lg">Submit</form.button>
+  </Form>
+  '/>
+</DocsDemo>
 
 <h2>Input addons</h2>
 
+<DocsDemo as |demo|>
+  <demo.example>
+    <Form @model={{this.model.currency}} as |form|>
+      <form.input @attribute="name" @label="Currency name" @addonLeft="fas-terminal"/>
+      <form.input @attribute="price" @label="Price" @addonLeft="fas-dollar-sign" @addonRight="fas-euro-sign"/>
+    </Form>
+  </demo.example>
+
+  <demo.snippet @code='
+  <Form @model={{this.model.currency}} as |form|>
+    <form.input @attribute="name" @label="Currency name" @addonLeft="fas-terminal"/>
+    <form.input @attribute="price" @label="Price" @addonLeft="fas-dollar-sign" @addonRight="fas-euro-sign"/>
+  </Form>
+  '/>
+</DocsDemo>
+
 <h2>Basic inputs</h2>
-<!-- date, gender, password, select, slider, textarea, toggle -->
 
-<h2>Privacy inputs</h2>
-<!-- date, gender, password, select, slider, textarea, toggle -->
+<DocsDemo as |demo|>
+  <demo.example>
+    <span>Birthdate is {{date this.model.person.birthdate "YYYY-MM-DD"}}</span>
+    <span>Gender is {{this.model.person.gender}}</span>
+    <span>City is {{this.model.person.city}}</span>
+    <span>Description is {{this.model.person.description}}</span>
+    <span>CityIsPublic is {{this.model.person.cityIsPublic}}</span>
 
-<h2>Phone number</h2>
+    <Form @model={{this.model.person}} as |form|>
+      <form.date @attribute="birthdate"/>
+      <form.gender @attribute="gender"/>
+      <form.textarea @attribute="description"/>
+      <form.select @attribute="city" @options={{this.model.availableCities}}/>
 
-<h2>Ethereum Address</h2>
+      <div class="d-flex">
+        <span class="mr-3">Make City Public</span><form.toggle @attribute="cityIsPublic"/>
+      </div>
+    </Form>
+  </demo.example>
 
-<h2>Mnemonic Phrase</h2>
+  <demo.snippet @code='
+  <Form @model={{this.model.person}} as |form|>
+    <form.date @attribute="birthdate"/>
+    <form.gender @attribute="gender"/>
+    <form.textarea @attribute="description"/>
+    <form.select @attribute="city" @options={{this.model.availableCities}}/>
+
+    <div class="d-flex">
+      <span class="mr-3">Make City Public</span><form.toggle @attribute="cityIsPublic"/>
+    </div>
+  </Form>
+  '/>
+</DocsDemo>
+
+<DocsDemo as |demo|>
+  <demo.example>
+    <span>Password is {{this.model.user.password}}</span>
+    <Form @model={{this.model.user}} as |form|>
+      <form.password @attribute="password"/>
+    </Form>
+    <span>Block number is {{this.model.ethBlock.number}}</span>
+    <Form @model={{this.model.ethBlock}} as |form|>
+      <form.range @attribute="number" @label="Block number"/>
+    </Form>
+  </demo.example>
+
+  <demo.snippet @code='
+  <Form @model={{this.model.user}} as |form|>
+    <form.password @attribute="password"/>
+  </Form>
+  <Form @model={{this.model.ethBlock}} as |form|>
+    <form.range @attribute="number" @label="Block number"/>
+  </Form>
+  '/>
+</DocsDemo>
+<!-- date, gender, select, slider, textarea, toggle -->
+

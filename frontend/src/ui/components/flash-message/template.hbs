@@ -1,0 +1,9 @@
+<div class="alert alert-{{this.type}}" role="alert" ...attributes>
+  {{yield this @flash}}
+
+  {{#if this.closeButton}}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close" {{on "click" this.clickCloseButton}} data-test-flash-message-close-button>
+      <span aria-hidden="true">&times;</span>
+    </button>
+  {{/if}}
+</div>

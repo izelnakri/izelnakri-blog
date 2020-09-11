@@ -1,30 +1,39 @@
-{{#docs-header logo="/images/ember-cli.svg" repository="https://github.com/izelnakri/mber" as |header|}}
-  {{#header.link "documentation.index"}}Documentation{{/header.link}}
-{{/docs-header}}
+<DocsHeader @logo="/images/ember-cli.svg" @repository="https://github.com/izelnakri/mber" as |header|>
+  <header.link @route="documentation.index">Documentation</header.link>
+</DocsHeader>
 
-{{#docs-viewer as |viewer|}}
-  {{#viewer.navigation as |nav|}}
-    {{nav.title "Foundation"}}
-    {{nav.link "Introduction" "documentation.index"}}
-    {{nav.link "Color Scheme" "documentation.color-scheme"}}
-    {{nav.link "Buttons" "documentation.buttons"}}
-    {{nav.link "Form" "documentation.form"}}
-    {{nav.link "Tables" "documentation.tables"}}
-    {{nav.link "Icons" "documentation.icons"}}
+<DocsViewer as |viewer|>
+  <viewer.navigation as |nav|>
+    <nav.title @label="Foundation"/>
+    <nav.link @label="Introduction" @route="documentation.index"/>
+    <nav.link @label="Color Scheme" @route="documentation.color-scheme"/>
+    <nav.link @label="Buttons" @route="documentation.buttons"/>
+    <nav.link @label="Form" @route="documentation.form"/>
+    <nav.link @label="Tables" @route="documentation.tables"/>
+    <nav.link @label="Icons" @route="documentation.icons"/>
+    <nav.link @label="Modal window" @route="documentation.modal"/>
 
-    {{nav.title "Components"}}
-    {{nav.link "App Header" "documentation.components.app-header"}}
-    {{nav.link "Image Generator" "documentation.components.image-generator"}}
-    {{nav.link "Modal Window" "documentation.components.modal"}}
-    {{nav.link "Panel" "documentation.components.panel"}}
-    {{nav.link "QR Code" "documentation.components.qr-code"}}
-    {{nav.link "SMS Verification" "documentation.components.sms-verification"}}
-    {{nav.link "User Header" "documentation.components.user-header"}}
+    <nav.title @label="Components"/>
+    <nav.link @label="App Header" @route="documentation.components.app-header"/>
+    <nav.link @label="Confirmation Status" @route="documentation.components.confirmation-status"/>
+    <nav.link @label="Flash Message" @route="documentation.components.flash-message"/>
+    <nav.link @label="Image Generator" @route="documentation.components.image-generator"/>
+    <nav.link @label="Modal Window" @route="documentation.components.modal"/>
+    <nav.link @label="Panel" @route="documentation.components.panel"/>
+    <nav.link @label="SMS Verification" @route="documentation.components.sms-verification"/>
 
-    {{!-- TODO: check description component, maybe modals section, services, mixins, helpers --}}
-  {{/viewer.navigation}}
+    <nav.title @label="Windows"/>
+    {{!--  <nav.link @label="Feedback" @route="documentation.modal-feedback"/>  --}}
+    {{!--  <nav.link @label="Login" @route="documentation.modal-login"/>  --}}
+    {{!--  <nav.link @label="SMS Verification" @route="documentation.modal-sms-verification"/>  --}}
 
-  {{#viewer.page}}
+    <nav.title @label="Pages"/>
+    {{!--  <nav.link @label="Homepage" @route="documentation.pages.homepage"/>  --}}
+    {{!--  <nav.link @label="Public Profile" @route="documentation.pages.public-profile"/>  --}}
+    {{!--  <nav.link @label="Wallet" @route="documentation.pages.wallet"/>  --}}
+  </viewer.navigation>
+
+  <viewer.page>
     {{outlet}}
-  {{/viewer.page}}
-{{/docs-viewer}}
+  </viewer.page>
+</DocsViewer>
