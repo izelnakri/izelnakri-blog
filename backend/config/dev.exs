@@ -1,5 +1,13 @@
 use Mix.Config
 
+# Configure your database
+config :backend, Repo,
+  adapter: Ecto.Adapters.Postgres,
+  username: System.get_env("POSTGRES_USER"),
+  password: System.get_env("POSTGRES_PASSWORD"),
+  database: "izelnakri_dev",
+  pool_size: 10
+
 # For development, we disable any cache and enable
 # debugging and code reloading.
 #
@@ -32,11 +40,4 @@ config :logger, :console, format: "[$level] $message\n"
 # in production as building large stacktraces may be expensive.
 config :phoenix, :stacktrace_depth, 20
 
-# Configure your database
-config :backend, Repo,
-  adapter: Ecto.Adapters.Postgres,
-  username: System.get_env("PGUSER"),
-  password: System.get_env("PGPASSWORD"),
-  database: "izelnakri_dev",
-  hostname: System.get_env("PGHOST"),
-  pool_size: 10
+config :phoenix, :plug_init_mode, :runtime

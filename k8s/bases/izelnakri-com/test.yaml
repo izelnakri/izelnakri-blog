@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: izelnakri-com-deployment
+  namespace: izelnakri-com
+  labels:
+    app: izelnakri-com
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: izelnakri-com
+  template:
+    metadata:
+      labels:
+        app: izelnakri-com
+    spec:
+      containers:
+        - name: izelnakri-com
+          image: inakri/test-express
+          command:
+            - "node"
+            - "/code/index.js"
+          ports:
+            - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: izelnakri-com-service
+  namespace: izelnakri-com
+spec:
+  ports:
+  - port: 80
+    targetPort: 8080
+  selector:
+    app: izelnakri-com
+
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: izz
+#   namespace: default
+# spec:
+#   replicas: 3
+#   selector:
+#     matchLabels:
+#       app: izz-com
+#   template:
+#     metadata:
+#       labels:
+#         app: izz-com
+#     spec:
+#       containers:
+#         - name: izz-com
+#           image: inakri/test-express
+#           ports:
+#             - containerPort: 8080
+#           args:
+#             - "/bin/node"
+#             - "/code/index.js"
+

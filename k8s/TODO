@@ -1,0 +1,37 @@
+Gitea webhooks: I need to build a custom server in node.js to re-route gitea webhooks to argo
+
+helm minio for artifact repository
+
+starting argo in client auth mode
+
+make loki inside grafana automatically
+make dashboard immediately available
+cpu & memory management
+add alerts
+
+https://grafana.com/blog/2020/05/18/grafana-v7.0-released-new-plugin-architecture-visualizations-transformations-native-trace-support-and-more/?isource=hp
+-> Grafana new version
+
+Learn Jaeger, Harbor, Open Policy Agent, ArgoCD, Vault and maybe gitea
+adding nginx + postgresql graphs automatically to graphana in prometheus-operator
+Learn about Prometheus alerts
+Learn about Prometheus + Loki backups(check video script + S3 trial)
+Learn about canary deployments
+
+- Streaming backups?(for logs + db backup)
+
+loki customization(limit the log space by persisting x per day) -> backup to s3 targeted apps
+
+https://github.com/coreos/prometheus-operator/issues/2996 - How can I add my custom grafana dashboard?
+
+
+SECRETS TO REWRITE:
+
+k8s/bases/gitea/helm.yaml [SECRET_KEY]
+k8s/bases/harbor/helm.yaml [secret, CSRF_KEY, JOBSERVICE_SECRET, REGISTRY_HTTP_SECRET, checksum/secret-core, checksum/secret]
+k8s/bases/harbor/values.yaml [credentials, middleware, htpasswd: "harbor_registry_user:$2y$10$9L4Tc0DJbFFMB6RdSCunrOpTHdwhid4ktBJmLD00bYgqkkGOvll3m"
+argo-cd, argo secrets!?!
+
+k8s/bases/prometheus-operator/helm.yaml ?
+
+nginx and prometheus-postgres-exporter deprecated

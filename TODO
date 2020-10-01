@@ -1,3 +1,19 @@
-something
-add CI email notifier
-add setup postgres cluster along with izelnakri.com
+For scaleway use these annotations: service.beta.kubernetes.io/scw-loadbalancer-proxy-protocol-v2, service.beta.kubernetes.io/scw-loadbalancer-use-hostname
+Learn Vault more for User + Secret management + association (vault sidecar does key storage, key lease based on ttl and on the fly encryption/decryption)
+
+Read:
+https://kubernetes.io/docs/tasks/administer-cluster/encrypt-data/
+
+utilize git diff via this maybe:
+https://gitimmersion.com/lab_22.html
+
+move DNS to digitalocean or smt
+
+also make github + actions + deploy workflow
+otherwise have to implement a k8s gitea + CI system
+
+also implement distributed elixir cluster
+iex --name izzy@127.0.0.1 --cookie alice -S mix
+iex() Node.connect(:$name:$ip)
+iex() Node.list
+

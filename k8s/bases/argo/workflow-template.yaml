@@ -1,0 +1,278 @@
+# TODO: make docker images cached over /var/lib/docker artifact output?
+
+# TODO: optimize by checking out the repo only once? [ Test if the artifactRepository is faster
+# TODO: optimize by putting base-slim on artifact and update it when its outdated
+# TODO: optimize by putting :latest on artifact
+
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: default-workflow
+  namespace: argo
+  generateName: default-workflow
+spec:
+  hostNetwork: true
+  artifactRepositoryRef:
+    key: digitalocean
+  parallelism: 3
+  synchronization:
+    semaphore:
+      configMapKeyRef:
+        name: semaphore-config
+        key: workflow
+  entrypoint: ci
+  serviceAccountName: argo
+  onExit: on-exit
+  arguments:
+    parameters:
+    - name: branch
+      value: master
+    - name: sender
+      value: admin
+    - name: project
+      value: acme
+    - name: commitHash
+      value: 0000000000000000000000000000000000000000
+    - name: event
+      value: "git-push"
+    - name: git-url
+      value: "https://git.izelnakri.com/izelnakri/website"
+    - name: git-username
+      value: "izelnakri" # NOTE: get this from secrets
+    - name: git-password
+      value: "" # NOTE: get this from secrets
+    - name: registry-url
+      value: "registry.izelnakri.com"
+    - name: registry-project
+      value: "private/website"
+    - name: registry-username
+      value: "admin" # NOTE: get this from secrets
+    - name: registry-password
+      value: "Harbor12345" # NOTE: get this from secrets
+  templates:
+  - name: checkout
+    inputs:
+      artifacts:
+      - name: source
+        path: /src
+        git:
+          repo: "{{workflow.parameters.git-url}}"
+          revision: "{{workflow.parameters.branch}}"
+    outputs:
+      artifacts:
+      - name: source
+        path: /src
+    container:
+      image: docker:stable-git
+      command: [sh, -c]
+      args: # if check if directory exists otherwise clone
+        - ls -lah && cd /src && echo "moved to /src" && ls -lah && echo "Git is on $(git rev-parse --short HEAD)"
+  - name: build-frontend-branch-image
+    inputs:
+      artifacts:
+      - name: source
+        path: /src
+    container:
+      image: docker:stable-git
+      command: [sh, -c]
+      args:
+        - cd src/frontend &&
+          docker build . -t {{workflow.parameters.registry-url}}/{{workflow.parameters.registry-project}}-frontend:{{workflow.parameters.branch}} &&
+          echo $REGISTRY_PASSWORD | docker login -u $REGISTRY_USERNAME --password-stdin &&
+          docker push {{workflow.parameters.registry-url}}/{{workflow.parameters.registry-project}}-frontend:{{workflow.parameters.branch}}
+      env:
+      - name: DOCKER_HOST
+        value: 127.0.0.1
+      - name: REGISTRY_PASSWORD
+        value: "{{workflow.parameters.registry-password}}"
+      - name: REGISTRY_USERNAME
+        value: "{{workflow.parameters.registry-username}}"
+    sidecars:
+    - name: dind
+      image: docker:17.10-dind
+      securityContext:
+        privileged: true
+      mirrorVolumeMounts: true
+  - name: build-backend-branch-image
+    inputs:
+      artifacts:
+      - name: source
+        path: /src
+    container:
+      image: docker:stable-git
+      command: [sh, -c]
+      args:
+        - until docker ps; do sleep 3; done; cd /src/backend &&
+          docker build . -t {{workflow.parameters.registry-url}}/{{workflow.parameters.registry-project}}-backend:{{workflow.parameters.branch}} &&
+          echo $REGISTRY_PASSWORD | docker login {{workflow.parameters.registry-url}} -u $REGISTRY_USERNAME --password-stdin &&
+          docker push {{workflow.parameters.registry-url}}/{{workflow.parameters.registry-project}}-backend:{{workflow.parameters.branch}} && exit 1
+      env:
+      - name: DOCKER_HOST
+        value: 127.0.0.1
+      - name: REGISTRY_PASSWORD
+        value: "{{workflow.parameters.registry-password}}"
+      - name: REGISTRY_USERNAME
+        value: "{{workflow.parameters.registry-username}}"
+    sidecars:
+    - name: dind
+      image: docker:17.10-dind
+      securityContext:
+        privileged: true
+      mirrorVolumeMounts: true
+  - name: test-frontend
+    container:
+      image: docker:stable-git
+      command: [sh, -c]
+      args:
+        - until docker ps; do sleep 3; done;
+          docker pull {{workflow.parameters.registry-url}}/{{workflow.parameters.registry-project}}-frontend:{{workflow.parameters.branch}} &&
+          docker run -t -d --name="target_container" {{workflow.parameters.registry-url}}/{{workflow.parameters.registry-project}}-frontend:{{workflow.parameters.branch}} /bin/bash &&
+          docker exec -it target_container npm test
+  - name: test-backend
+    inputs:
+      artifacts:
+      - name: source
+        path: /src
+    container:
+      image: docker/compose:alpine-1.26.2
+      command: [sh, -c]
+      args:
+        - until docker ps; do sleep 3; done;
+          echo $REGISTRY_PASSWORD | docker login {{workflow.parameters.registry-url}} -u $REGISTRY_USERNAME --password-stdin &&
+          cd /src/backend &&
+          docker-compose run -T backend mix test --trace
+      env:
+      - name: DOCKER_HOST
+        value: 127.0.0.1
+      - name: REGISTRY_PASSWORD
+        value: "{{workflow.parameters.registry-password}}"
+      - name: REGISTRY_USERNAME
+        value: "{{workflow.parameters.registry-username}}"
+    sidecars:
+    - name: backend-dind
+      image: docker:17.10-dind
+      securityContext:
+        privileged: true
+      mirrorVolumeMounts: true
+  - name: ci
+    dag:
+      tasks:
+        - name: checkout
+          template: checkout
+        - name: build-frontend-branch-image
+          template: build-frontend-branch-image
+          dependencies: [checkout]
+          arguments:
+            artifacts:
+            - name: source
+              from: "{{tasks.checkout.outputs.artifacts.source}}"
+        - name: build-backend-branch-image
+          template: build-backend-branch-image
+          dependencies: [checkout]
+          arguments:
+            artifacts:
+            - name: source
+              from: "{{tasks.checkout.outputs.artifacts.source}}"
+        - name: test-frontend
+          template: test-frontend
+          dependencies: [build-frontend-branch-image]
+        - name: test-backend
+          template: test-backend
+          dependencies: [build-backend-branch-image]
+          arguments:
+            artifacts:
+            - name: source
+              from: "{{tasks.checkout.outputs.artifacts.source}}"
+        # - name: deploy-frontend
+        #   template: deploy-frontend
+        #   dependencies: [test-frontend, test-backend]
+        #   when: "{{workflow.workflow.parameters.branch == master"
+        # - name: deploy-backend
+        #   template: deploy-backend
+        #   dependencies: [test-frontend, test-backend]
+        #   when: "{{workflow.workflow.parameters.branch == master"
+        # - name: whalesay
+        #   container:
+        #     image: docker/whalesay:latest
+  - name: on-exit
+    container:
+      image: appropriate/curl
+      command: [sh, -c]
+      args: ["curl --header 'Content-Type: application/json' \
+  --request POST \
+  --data '{\"workflowName\":\"{{workflow.name}}\",\"workflowStatus\":\"{{workflow.status}}\"}' \
+  https://79a1218f1544.ngrok.io/submit-workflow-result"]
+
+# curl --header 'Content-Type: application/json' \
+# --request POST \
+# --data '{"username":"xyz","password":"xyz"}' \
+# http://b3d3905423c2.ngrok.io/submit-workflow-result
+
+# on master do complex deployment logic
+# - name: whalesay
+#   container:
+#     image: docker/whalesay:latest
+#     command: [cowsay]
+#     args: ["hello world"]
+
+# optimized checkout logic:
+# git fetch origin [branchName]# This updates 'remote' portion of local repo.
+# git checkout [branchName]
+# git reset --hard origin/[branchName]
+
+# volumes:
+#   - name: git-secrets-volume
+#     secret:
+#       secretName: git-secret
+#   - name: registry-secrets-volume
+#     secret:
+
+# - name: deploy-frontend
+#   container:
+#     image: docker:stable-git
+#     command: [sh, -c]
+#     args:
+#       - git clone --single-branch --branch {{workflow.parameters.branch}} {{workflow.parameters.git-url}} &&
+#         COMMIT_HASH=$(git rev-parse HEAD); &&
+#         COMMIT_HASH_REF=$($COMMIT_HASH | cut -c1-10);
+#         # sed -i 's/# expose this/# anan this/g' DRONE.yml
+#         # git add
+#         # git commit -m ""
+#         # git push
+#         # docker build
+#         # echo $REGISTRY_PASSWORD | docker login -u admin --password-stdin &&
+#         # docker push core.harbor.izelnakri.com/private/izelnakri/website-frontend:{{workflow.parameters.branch}}
+#     env:
+#     - name: DOCKER_HOST
+#       value: 127.0.0.1
+#   sidecars:
+#   - name: dind
+#     image: docker:17.10-dind
+#     securityContext:
+#       privileged: true
+#     mirrorVolumeMounts: true
+# - name: deploy-backend
+#   container:
+#     image: docker:stable-git
+#     command: [sh, -c]
+#     args:
+#       - git clone --single-branch --branch {{workflow.parameters.branch}} {{workflow.parameters.git-url}}
+#         # COMMIT_HASH=$(git rev-parse HEAD); &&
+#         # COMMIT_HASH_REF=$($COMMIT_HASH | cut -c1-10);
+#         # sed -i 's/# expose this/# anan this/g' DRONE.yml
+#         # git add
+#         # git commit -m ""
+#         # git push
+#         # docker build
+#         # echo $REGISTRY_PASSWORD | docker login -u admin --password-stdin &&
+#         # docker push core.harbor.izelnakri.com/private/izelnakri/website-backend:{{workflow.parameters.branch}}
+#     env:
+#     - name: DOCKER_HOST
+#       value: 127.0.0.1
+#   sidecars:
+#   - name: dind
+#     image: docker:17.10-dind
+#     securityContext:
+#       privileged: true
+#     mirrorVolumeMounts: true
+#       secretName: registry-secret

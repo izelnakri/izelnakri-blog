@@ -1,0 +1,24 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: argo-cd-ingress
+  namespace: argocd
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    certmanager.k8s.io/cluster-issuer: argo-cd-issuer
+    certmanager.k8s.io/acme-challenge-type: http01
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+spec:
+  tls:
+  - hosts:
+    - cd.izelnakri.com
+    secretName: argo-cd-tls
+  rules:
+  - host: cd.izelnakri.com
+    http:
+      paths:
+      - backend:
+          serviceName: argocd-server
+          servicePort: https

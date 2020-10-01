@@ -4,6 +4,7 @@ defmodule Backend.BlogPostControllerTest do
   alias Backend.BlogPost
   alias Backend.Tag
   alias PaperTrail.Version
+  alias Backend.ModelHelpers
 
   @valid_blog_post_attrs %{
     title: "Testing in Elixir", slug: "testing-in-elixir",
@@ -29,7 +30,7 @@ defmodule Backend.BlogPostControllerTest do
   end
 
   test "POST /blog-post as normal user shouldn't work", %{conn: conn} do
-    normal_user = insert_normal_user()
+    normal_user = ModelHelpers.insert_normal_user()
     blog_post_params = @valid_blog_post_attrs |> Map.merge(%{user: normal_user})
 
     conn_with_token = set_conn_with_token(conn, normal_user.authentication_token)
@@ -40,7 +41,7 @@ defmodule Backend.BlogPostControllerTest do
   end
 
   test "POST /blog-post as admin user should work with tags", %{conn: conn} do
-    user = insert_admin_user()
+    user = ModelHelpers.insert_admin_user()
     blog_post_params = @valid_blog_post_attrs |> Map.merge(%{user: user, comments: nil})
 
     conn_with_token = set_conn_with_token(conn, user.authentication_token)
@@ -49,7 +50,7 @@ defmodule Backend.BlogPostControllerTest do
     persisted_id = json_response(conn, 201)["blog_post"]["id"]
     assert persisted_id
 
-    blog_post = get_blog_post(persisted_id) |> Map.drop([
+    blog_post = ModelHelpers.get_blog_post(persisted_id) |> Map.drop([
       :inserted_at, :updated_at, :id, :user, :comments
     ])
 
@@ -65,7 +66,7 @@ defmodule Backend.BlogPostControllerTest do
   end
 
   test "POST /blog-posts as admin user shouldnt work without post tag", %{conn: conn} do
-    user = insert_admin_user()
+    user = ModelHelpers.insert_admin_user()
     blog_post_params = @valid_blog_post_attrs |> Map.merge(%{user: user, tags: []})
 
     conn_with_token = set_conn_with_token(conn, user.authentication_token)
@@ -79,7 +80,7 @@ defmodule Backend.BlogPostControllerTest do
   end
 
   test "POST /blog-posts cannot work without post title", %{conn: conn} do
-    user = insert_admin_user()
+    user = ModelHelpers.insert_admin_user()
     blog_post_params = @valid_blog_post_attrs |> Map.merge(%{user: user, title: ""})
 
     conn_with_token = set_conn_with_token(conn, user.authentication_token)
@@ -90,7 +91,7 @@ defmodule Backend.BlogPostControllerTest do
   end
 
   test "POST /blog-posts cannot work without post content", %{conn: conn} do
-    user = insert_admin_user()
+    user = ModelHelpers.insert_admin_user()
     blog_post_params = @valid_blog_post_attrs |> Map.merge(%{user: user, markdown_content: ""})
 
     conn_with_token = set_conn_with_token(conn, user.authentication_token)
@@ -101,7 +102,7 @@ defmodule Backend.BlogPostControllerTest do
   end
 
   test "PUT /blog-posts/:id can edit as admin blog post", %{conn: conn} do
-    blog_post = insert_blog_post()
+    blog_post = ModelHelpers.insert_blog_post()
     blog_post_params = blog_post
       |> Map.merge(@edit_blog_post_attrs)
       |> Map.delete(:current_version_id)
@@ -111,13 +112,12 @@ defmodule Backend.BlogPostControllerTest do
 
     assert json_response(conn, 200)
 
-    persisted_blog_post = get_blog_post(blog_post.id)
+    persisted_blog_post = ModelHelpers.get_blog_post(blog_post.id)
 
     assert persisted_blog_post.first_version_id !== persisted_blog_post.current_version_id
     assert Map.drop(persisted_blog_post, [:updated_at, :current_version_id, :tags]) == Map.drop(
       blog_post_params, [:updated_at, :tags]
     )
-    assert persisted_blog_post.updated_at !== blog_post_params.updated_at
     assert BlogPost.count() == 1
 
     assert ["Elixir", "Phoenix"] == persisted_blog_post.tags |> Enum.map(fn(tag) -> tag.name end)
@@ -126,7 +126,7 @@ defmodule Backend.BlogPostControllerTest do
 
   # TODO: test tag updating
   test "PUT /blog-posts/:id can edit the tags of blog posts correctly", %{conn: conn} do
-    blog_post = insert_blog_post()
+    blog_post = ModelHelpers.insert_blog_post()
     blog_post_params = blog_post
       |> Map.merge(@edit_blog_post_attrs)
       |> Map.merge(%{tags: [%{name: "Phoenix"}, %{name: "Programming"}, %{name: "Web"}]})
@@ -137,13 +137,12 @@ defmodule Backend.BlogPostControllerTest do
 
     assert json_response(conn, 200)
 
-    persisted_blog_post = get_blog_post(blog_post.id)
+    persisted_blog_post = ModelHelpers.get_blog_post(blog_post.id)
 
     assert persisted_blog_post.first_version_id !== persisted_blog_post.current_version_id
     assert Map.drop(persisted_blog_post, [:updated_at, :current_version_id, :tags]) == Map.drop(
       blog_post_params, [:updated_at, :tags]
     )
-    assert persisted_blog_post.updated_at !== blog_post_params.updated_at
     assert BlogPost.count() == 1
 
     assert ["Phoenix", "Programming", "Web"] == persisted_blog_post.tags |> Enum.map(fn(tag) ->
@@ -153,74 +152,74 @@ defmodule Backend.BlogPostControllerTest do
   end
 
   test "PUT /blog-posts/:id normal user cannot edit a blog post", %{conn: conn} do
-    user = insert_normal_user()
-    blog_post = insert_blog_post()
+    user = ModelHelpers.insert_normal_user()
+    blog_post = ModelHelpers.insert_blog_post()
     blog_post_params = blog_post |> Map.merge(@edit_blog_post_attrs)
 
     conn_with_token = set_conn_with_token(conn, user.authentication_token)
     conn = put(conn_with_token, "/blog-posts/#{blog_post.id}", blog_post: blog_post_params)
 
     assert json_response(conn, 401)
-    assert get_blog_post(blog_post.id) == blog_post
+    assert ModelHelpers.get_blog_post(blog_post.id) == blog_post
     assert BlogPost.count() == 1
   end
 
   test "PUT /blog-posts/:id guest cannot edit a blog post", %{conn: conn} do
-    blog_post = insert_blog_post()
+    blog_post = ModelHelpers.insert_blog_post()
     blog_post_params = blog_post |> Map.merge(@edit_blog_post_attrs)
 
     conn = put(conn, "/blog-posts/#{blog_post.id}", blog_post: blog_post_params)
 
     assert json_response(conn, 401)
-    assert get_blog_post(blog_post.id) == blog_post
+    assert ModelHelpers.get_blog_post(blog_post.id) == blog_post
     assert BlogPost.count() == 1
   end
 
   test "PUT /blog-posts/:id cannot update the title to nil", %{conn: conn} do
-    blog_post = insert_blog_post()
+    blog_post = ModelHelpers.insert_blog_post()
     blog_post_params = blog_post |> Map.put(:title, "")
 
     conn_with_token = set_conn_with_token(conn, blog_post.user.authentication_token)
     conn = put(conn_with_token, "/blog-posts/#{blog_post.id}", blog_post: blog_post_params)
 
     assert json_response(conn, 422)["errors"]["title"] |> List.first() == "can't be blank"
-    assert get_blog_post(blog_post.id) == blog_post
+    assert ModelHelpers.get_blog_post(blog_post.id) == blog_post
     assert BlogPost.count() == 1
   end
 
   test "PUT /blog-posts/:id cannot update the content to nil", %{conn: conn} do
-    blog_post = insert_blog_post()
+    blog_post = ModelHelpers.insert_blog_post()
     blog_post_params = blog_post |> Map.put(:markdown_content, "")
 
     conn_with_token = set_conn_with_token(conn, blog_post.user.authentication_token)
     conn = put(conn_with_token, "/blog-posts/#{blog_post.id}", blog_post: blog_post_params)
 
     assert json_response(conn, 422)["errors"]["markdown_content"] |> List.first() == "can't be blank"
-    assert get_blog_post(blog_post.id) == blog_post
+    assert ModelHelpers.get_blog_post(blog_post.id) == blog_post
     assert BlogPost.count() == 1
   end
 
   test "PUT /blog-posts/:id cannot update the slug to nil", %{conn: conn} do
-    blog_post = insert_blog_post()
+    blog_post = ModelHelpers.insert_blog_post()
     blog_post_params = blog_post |> Map.put(:slug, "")
 
     conn_with_token = set_conn_with_token(conn, blog_post.user.authentication_token)
     conn = put(conn_with_token, "/blog-posts/#{blog_post.id}", blog_post: blog_post_params)
 
     assert json_response(conn, 422)["errors"]["slug"] |> List.first() == "can't be blank"
-    assert get_blog_post(blog_post.id) == blog_post
+    assert ModelHelpers.get_blog_post(blog_post.id) == blog_post
     assert BlogPost.count() == 1
   end
 
   test "PUT /blog-posts/:id cannot update the tags to nil", %{conn: conn} do
-    blog_post = insert_blog_post()
+    blog_post = ModelHelpers.insert_blog_post()
 
     blog_post_params = blog_post |> Map.put(:tags, [])
 
     conn_with_token = set_conn_with_token(conn, blog_post.user.authentication_token)
     conn = put(conn_with_token, "/blog-posts/#{blog_post.id}", blog_post: blog_post_params)
 
-    persisted_blog_post = get_blog_post(blog_post.id)
+    persisted_blog_post = ModelHelpers.get_blog_post(blog_post.id)
 
     response = json_response(conn, 422)
     assert response
@@ -231,7 +230,7 @@ defmodule Backend.BlogPostControllerTest do
   end
 
   test "DELETE /blog-posts/:id admin can delete a blog post", %{conn: conn} do
-    blog_post = insert_blog_post()
+    blog_post = ModelHelpers.insert_blog_post()
 
     conn_with_token = set_conn_with_token(conn, blog_post.user.authentication_token)
     conn = delete(conn_with_token, "/blog-posts/#{blog_post.id}")
@@ -240,43 +239,44 @@ defmodule Backend.BlogPostControllerTest do
     assert where(BlogPost, id: ^blog_post.id) |> Repo.one == nil
     assert BlogPost.count() == 0
     assert Tag.count() == 0
-    delete_version = Version.last()
-    assert delete_version.event == "delete"
 
+    delete_version = where(Version, item_id: ^blog_post.id, event: "delete") |> Repo.one()
+
+    assert delete_version.event == "delete"
     assert delete_version.item_changes == blog_post |> Map.drop([:comments, :user, :tags])
-    |> Poison.encode! |> Poison.decode!
+    |> Jason.encode! |> Jason.decode!
   end
 
   test "DELETE /blog-posts/:id normal user cannot delete a blog post", %{conn: conn} do
-    user = insert_normal_user()
-    blog_post = insert_blog_post()
+    user = ModelHelpers.insert_normal_user()
+    blog_post = ModelHelpers.insert_blog_post()
 
     conn_with_token = set_conn_with_token(conn, user.authentication_token)
     conn = delete(conn_with_token, "/blog-posts/#{blog_post.id}")
 
     assert json_response(conn, 401)
-    assert get_blog_post(blog_post.id) == blog_post
+    assert ModelHelpers.get_blog_post(blog_post.id) == blog_post
     assert BlogPost.count() == 1
   end
 
   test "DELETE /blog-posts/:id guest cannot delete a blog post", %{conn: conn} do
-    blog_post = insert_blog_post()
+    blog_post = ModelHelpers.insert_blog_post()
 
     conn = delete(conn, "/blog-posts/#{blog_post.id}")
 
     assert json_response(conn, 401)
-    assert get_blog_post(blog_post.id) == blog_post
+    assert ModelHelpers.get_blog_post(blog_post.id) == blog_post
     assert BlogPost.count() == 1
   end
 
   test "GET /blog-posts?filter=latest returns last blog posts", %{conn: conn} do
-    user = insert_normal_user()
+    user = ModelHelpers.insert_normal_user()
     conn_with_token = set_conn_with_token(conn, user.authentication_token)
     conn = get(conn_with_token, "/blog-posts?filter=latest")
 
     assert json_response(conn, 200)["blog_posts"] == []
 
-    blog_post = insert_blog_post()
+    ModelHelpers.insert_blog_post()
 
     second_conn = get(conn_with_token, "/blog-posts?filter=latest")
 

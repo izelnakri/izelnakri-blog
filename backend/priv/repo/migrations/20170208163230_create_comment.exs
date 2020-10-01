@@ -8,6 +8,8 @@ defmodule Backend.Repo.Migrations.CreateComment do
 
       add :email_id, references(:emails)
       add :blog_post_id, references(:blog_posts), null: false
+      add :first_version_id, references(:versions), null: false
+      add :current_version_id, references(:versions), null: false
 
       timestamps()
     end

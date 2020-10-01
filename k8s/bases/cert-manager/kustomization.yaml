@@ -1,0 +1,5 @@
+kind: Kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+resources:
+  # - crds.yaml
+  - cert-manager-v0.9.1.yaml

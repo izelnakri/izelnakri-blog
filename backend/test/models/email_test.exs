@@ -2,6 +2,7 @@ defmodule Backend.EmailTest do
   use Backend.ModelCase, async: true
 
   alias Backend.Email
+  alias Backend.ModelHelpers
 
   @valid_attributes %{"address" => "contact@izelnakri.com"}
 
@@ -21,7 +22,7 @@ defmodule Backend.EmailTest do
   end
 
   test "Email.with_person_changeset with valid attributes" do
-    user = insert_normal_user()
+    user = ModelHelpers.insert_normal_user()
     email_struct = %Email{person_id: user.person.id} |> Repo.preload(:person)
     email_params = Map.merge(@valid_attributes, %{"person_id" => user.person.id})
     changeset = Email.with_person_changeset(email_struct, email_params)

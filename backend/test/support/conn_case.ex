@@ -18,8 +18,8 @@ defmodule Backend.ConnCase do
   using do
     quote do
       # Import conveniences for testing with connections
-      use Phoenix.ConnTest
-
+      import Plug.Conn
+      import Phoenix.ConnTest
       import Ecto
       import Ecto.Changeset
       import Ecto.Query
@@ -33,7 +33,7 @@ defmodule Backend.ConnCase do
 
       # good for converting DateTimes to ISO + turning :atoms to "string" map keys
       def convert_to_string_map(value) do
-        value |> Poison.encode |> elem(1) |> Poison.decode |> elem(1)
+        value |> Jason.encode |> elem(1) |> Jason.decode |> elem(1)
       end
 
       defp ignore_timestamps(list) when is_list(list) do

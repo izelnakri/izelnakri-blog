@@ -22,7 +22,7 @@ defmodule Backend.TagTest do
 
     assert tag_two_changeset |> elem(0) == :error
     assert tag_two_changeset |> elem(1) |> Map.get(:errors) == [
-      name: {"has already been taken", []}
+      name: {"has already been taken", [constraint: :unique, constraint_name: "tags_name_index"]}
     ]
   end
 

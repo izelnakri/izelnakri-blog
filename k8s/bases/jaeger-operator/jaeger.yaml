@@ -1,0 +1,17 @@
+apiVersion: jaegertracing.io/v1
+kind: Jaeger
+namespace: jaeger
+metadata:
+  name: simplest
+spec:
+  # strategy: production
+  # storage:
+  #   type: cassandra
+  # collector:
+  #   maxReplicas: 5
+  #   resources:
+  #     limits:
+  #       cpu: 100m
+  #       memory: 128Mi
+  ingress:
+    enabled: false

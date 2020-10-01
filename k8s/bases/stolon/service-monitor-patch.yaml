@@ -1,0 +1,7 @@
+- op: add
+  path: /metadata/namespace
+  value: prometheus
+# - op: add
+#   path: /spec/namespace
+#   value:
+

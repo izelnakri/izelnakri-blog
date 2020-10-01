@@ -20,7 +20,6 @@ defmodule Backend.ModelCase do
       import Ecto.Changeset
       import Ecto.Query
       import Backend.ModelCase
-      import Backend.ModelHelpers
     end
   end
 

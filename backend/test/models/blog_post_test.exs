@@ -2,6 +2,7 @@ defmodule Backend.BlogPostTest do
   use Backend.ModelCase, async: true
 
   alias Backend.BlogPost
+  alias Backend.ModelHelpers
 
   @valid_attrs %{
     "title" => "Testing in Elixir", "slug" => "testing-in-elixir",
@@ -11,7 +12,7 @@ defmodule Backend.BlogPostTest do
   }
 
   test "changeset with valid attributes" do
-    user = insert_normal_user()
+    user = ModelHelpers.insert_normal_user()
     blog_post_struct = %BlogPost{user_id: user.id} |> Repo.preload(:user)
 
     changeset = BlogPost.changeset(blog_post_struct, @valid_attrs)
@@ -25,7 +26,7 @@ defmodule Backend.BlogPostTest do
   end
 
   test "changeset without title" do
-    user = insert_normal_user()
+    user = ModelHelpers.insert_normal_user()
     blog_post_struct = %BlogPost{user_id: user.id} |> Repo.preload(:user)
 
     params = @valid_attrs |> Map.merge(%{"title" => ""})
@@ -35,7 +36,7 @@ defmodule Backend.BlogPostTest do
   end
 
   test "changeset without content" do
-    user = insert_normal_user()
+    user = ModelHelpers.insert_normal_user()
     blog_post_struct = %BlogPost{user_id: user.id} |> Repo.preload(:user)
 
     params = @valid_attrs |> Map.merge(%{"markdown_content" => ""})
@@ -45,7 +46,7 @@ defmodule Backend.BlogPostTest do
   end
 
   test "changeset without slug" do
-    user = insert_normal_user()
+    user = ModelHelpers.insert_normal_user()
     blog_post_struct = %BlogPost{user_id: user.id} |> Repo.preload(:user)
 
     params = @valid_attrs |> Map.merge(%{"slug" => ""})
@@ -55,7 +56,7 @@ defmodule Backend.BlogPostTest do
   end
 
   test "changeset without tag" do
-    user = insert_normal_user()
+    user = ModelHelpers.insert_normal_user()
     blog_post_struct = %BlogPost{user_id: user.id} |> Repo.preload(:user)
 
     params = @valid_attrs |> Map.merge(%{"tags" => ""})
