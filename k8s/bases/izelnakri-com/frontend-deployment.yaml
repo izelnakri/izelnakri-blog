@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: izelnakri-com-deployment
+  namespace: izelnakri-com
+  labels:
+    app: izelnakri-com
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: izelnakri-com
+  template:
+    metadata:
+      labels:
+        app: izelnakri-com
+    spec:
+      containers:
+        - name: izelnakri-com
+          image: inakri/test-express
+          ports:
+            - containerPort: 3000
+          command: ["/usr/local/bin/node"]
+          args: ["/code/index.js"]
+
+          # image: hashicorp/http-echo
+          # args:
+          #   - "-text=setting up k8s."
+          # ports:
+          #   - containerPort: 5678
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: izelnakri-com-service
+  namespace: izelnakri-com
+spec:
+  ports:
+  - port: 80
+    targetPort: 8080
+  selector:
+    app: izelnakri-com

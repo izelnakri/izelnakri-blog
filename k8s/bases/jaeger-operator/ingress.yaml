@@ -1,0 +1,21 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: jaeger-ingress
+  namespace: jaeger
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    certmanager.k8s.io/cluster-issuer: jaeger-issuer
+    certmanager.k8s.io/acme-challenge-type: http01
+spec:
+  tls:
+  - hosts:
+    - jaeger.izelnakri.com
+    secretName: jaeger-tls
+  rules:
+  - host: jaeger.izelnakri.com
+    http:
+      paths:
+      - backend:
+          serviceName: simplest-query
+          servicePort: 16686

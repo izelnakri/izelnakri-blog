@@ -60,7 +60,7 @@ defmodule Backend.ModelHelpers do
     end
 
     comment_changeset = %Comment{blog_post_id: blog_post.id, email_id: email_id}
-    comment = Comment.changeset(comment_changeset, @valid_comment_attrs) |> Repo.insert!
+    comment = Comment.changeset(comment_changeset, @valid_comment_attrs) |> PaperTrail.insert!(origin: "test")
 
     Comment.query()
     |> where(id: ^comment.id)

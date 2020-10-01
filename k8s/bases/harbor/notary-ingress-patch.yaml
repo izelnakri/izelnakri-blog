@@ -1,0 +1,4 @@
+- op: add
+  path: /metadata/annotations
+  value:
+    certmanager.k8s.io/cluster-issuer: harbor-notary-issuer

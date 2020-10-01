@@ -1,0 +1,21 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: argo-ci-ingress
+  namespace: argo
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    certmanager.k8s.io/cluster-issuer: argo-ci-issuer
+    certmanager.k8s.io/acme-challenge-type: http01
+spec:
+  tls:
+  - hosts:
+    - argo.izelnakri.com
+    secretName: argo-ci-tls
+  rules:
+  - host: argo.izelnakri.com
+    http:
+      paths:
+      - backend:
+          serviceName: argo-server
+          servicePort: 2746

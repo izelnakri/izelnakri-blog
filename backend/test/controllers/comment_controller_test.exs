@@ -2,6 +2,7 @@ defmodule Backend.CommentControllerTest do
   use Backend.ConnCase, async: true
 
   alias Backend.Comment
+  alias Backend.ModelHelpers
 
   @valid_comment_params %{content: "this is a comment"}
   @edit_comment_params %{content: "Interesting post, edited my comment"}
@@ -11,7 +12,7 @@ defmodule Backend.CommentControllerTest do
   end
 
   test "POST /comments as guest works", %{conn: conn} do
-    blog_post = insert_blog_post()
+    blog_post = ModelHelpers.insert_blog_post()
     comment_params = @valid_comment_params |> Map.merge(%{blog_post_id: blog_post.id})
 
     conn = post(conn, "/comments", comment: comment_params)
@@ -30,8 +31,8 @@ defmodule Backend.CommentControllerTest do
 
   test "POST /comments with an email works", %{conn: conn} do
     # TODO: this test should be different
-    blog_post = insert_blog_post()
-    user = insert_normal_user()
+    blog_post = ModelHelpers.insert_blog_post()
+    user = ModelHelpers.insert_normal_user()
     comment_params = @valid_comment_params |> Map.merge(%{
       blog_post_id: blog_post.id, email_id: user.primary_email_id
     })
@@ -51,8 +52,8 @@ defmodule Backend.CommentControllerTest do
   end
 
   test "POST /comments for logged-in user assigns the right user and confirmed_at", %{conn: conn} do
-    blog_post = insert_blog_post()
-    user = insert_normal_user()
+    blog_post = ModelHelpers.insert_blog_post()
+    user = ModelHelpers.insert_normal_user()
     admin_user = get_user(blog_post.user_id)
     comment_params = @valid_comment_params |> Map.merge(%{
       blog_post_id: blog_post.id, email_id: admin_user.primary_email_id
@@ -73,7 +74,7 @@ defmodule Backend.CommentControllerTest do
   end
 
   test "POST /comments shouldnt work without blog_post", %{conn: conn} do
-    user = insert_normal_user()
+    user = ModelHelpers.insert_normal_user()
     comment_params = @valid_comment_params |> Map.merge(%{
       blog_post_id: nil, email_id: user.primary_email_id
     })
@@ -86,7 +87,7 @@ defmodule Backend.CommentControllerTest do
   end
 
   test "POST /comments shouldnt work without content", %{conn: conn} do
-    blog_post = insert_blog_post()
+    blog_post = ModelHelpers.insert_blog_post()
     comment_params = %{
       blog_post_id: nil, email_id: blog_post.user.primary_email_id
     }
@@ -99,7 +100,7 @@ defmodule Backend.CommentControllerTest do
   end
 
   test "PUT /comments/:id guest cannot edit a comment", %{conn: conn} do
-    comment = insert_comment()
+    comment = ModelHelpers.insert_comment()
     comment_params = comment |> Map.merge(@edit_comment_params)
 
     conn = put(conn, "/comments/#{comment.id}", comment: comment_params)
@@ -110,8 +111,8 @@ defmodule Backend.CommentControllerTest do
   end
 
   test "PUT /comments/:id normal user can edit his comment", %{conn: conn} do
-    user = insert_normal_user()
-    comment = insert_comment(user: user)
+    user = ModelHelpers.insert_normal_user()
+    comment = ModelHelpers.insert_comment(user: user)
     comment_params = comment |> Map.merge(@edit_comment_params)
 
     conn_with_token = set_conn_with_token(conn, user.authentication_token)
@@ -120,17 +121,17 @@ defmodule Backend.CommentControllerTest do
     assert json_response(conn, 200)
 
     persisted_comment = get_comment(comment.id)
-    comment_meta_data = Map.drop(comment, [:content, :updated_at, :confirmed_at])
+    comment_meta_data = Map.drop(comment, [:content, :updated_at, :confirmed_at, :current_version_id])
 
     assert comment != persisted_comment
-    assert Map.drop(persisted_comment, [:content, :updated_at, :confirmed_at]) == comment_meta_data
+    assert Map.drop(persisted_comment, [:content, :updated_at, :confirmed_at, :current_version_id]) == comment_meta_data
     assert persisted_comment.content == @edit_comment_params |> Map.get(:content)
     assert Comment.count() == 1
   end
 
   test "PUT /comments/:id normal user cannot edit somebody elses comment", %{conn: conn} do
-    comment = insert_comment(user: insert_admin_user())
-    user = insert_normal_user()
+    comment = ModelHelpers.insert_comment(user: ModelHelpers.insert_admin_user())
+    user = ModelHelpers.insert_normal_user()
     comment_params = comment |> Map.merge(@edit_comment_params)
 
     conn_with_token = set_conn_with_token(conn, user.authentication_token)
@@ -141,9 +142,9 @@ defmodule Backend.CommentControllerTest do
   end
 
   test "PUT /comments/:id admin user can edit and confirm some users comment", %{conn: conn} do
-    normal_user = insert_normal_user()
-    comment = insert_comment(user: normal_user)
-    admin_user = insert_admin_user()
+    normal_user = ModelHelpers.insert_normal_user()
+    comment = ModelHelpers.insert_comment(user: normal_user)
+    admin_user = ModelHelpers.insert_admin_user()
     comment_params = comment |> Map.merge(@edit_comment_params)
 
     conn_with_token = set_conn_with_token(conn, admin_user.authentication_token)
@@ -152,10 +153,10 @@ defmodule Backend.CommentControllerTest do
     assert json_response(conn, 200)
 
     persisted_comment = get_comment(comment.id)
-    comment_meta_data = Map.drop(comment, [:content, :updated_at, :confirmed_at])
+    comment_meta_data = Map.drop(comment, [:content, :updated_at, :confirmed_at, :current_version_id])
 
     assert comment != persisted_comment
-    assert Map.drop(persisted_comment, [:content, :updated_at, :confirmed_at]) == comment_meta_data
+    assert Map.drop(persisted_comment, [:content, :updated_at, :confirmed_at, :current_version_id]) == comment_meta_data
     assert persisted_comment.content == @edit_comment_params |> Map.get(:content)
     assert persisted_comment.email_id == normal_user.primary_email_id
     assert persisted_comment.confirmed_at
@@ -163,7 +164,7 @@ defmodule Backend.CommentControllerTest do
   end
 
   test "PUT /comments/:id admin can edit and confirm guest comment", %{conn: conn} do
-    comment = insert_comment()
+    comment = ModelHelpers.insert_comment()
     user = get_admin_user()
     comment_params = comment |> Map.merge(@edit_comment_params)
 
@@ -173,17 +174,17 @@ defmodule Backend.CommentControllerTest do
     assert json_response(conn, 200)
 
     persisted_comment = get_comment(comment.id)
-    comment_meta_data = Map.drop(comment, [:content, :updated_at, :confirmed_at])
+    comment_meta_data = Map.drop(comment, [:content, :updated_at, :confirmed_at, :current_version_id])
 
     assert comment != persisted_comment
-    assert Map.drop(persisted_comment, [:content, :updated_at, :confirmed_at]) == comment_meta_data
+    assert Map.drop(persisted_comment, [:content, :updated_at, :confirmed_at, :current_version_id]) == comment_meta_data
     assert persisted_comment.content == @edit_comment_params |> Map.get(:content)
     assert persisted_comment.confirmed_at
     assert Comment.count() == 1
   end
 
   test "PUT /comments/:id admin cannot update a comment when content is invalid", %{conn: conn} do
-    comment = insert_comment()
+    comment = ModelHelpers.insert_comment()
     user = get_admin_user()
     comment_params = comment |> Map.merge(@edit_comment_params) |> Map.put(:content, "")
 
@@ -196,7 +197,7 @@ defmodule Backend.CommentControllerTest do
   end
 
   test "DELETE /comments/:id guest cannot delete a comment", %{conn: conn} do
-    comment = insert_comment()
+    comment = ModelHelpers.insert_comment()
 
     conn = delete(conn, "/comments/#{comment.id}")
 
@@ -206,8 +207,8 @@ defmodule Backend.CommentControllerTest do
   end
 
   test "DELETE /comments/:id normal user can delete his own comment", %{conn: conn} do
-    user = insert_normal_user()
-    comment = insert_comment(%{user: user})
+    user = ModelHelpers.insert_normal_user()
+    comment = ModelHelpers.insert_comment(%{user: user})
 
     conn_with_token = set_conn_with_token(conn, user.authentication_token)
     conn = delete(conn_with_token, "/comments/#{comment.id}")
@@ -218,8 +219,8 @@ defmodule Backend.CommentControllerTest do
   end
 
   test "DELETE /comments/:id normal user cannot delete somebody elses comment", %{conn: conn} do
-    comment = insert_comment(%{user: insert_admin_user()})
-    user = insert_normal_user()
+    comment = ModelHelpers.insert_comment(%{user: ModelHelpers.insert_admin_user()})
+    user = ModelHelpers.insert_normal_user()
 
     conn_with_token = set_conn_with_token(conn, user.authentication_token)
     conn = delete(conn_with_token, "/comments/#{comment.id}")
@@ -230,8 +231,8 @@ defmodule Backend.CommentControllerTest do
   end
 
   test "DELETE /comments/:id admin can delete somebody elses comment", %{conn: conn} do
-    comment = insert_comment(%{user: insert_normal_user()})
-    user = insert_admin_user()
+    comment = ModelHelpers.insert_comment(%{user: ModelHelpers.insert_normal_user()})
+    user = ModelHelpers.insert_admin_user()
 
     conn_with_token = set_conn_with_token(conn, user.authentication_token)
     conn = delete(conn_with_token, "/comments/#{comment.id}")

@@ -59,8 +59,6 @@ defmodule Backend.UserTest do
     assert logged_in_user |> Map.drop([:updated_at, :last_login_at]) == user |> Map.drop([
       :updated_at, :last_login_at
     ])
-    assert logged_in_user.updated_at != user.updated_at
-    assert logged_in_user.last_login_at != user.last_login_at
     assert User.login(%{email: @valid_attrs.email, password: "wrongpassword"}) == nil
     assert User.login(%{email: "wrongemail@hotmail.com", password: @valid_attrs.password}) == nil
   end

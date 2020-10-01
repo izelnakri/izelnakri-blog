@@ -5,6 +5,8 @@ defmodule Backend.Repo.Migrations.CreateEmail do
     create table(:emails) do
       add :address, :string, null: false, size: 60
       add :confirmed_at, :utc_datetime
+      add :confirmation_token, :string, size: 60
+      add :confirmation_token_sent_at, :utc_datetime
 
       add :person_id, references(:people)
       add :first_version_id, references(:versions), null: false
