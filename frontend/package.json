@@ -62,7 +62,7 @@
     "memserver": "^2.1.0",
     "moment": "^2.22.2",
     "node-fetch": "2.6.1",
-    "prismjs": "^1.15.0",
+    "prismjs": "^1.25.0",
     "raven-js": "^3.26.4",
     "selectize": "^0.12.6",
     "webstorage-polyfill": "^1.0.1"
