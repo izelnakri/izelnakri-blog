@@ -60,7 +60,7 @@
     "mber-head": "^0.1.0",
     "mber-i18n": "^5.2.2",
     "memserver": "^2.1.0",
-    "moment": "^2.22.2",
+    "moment": "^2.29.2",
     "node-fetch": "2.6.1",
     "prismjs": "^1.15.0",
     "raven-js": "^3.26.4",
