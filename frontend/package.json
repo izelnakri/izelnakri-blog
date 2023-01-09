@@ -54,7 +54,7 @@
     "ember-modifier": "^2.1.0",
     "fastboot": "^3.0.3",
     "jquery": "^3.5.1",
-    "luxon": "^1.25.0",
+    "luxon": "^1.28.1",
     "marked": "^1.1.1",
     "mber": "0.13.10",
     "mber-head": "^0.1.0",
